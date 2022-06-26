@@ -1,0 +1,21 @@
+
+################## TASK 1
+
+Studio e implementazione di assessment per la cyber security (titolo e descrizione)
+
+Credenziali uniche per tutti
+Controllo troppe richieste
+Per il momento solo servizi
+Mail settimanali
+
+Servizi da fare
+- Antimalware e apk detect insieme (servizio politecnico) - virus total, andro total (apk) 
+- Fake followers e fake review (aspettare il servizio)
+- Ontologia facendo riferimento all’ontologia nazionale 
+- Report vulnerabilità (frontend) - cve-search
+- Rilevamento DGA - domain detection con python file
+- Thesaurus (quello che c’è)
+- Strumenti GDPR (migliorare quello che c’è)
+- Strumenti self assessment (migliorare quello che c’è)
+
+
