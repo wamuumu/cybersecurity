@@ -2,10 +2,6 @@ const express = require('express');
 const app = express();
 
 //routing
-//app.use('/users', require('./users'));
-
-app.use('/', () => {
-    console.log("API");
-});
+app.use('/antimalware', require('./antimalware'));
 
 module.exports = app
