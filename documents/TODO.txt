@@ -9,12 +9,12 @@ Per il momento solo servizi
 Mail settimanali
 
 Servizi da fare
-- Antimalware e apk detect insieme (servizio politecnico) - virus total, andro total (apk) 
+X Antimalware e apk detect insieme (servizio politecnico) - virus total, andro total (apk) 
 - Fake followers e fake review (aspettare il servizio)
-- Ontologia facendo riferimento all’ontologia nazionale 
+- Ontologia facendo riferimento all’ontologia nazionale WebVOWL(sistema visualizzazione ontologie) https://github.com/VisualDataWeb/WebVOWL.git
 - Report vulnerabilità (frontend) - cve-search
-- Rilevamento DGA - domain detection con python file
-- Thesaurus (quello che c’è)
+- Rilevamento DGA - domain detection con python file (algoritmo o DB pubblico) https://github.com/exp0se/dga_detector.git
+X Thesaurus (quello che c’è)
 - Strumenti GDPR (migliorare quello che c’è)
 - Strumenti self assessment (migliorare quello che c’è)
 

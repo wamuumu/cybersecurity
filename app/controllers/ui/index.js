@@ -12,4 +12,12 @@ app.get('/', function(req, res){
     res.render('home');
 })
 
+app.get('/thesaurus', function(req, res){
+    res.render('thesaurus')
+})
+
+app.get('/ontology', function(req, res){
+    res.render('ontology')
+})
+
 module.exports = app
