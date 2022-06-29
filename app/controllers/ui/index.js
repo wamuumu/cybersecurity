@@ -6,10 +6,17 @@ const app = express();
 app.set('views', path.join(require.main.path, './app/views/'));
 
 //Routing
-app.use('/antimalware', require('./antimalware'));
 
 app.get('/', function(req, res){
     res.render('home');
+})
+
+app.get('/antimalware', function(req, res){
+    res.render('antimalware')
+})
+
+app.get('/dga-detection', function(req, res){
+    res.render('dga')
 })
 
 app.get('/thesaurus', function(req, res){

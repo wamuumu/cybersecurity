@@ -1,8 +1,6 @@
 const express = require('express');
 const path = require("path")
 const app = express();
-const parser = require('body-parser');
-const session = require('express-session');
 const config = require('../config')
 
 app.set('view engine', 'ejs');
