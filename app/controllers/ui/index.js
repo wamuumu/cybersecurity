@@ -19,6 +19,8 @@ app.get('/dga-detection', function(req, res){
     res.render('dga')
 })
 
+app.use('/cve-search', require('./cve'));
+
 app.get('/thesaurus', function(req, res){
     res.render('thesaurus')
 })
