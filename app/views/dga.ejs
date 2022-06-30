@@ -1,10 +1,10 @@
 <html>
 <head>
+	<%- include('common/imports.ejs') %>
 	<title>DGA Detection</title>
-	<script src="/static/script.js" type="text/javascript"></script>
-	<link rel="stylesheet" href="/static/style.css">
 </head>
 <body onload="resetRadio('choice')">
+	<%- include('common/header.ejs') %>
 	DGA Detection Tool
 	<br><br>
 	<form enctype="multipart/form-data" action="/api/dga-detection" method="POST">
