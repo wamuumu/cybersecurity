@@ -17,8 +17,8 @@ router.post('/', async function(req, res){
 			res.status(400).json({status: 400, message: error}) 
 		} else {
 
-			var python, dataToSend = [], fileName = "";
-			let pyPath = path.resolve('./app/static/external/dga_detector');
+			var python, dataToSend = "", fileName = "";
+			let pyPath = path.resolve('./app/libraries/dga_detector');
 
 			if(!isEmpty(files))
 				fileName = files.filetoupload.originalFilename;
@@ -39,41 +39,39 @@ router.post('/', async function(req, res){
 
 			if(status == 200){
 				python.stdout.on('data', function(data){
-					let parse = !isJsonString(data.toString()) ? JSON.parse(data.toString()) : data.toString();
-					dataToSend.push(parse);
+					dataToSend += data.toString().replace(/\r\n/, "")
 				})
 
 				python.on('exit', (code) => {
 					console.log('DGA Dection Complete');
 
-					console.log(dataToSend)
+					let results = dataToSend.split("---")
 
-					for (var i = 0; i < dataToSend.length; i++) {
-						if(isJsonString(dataToSend[i]))
-							dataToSend[i] = JSON.parse(dataToSend[i])
-						if(dataToSend[i].exit_code != 0){
-							let domain = dataToSend[i].domain
-							let exit_code = dataToSend[i].exit_code
-							dataToSend[i] = {}
-							dataToSend[i].domain = domain
+					results.pop();
+
+					for (var i = 0; i < results.length; i++) {
+						if(isJsonString(results[i]))
+							results[i] = JSON.parse(results[i])
+						
+						if(results[i].exit_code != 0){
 							
-							switch(exit_code){
+							switch(results[i].exit_code){
 								case 1:
-									dataToSend[i].error = "Tor domain skipped";
+									results[i].error = "Tor domain skipped";
 									break;
 
 								case 2:
-									dataToSend[i].error = "Localized domain skipped";
+									results[i].error = "Localized domain skipped";
 									break;
 
 								case 3:
-									dataToSend[i].error = "Short domain skipped";
+									results[i].error = "Short domain skipped";
 									break;
 							}
 						}
 					}
-					
-					console.log(dataToSend);
+
+					res.status(200).json({status: 200, data: results});
 						
 				});
 			}

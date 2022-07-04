@@ -61,6 +61,7 @@ def main():
                 results['is_dga'] = False
         results["exit_code"] = exit_code
         print(json.dumps(results, indent=4))
+        print("---")
 
     elif args.file:
         domains = read_file(args.file)
@@ -68,6 +69,7 @@ def main():
 
         for domain in domains:
             results["domain"] = domain
+            exit_code = 0
             if domain_check(domain):
                 #print(domain, exit_code)
                 domain_without_sub, domain_entropy, domain_consonants, domain_length = domain_check(domain)
@@ -81,6 +83,7 @@ def main():
 
             results["exit_code"] = exit_code
             print(json.dumps(results, indent=4))
+            print("---")
 
     exit(exit_code)
 

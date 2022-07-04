@@ -33,9 +33,9 @@ router.post('/result', async function(req, res) {
         formdata.append('choice', fields.choice);
 
         await axios.post(url, formdata, {
+            maxContentLength: Infinity,
+            maxBodyLength: Infinity,
             headers: {
-                maxContentLength: Infinity,
-                maxBodyLength: Infinity,
                 'Content-Type': 'multipart/form-data; boundary=' + formdata.getBoundary()
             }
         })

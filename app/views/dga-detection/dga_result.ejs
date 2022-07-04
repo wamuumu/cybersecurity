@@ -1,16 +1,22 @@
 <html>
 <head>
 	<%- include('../common/imports.ejs') %>
-	<title>DGA Detection | Result</title>
+	<title>DGA Detection | Risultati</title>
 </head>
 <body>
 	<%- include('../common/header.ejs') %>
-	Result
+	Risultati dell'analisi
 	<br><br>
 	<% if(data.status == 200) { %>
-		<% Object.keys(data.result).forEach(function(key) { %>
-	  		<%= key %> - <%= data.result[key] %> <br>
-		<% }) %>
+		<% for(var i=0; i < data.data.length; i++) { %>
+			<b>Dominio: </b><%= data.data[i].domain %><br>
+			<% if(data.data[i].error) { %>
+				<b>Motivo skip: </b><%= data.data[i].error %>
+			<% } else { %>
+				<b>DGA: </b><%= data.data[i].is_dga %> 
+			<% } %>
+			<br><br>
+		<% } %>
 	<% } else { %>
 		Errore <%= data.status %>: <%= data.text %>
 	<% } %>
