@@ -11,13 +11,9 @@ app.get('/', function(req, res){
     res.render('home');
 })
 
-app.get('/antimalware', function(req, res){
-    res.render('antimalware')
-})
+app.use('/antimalware', require('./antimalware'));
 
-app.get('/dga-detection', function(req, res){
-    res.render('dga')
-})
+app.use('/dga-detection', require('./dga'));
 
 app.use('/cve-search', require('./cve'));
 

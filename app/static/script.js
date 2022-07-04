@@ -10,6 +10,9 @@ function showOption(radio){
 	let domainContainer = document.getElementById("domain-container");
 	let fileContainer = document.getElementById("file-container");
 
+	let sendButton = document.getElementById("send_dga");
+	sendButton.disabled = false;
+
 	if(radio.value == "domain"){
 		domainContainer.style.display = "block";
 		fileContainer.style.display = "none";

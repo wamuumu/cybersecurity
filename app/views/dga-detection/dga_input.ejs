@@ -1,13 +1,13 @@
 <html>
 <head>
-	<%- include('common/imports.ejs') %>
-	<title>DGA Detection</title>
+	<%- include('../common/imports.ejs') %>
+	<title>DGA Detection | Input</title>
 </head>
 <body onload="resetRadio('choice')">
-	<%- include('common/header.ejs') %>
-	DGA Detection Tool
+	<%- include('../common/header.ejs') %>
+	DGA Detection Tool - Input
 	<br><br>
-	<form enctype="multipart/form-data" action="/api/dga-detection" method="POST">
+	<form enctype="multipart/form-data" action="/dga-detection/result" method="POST">
 
 		<p>Scegli il tipo di analisi da effettuare</p>
 		<input type="radio" id="url" name="choice" onchange="showOption(this)" value="domain">
@@ -25,13 +25,18 @@
 			<input type="file" name="filetoupload" accept=".cef,.txt" />
 		</div>
 		<br>
-		<button type="submit">Invia</button>
+		<button type="submit" id="send_dga" disabled>Invia</button>
+	</div>
 	</form>
 
 	<h3>Da notare: </h3>
 	<ul>
 		<li>se l'<b>entropia</b> > 3.8 allora probabilmente è un DGA</li>
-		<li>se il numero di <b>consonanti</b> > 7 (elvato) allora probabilmente è un DGA</li>
-		<li>se la <b>lunghezza del dominio</b> > 12 (elvato) allora probabilmente è un DGA</li>
+		<li>se il numero di <b>consonanti</b> > 7 (elevato) allora probabilmente è un DGA</li>
+		<li>se la <b>lunghezza del dominio</b> > 12 (elevato) allora probabilmente è un DGA</li>
+	</ul>
+
+	<h2>Disclaimer</h2>
+	<p><b>Sebbene l'algoritmo riconosca un input come un non dga, vi è comunque la possibilità che lo sia. Non fare troppo affidamento sul risultato...</b></p>
 </body>
 </html>

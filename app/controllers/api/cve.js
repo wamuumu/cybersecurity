@@ -7,19 +7,26 @@ const axios = require('axios');
 //GET all CVE
 router.get('/cve', async function(req, res){
 
-	const CVE_LIMIT = 10;
+	const CVE_LIMIT = req.query.limit || 50;
+	const CVE_SKIP = req.query.skip || 0;
+
 	var data;
 
 	const options = {
 	  	method: 'GET',
-	  	url: 'http://cve.circl.lu/api/last/' + CVE_LIMIT,
-	  	headers: {Accept: 'application/json'}
+	  	url: 'https://cvepremium.circl.lu/api/query',
+	  	headers: {
+	  		Accept: 'application/json',
+	  		limit: CVE_LIMIT,
+	  		skip: CVE_SKIP,
+	  		rejected: 'show'
+	  	}
 	};
 
 	var status = 200, text = "";
 
 	await axios.request(options)
-	.then(res => data = res.data)
+	.then(res => data = res.data.results)
 	.catch(err => { status = err.response.status; text = err.response.statusText });
 
 	var results = []
@@ -46,7 +53,7 @@ router.get('/cve/:id', async function(req, res){
 
 	const options = {
 	  	method: 'GET',
-	  	url: 'http://cvepremium.circl.lu/api/cve/' + req.params.id,
+	  	url: 'https://cvepremium.circl.lu/api/cve/' + req.params.id,
 	  	headers: {Accept: 'application/json'}
 	};
 
@@ -81,16 +88,17 @@ router.get('/cve/:id', async function(req, res){
 		result['impact3'] = data.impact3
 	}
 
+	if(data.vulnerable_configuration != undefined)
+		for (var i = 0; i < data.vulnerable_configuration.length; i++)
+			result['vulnerable_configuration'].push(data.vulnerable_configuration[i].title)
 
-	for (var i = 0; i < data.vulnerable_configuration.length; i++)
-		result['vulnerable_configuration'].push(data.vulnerable_configuration[i].title)
-
-	for (var i = 0; i < data.capec.length; i++){
-		var cap = {};
-		cap['name'] = data.capec[i].name
-		cap['description'] = data.capec[i].summary
-		result['capec'].push(cap)
-	}
+	if(data.capec != undefined)
+		for (var i = 0; i < data.capec.length; i++){
+			var cap = {};
+			cap['name'] = data.capec[i].name
+			cap['description'] = data.capec[i].summary
+			result['capec'].push(cap)
+		}
 
 	if(status == 200)
 		res.status(status).json({status: status, data: result});
@@ -105,7 +113,7 @@ router.get('/cwe', async function(req, res){
 
 	const options = {
 	  	method: 'GET',
-	  	url: 'http://cve.circl.lu/api/cwe',
+	  	url: 'https://cvepremium.circl.lu/api/cwe',
 	  	headers: {Accept: 'application/json'}
 	};
 
@@ -140,7 +148,7 @@ router.get('/vendors', async function(req, res){
 
 	const options = {
 	  	method: 'GET',
-	  	url: 'http://cve.circl.lu/api/browse',
+	  	url: 'https://cvepremium.circl.lu/api/browse',
 	  	headers: {Accept: 'application/json'}
 	};
 
@@ -165,7 +173,7 @@ router.get('/vendors/:name', async function(req, res){
 
 	const options = {
 	  	method: 'GET',
-	  	url: 'http://cve.circl.lu/api/browse/' + req.params.name,
+	  	url: 'https://cvepremium.circl.lu/api/browse/' + req.params.name,
 	  	headers: {Accept: 'application/json'}
 	};
 
@@ -197,7 +205,7 @@ router.get('/vendors/:name/:product', async function(req, res){
 
 	const options = {
 	  	method: 'GET',
-	  	url: 'http://cvepremium.circl.lu/api/search/' + req.params.name + '/' + req.params.product,
+	  	url: 'https://cvepremium.circl.lu/api/search/' + req.params.name + '/' + req.params.product,
 	  	headers: {Accept: 'application/json'}
 	};
 

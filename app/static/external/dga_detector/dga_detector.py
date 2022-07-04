@@ -5,6 +5,7 @@ import tldextract
 import argparse
 import json
 
+exit_code = 0
 
 def read_file(filename):
     with open(filename) as f:
@@ -14,16 +15,20 @@ def read_file(filename):
 
 def domain_check(domain):
     # skip tor domains
+    global exit_code
     if domain.endswith(".onion"):
-        exit(1)
+        exit_code=1
+        return 
     # we only interested in main domain name without subdomain and tld
     domain_without_sub = tldextract.extract(domain).domain
     # skip localized domains
     if domain_without_sub.startswith("xn-"):
-        exit(2)
+        exit_code=2
+        return
     # skip short domains
     if len(domain_without_sub) < 6:
-        exit(3)
+        exit_code=3
+        return
     domain_entropy = entropy(domain_without_sub)
     domain_consonants = count_consonants(domain_without_sub)
     domain_length = len(domain_without_sub)
@@ -31,6 +36,7 @@ def domain_check(domain):
 
 
 def main():
+    global exit_code
     parser = argparse.ArgumentParser(description="DGA domain detection")
     parser.add_argument("-d", "--domain", help="Domain to check")
     parser.add_argument("-f", "--file", help="File with domains. One per line")
@@ -41,7 +47,7 @@ def main():
     threshold = model_data['thresh']
     if args.domain:
         if domain_check(args.domain):
-            results = {"domain": "", "is_dga": "", "consonants": "", "entropy": "", "domain_length": ""}
+            results = {"domain": "", "is_dga": "", "consonants": "", "entropy": "", "domain_length": "", "exit_code": 0}
             domain_without_sub, domain_entropy, domain_consonants, domain_length = domain_check(args.domain)
             
             results["domain"] = args.domain
@@ -53,15 +59,17 @@ def main():
                 results["is_dga"] = True
             else:
                 results['is_dga'] = False
-            print(json.dumps(results, indent=4))
+        results["exit_code"] = exit_code
+        print(json.dumps(results, indent=4))
 
     elif args.file:
         domains = read_file(args.file)
-        results = {"domain": "", "is_dga": "", "consonants": "", "entropy": "", "domain_length": ""}
+        results = {"domain": "", "is_dga": "", "consonants": "", "entropy": "", "domain_length": "", "exit_code": 0}
 
         for domain in domains:
             results["domain"] = domain
             if domain_check(domain):
+                #print(domain, exit_code)
                 domain_without_sub, domain_entropy, domain_consonants, domain_length = domain_check(domain)
                 results["entropy"] = domain_entropy
                 results["consonants"] = domain_consonants
@@ -70,11 +78,11 @@ def main():
                     results["is_dga"] = True
                 else:
                     results["is_dga"] = False
-            print(json.dumps(results, indent=4))
-    else:
-        exit(4)
 
-    exit(0)
+            results["exit_code"] = exit_code
+            print(json.dumps(results, indent=4))
+
+    exit(exit_code)
 
 if __name__ == '__main__':
     main()
