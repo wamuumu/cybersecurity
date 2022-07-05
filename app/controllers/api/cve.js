@@ -8,7 +8,7 @@ const axios = require('axios');
 router.get('/cve', async function(req, res){
 
 	const CVE_LIMIT = req.query.limit || 50;
-	const CVE_SKIP = req.query.skip || 0;
+	const CVE_SKIP = req.query.skip * CVE_LIMIT || 0;
 
 	var data;
 
@@ -18,30 +18,32 @@ router.get('/cve', async function(req, res){
 	  	headers: {
 	  		Accept: 'application/json',
 	  		limit: CVE_LIMIT,
-	  		skip: CVE_SKIP,
-	  		rejected: 'show'
+	  		skip: CVE_SKIP
 	  	}
 	};
 
 	var status = 200, text = "";
 
 	await axios.request(options)
-	.then(res => data = res.data.results)
+	.then(res => data = res.data)
 	.catch(err => { status = err.response.status; text = err.response.statusText });
 
 	var results = []
 
-	for (var i = 0; i < data.length; i++) {
+	for (var i = 0; i < data.results.length; i++) {
 		results[i] = {}
-		results[i]['id'] = data[i].id
-		results[i]['cvss'] = data[i].cvss
-		results[i]['summary'] = data[i].summary
-		results[i]['updated'] = formatDate(data[i].Modified)
-		results[i]['published'] = formatDate(data[i].Published)
+		results[i]['id'] = data.results[i].id
+		results[i]['cvss'] = data.results[i].cvss
+		results[i]['cvss3'] = data.results[i].cvss3
+		results[i]['summary'] = data.results[i].summary
+		results[i]['updated'] = formatDate(data.results[i].Modified)
+		results[i]['published'] = formatDate(data.results[i].Published)
  	}
 
+ 	data.results = results;
+
 	if(status == 200)
-		res.status(status).json({status: status, data: results});
+		res.status(status).json({status: status, data: data});
 	else
 		res.status(status).json({status: status, message: text});
 });
@@ -231,6 +233,29 @@ router.get('/vendors/:name/:product', async function(req, res){
 	else
 		res.status(status).json({status: status, message: text});
 });
+
+router.get('/info', async function(req, res){
+
+	var data;
+
+	const options = {
+	  	method: 'GET',
+	  	url: 'https://cvepremium.circl.lu/api/dbinfo',
+	  	headers: { Accept: 'application/json' }
+	};
+
+	var status = 200, text = "";
+
+	await axios.request(options)
+	.then(res => data = res.data)
+	.catch(err => { status = err.response.status; text = err.response.statusText });
+
+	if(status == 200)
+		res.status(status).json({status: status, data: data});
+	else
+		res.status(status).json({status: status, message: text});
+});
+
 
 
 function formatDate(date){

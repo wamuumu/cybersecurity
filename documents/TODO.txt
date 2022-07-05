@@ -12,15 +12,19 @@ Servizi da fare
 X Antimalware e apk detect insieme (servizio politecnico) - virus total, andro total (apk) 
 X Fix antimalware api response (remove useless fields)
 - Fake followers e fake review (aspettare il servizio)
-~ Ontologia facendo riferimento all’ontologia nazionale WebVOWL(sistema visualizzazione ontologie) https://github.com/VisualDataWeb/WebVOWL.git
-- Report vulnerabilità (frontend)
+X Report vulnerabilità tabella cve (frontend)
 X Report vulnerabilità (servizi) - cve-search
 X Fix limit rate 10 per GET cves (use /api/query)
 X Rilevamento DGA - domain detection url o file con algoritmo https://github.com/exp0se/dga_detector.git
-- Rilevamento DGA - database pubblico è diventato a pagamento, serve richiedere una licenza https://osint.bambenekconsulting.com/feeds/dga-feed.txt
 X Thesaurus (quello che c’è)
 - Database per questionari
 - Strumenti GDPR (migliorare quello che c’è)
 - Strumenti self assessment (migliorare quello che c’è)
 
+DUBBI:
+~ Aggiungere fronted e backend per ricercare le cve (filtri e ricerca)
+~ Ontologia facendo riferimento all’ontologia nazionale WebVOWL(sistema visualizzazione ontologie) https://github.com/VisualDataWeb/WebVOWL.git (va bene?)
+~ Report vulnerabilità cve_id, cwe, vendors, products ... (frontend) (bisogna farlo?)
+~ Rilevamento DGA - database pubblico è diventato a pagamento, serve richiedere una licenza https://osint.bambenekconsulting.com/feeds/dga-feed.txt (si fa?)
+~ Virus Total Api key premium (si richiede? o si tiene quella gratuita?)
 

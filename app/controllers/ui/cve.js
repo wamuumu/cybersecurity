@@ -1,10 +1,19 @@
 var express = require('express');
 var router = express.Router();
+const axios = require('axios');
 
 //Routing for pages
 
 router.get('/cve', async function(req, res) {
-    res.render('cve-search/cve');
+
+    var info;
+    let url = req.protocol + '://' + req.get('host') + '/api/cve-search/cve?limit=1';
+
+    await axios.get(url)
+    .then(res => info = res.data.data.total)
+    .catch(err => console.log(err))
+
+    res.render('cve-search/cve', {total: info});
 })
 
 router.get('/cwe', async function(req, res) {

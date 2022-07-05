@@ -1,3 +1,5 @@
+/* ---- DGA ---- */
+
 function resetRadio(radioName){
 	let radios = document.getElementsByName(radioName);
 	for (var i = 0; i < radios.length; i++) {
