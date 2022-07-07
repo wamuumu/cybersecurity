@@ -1,25 +1,32 @@
 
-################## TASK 1
+################## TASK TO DO ##################
 
 Studio e implementazione di assessment per la cyber security (titolo e descrizione)
 
-Credenziali uniche per tutti
-Controllo troppe richieste - CloudFlare Free plan
-Per il momento solo servizi
-Mail settimanali
+REQUISITI:
+- Credenziali uniche per tutti
+- Controllo troppe richieste - CloudFlare Free plan
+- Per il momento solo servizi
+- Mail settimanali
 
-Servizi da fare
+SERVIZI:
 X Antimalware e apk detect insieme (servizio politecnico) - virus total, andro total (apk) 
 X Fix antimalware api response (remove useless fields)
-- Fake followers e fake review (aspettare il servizio)
 X Report vulnerabilità tabella cve (frontend)
 X Report vulnerabilità (servizi) - cve-search
 X Fix limit rate 10 per GET cves (use /api/query)
 X Rilevamento DGA - domain detection url o file con algoritmo https://github.com/exp0se/dga_detector.git
 X Thesaurus (quello che c’è)
-- Database per questionari
-- Strumenti GDPR (migliorare quello che c’è)
-- Strumenti self assessment (migliorare quello che c’è)
+X Connessione Database
+X Modello DB per questionari
+- Modello questionario GDPR (frontend)
+- Strumenti GDPR (backend) (migliorare quello che c’è)
+- Modello questionario self assessment (frontend)
+- Strumenti self assessment (backend) (migliorare quello che c’è)
+
+POSSIBILITA':
+- ID questionario generato e utilizzato in un'altra pagina per i ottenere i risultati
+- Creazione account e nella sezione profilo, mostrare gli ID dei questionari
 
 DUBBI:
 ~ Aggiungere fronted e backend per ricercare le cve (filtri e ricerca)
@@ -27,4 +34,5 @@ DUBBI:
 ~ Report vulnerabilità cve_id, cwe, vendors, products ... (frontend) (bisogna farlo?)
 ~ Rilevamento DGA - database pubblico è diventato a pagamento, serve richiedere una licenza https://osint.bambenekconsulting.com/feeds/dga-feed.txt (si fa?)
 ~ Virus Total Api key premium (si richiede? o si tiene quella gratuita?)
+~ Fake followers e fake review (quando avrò accesso al servizio?)
 
