@@ -19,14 +19,14 @@ X Rilevamento DGA - domain detection url o file con algoritmo https://github.com
 X Thesaurus (quello che c’è)
 X Connessione Database
 X Modello DB per questionari
-- Modello questionario GDPR (frontend)
-- Strumenti GDPR (backend) (migliorare quello che c’è)
+X Modello questionario GDPR (frontend)
+X Strumenti GDPR (backend) (migliorare quello che c’è)
 - Modello questionario self assessment (frontend)
 - Strumenti self assessment (backend) (migliorare quello che c’è)
 
 POSSIBILITA':
 - ID questionario generato e utilizzato in un'altra pagina per i ottenere i risultati
-- Creazione account e nella sezione profilo, mostrare gli ID dei questionari
+- Creazione account e nella sezione profilo, mostrare gli ID dei questionari <--- MIGLIORE
 
 DUBBI:
 ~ Aggiungere fronted e backend per ricercare le cve (filtri e ricerca)
