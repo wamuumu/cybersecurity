@@ -298,17 +298,56 @@ async function saveSurveyResults(json) {
     .catch( error => console.error(error) );
 }
 
-function displayResults(json){
+async function displayResults(json){
     var results = document.getElementById('surveyResults');
 
     var resultTable;
     let parse = parseResults(json);
-    $.get("/survey/GDPR-result", function(html_results){
+    var mean = 0;
+
+    await fetch("/survey/GDPR-result", {
+        method: 'GET'
+    })
+    .then(function(response) { return response.text() })
+    .then(function(html_results) {
         html_results = html_results.replace("{surveyID}", surveyID);
-        for (var i = 0; i < parse.length; i++)
+        for (var i = 0; i < parse.length; i++){
+            mean += parseFloat(parse[i]);
             html_results = html_results.replace("{result_"+ (i+1) +"}", parse[i]);
+        }
+        mean = (mean / 6).toFixed(2);
+        html_results = html_results.replace("{mean}", mean);
         results.innerHTML += html_results; 
-    },'html');
+    })
+    .catch(function(err) {  console.log('Failed to fetch page: ', err); });
+
+    var opts = {
+        angle: 0.35, // The span of the gauge arc
+        lineWidth: 0.1, // The line thickness
+        radiusScale: 1, // Relative radius
+        pointer: {
+            length: 0.6, // // Relative to gauge radius
+            strokeWidth: 0.035, // The thickness
+            color: '#000000' // Fill color
+        },
+        limitMax: false,     // If false, max value increases automatically if value > maxValue
+        limitMin: false,     // If true, the min value of the gauge will be fixed
+        colorStart: '#6F6EA0',   // Colors
+        colorStop: '#C0C0DB',    // just experiment with them
+        strokeColor: '#EEEEEE',  // to see which ones work best for you
+        generateGradient: true,
+        highDpiSupport: true,     // High resolution support
+    };
+    
+    var target = document.getElementById('gauge'); // your canvas element
+    var text = document.getElementById('gauge-value'); // your text element
+    text.innerHTML = mean;
+    var gauge = new Donut(target).setOptions(opts); // create sexy gauge!
+    gauge.maxValue = 100; // set max gauge value
+    gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
+    gauge.animationSpeed = 32; // set animation speed (32 is default value)
+    gauge.text = mean;
+    gauge.set(mean); // set actual value
 }
 
 function parseResults(json){
