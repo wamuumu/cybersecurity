@@ -7,38 +7,39 @@
 </head>
 <body onload="resetRadio('choice')">
 	<%- include('../common/header.ejs') %>
-	DGA Detection Tool - Input
-	<br><br>
-	<form enctype="multipart/form-data" action="/dga-detection/result" method="POST">
+	<div class="body-container">
+		DGA Detection Tool - Input
+		<br><br>
+		<form enctype="multipart/form-data" action="/dga-detection/result" method="POST">
 
-		<p>Scegli il tipo di analisi da effettuare</p>
-		<input type="radio" id="url" name="choice" onchange="showOption(this)" value="domain">
-		<label for="url">Dominio</label><br>
-		<input type="radio" id="file" name="choice" onchange="showOption(this)" value="file">
-		<label for="file">File (.cef, .txt)</label><br>
+			<p>Scegli il tipo di analisi da effettuare</p>
+			<input type="radio" id="url" name="choice" onchange="showOption(this)" value="domain">
+			<label for="url">Dominio</label><br>
+			<input type="radio" id="file" name="choice" onchange="showOption(this)" value="file">
+			<label for="file">File (.cef, .txt)</label><br>
 
-		<br>
-		<div id="domain-container">
-			<label for="url">Dominio: </label>
-			<input type="text" name="domain" />
-		</div>
-		<div id="file-container">
-			<label for="filetoupload">File: </label>
-			<input type="file" name="filetoupload" accept=".cef,.txt" />
-		</div>
-		<br>
-		<button type="submit" id="send_dga" disabled>Invia</button>
+			<br>
+			<div id="domain-container">
+				<label for="url">Dominio: </label>
+				<input type="text" name="domain" />
+			</div>
+			<div id="file-container">
+				<label for="filetoupload">File: </label>
+				<input type="file" name="filetoupload" accept=".cef,.txt" />
+			</div>
+			<br>
+			<button type="submit" id="send_dga" disabled>Invia</button>
+		</form>
+
+		<h3>Da notare: </h3>
+		<ul>
+			<li>se l'<b>entropia</b> > 3.8 allora probabilmente è un DGA</li>
+			<li>se il numero di <b>consonanti</b> > 7 (elevato) allora probabilmente è un DGA</li>
+			<li>se la <b>lunghezza del dominio</b> > 12 (elevato) allora probabilmente è un DGA</li>
+		</ul>
+
+		<h2>Disclaimer</h2>
+		<p><b>Sebbene l'algoritmo riconosca un input come un non dga, vi è comunque la possibilità che lo sia. Non fare troppo affidamento sul risultato...</b></p>
 	</div>
-	</form>
-
-	<h3>Da notare: </h3>
-	<ul>
-		<li>se l'<b>entropia</b> > 3.8 allora probabilmente è un DGA</li>
-		<li>se il numero di <b>consonanti</b> > 7 (elevato) allora probabilmente è un DGA</li>
-		<li>se la <b>lunghezza del dominio</b> > 12 (elevato) allora probabilmente è un DGA</li>
-	</ul>
-
-	<h2>Disclaimer</h2>
-	<p><b>Sebbene l'algoritmo riconosca un input come un non dga, vi è comunque la possibilità che lo sia. Non fare troppo affidamento sul risultato...</b></p>
 </body>
 </html>

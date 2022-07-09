@@ -7,20 +7,22 @@
 </head>
 <body>
 	<%- include('../common/header.ejs') %>
-	Risultati dell'analisi
-	<br><br>
-	<% if(data.status == 200) { %>
-		<% for(var i=0; i < data.data.length; i++) { %>
-			<b>Dominio: </b><%= data.data[i].domain %><br>
-			<% if(data.data[i].error) { %>
-				<b>Motivo skip: </b><%= data.data[i].error %>
-			<% } else { %>
-				<b>DGA: </b><%= data.data[i].is_dga %> 
+	<div class="body-container">
+		Risultati dell'analisi
+		<br><br>
+		<% if(data.status == 200) { %>
+			<% for(var i=0; i < data.data.length; i++) { %>
+				<b>Dominio: </b><%= data.data[i].domain %><br>
+				<% if(data.data[i].error) { %>
+					<b>Motivo skip: </b><%= data.data[i].error %>
+				<% } else { %>
+					<b>DGA: </b><%= data.data[i].is_dga %> 
+				<% } %>
+				<br><br>
 			<% } %>
-			<br><br>
+		<% } else { %>
+			Errore <%= data.status %>: <%= data.text %>
 		<% } %>
-	<% } else { %>
-		Errore <%= data.status %>: <%= data.text %>
-	<% } %>
+	</div>
 </body>
 </html>

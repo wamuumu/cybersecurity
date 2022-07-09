@@ -21,8 +21,11 @@ X Connessione Database
 X Modello DB per questionari
 X Modello questionario GDPR (frontend)
 X Strumenti GDPR (backend) (migliorare quello che c’è)
+X Ripristino questionario GDPR tramite ID
 - Modello questionario self assessment (frontend)
 - Strumenti self assessment (backend) (migliorare quello che c’è)
+- Ripristino questionario self assessment tramite ID
+X Header basilare (per comodità)
 
 POSSIBILITA':
 - ID questionario generato e utilizzato in un'altra pagina per i ottenere i risultati

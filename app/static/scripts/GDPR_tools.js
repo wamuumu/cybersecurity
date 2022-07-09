@@ -340,7 +340,37 @@ function getFieldInfo(field){
     return { "page" : parseInt(values[0]), "field": parseInt(values[1]) };
 }
 
-survey.onStarted.add(function(){ document.getElementById('description').style.display = 'none'; })
+async function restoreSurvey(){
+    var restoreID = document.getElementById('restoreID').value;
+
+    if(!restoreID){
+        alert("Inserisci un ID valido");
+        return;
+    }
+
+    await fetch("/api/survey/" + restoreID, {
+        method: 'GET'
+    })
+    .then((resp) => { return resp.json() })
+    .then(function(data) {
+        if(data.status == 200){
+            console.log("Questionario ripristinato")
+            survey.data = JSON.parse(data.survey.data);
+            survey.mode = "display";
+            survey.start()
+        } else {
+            alert("Inserisci un ID valido");
+            return;
+        }
+    })
+    .catch( error => console.error(error) );
+}
+
+survey.onStarted.add(function(){ 
+    document.getElementById('description').style.display = 'none'; 
+    document.getElementById('separator').style.display = 'none'; 
+    document.getElementById('restore').style.display = 'none'; 
+})
 survey.onComplete.add(surveyComplete);
 
 $(function() {
