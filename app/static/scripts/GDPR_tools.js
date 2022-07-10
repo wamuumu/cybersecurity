@@ -380,7 +380,7 @@ function getFieldInfo(field){
 }
 
 async function restoreSurvey(){
-    var restoreID = document.getElementById('restoreID').value;
+    var restoreID = document.getElementById('restoreID').value.replaceAll(/\s/g,'');
 
     if(!restoreID){
         alert("Inserisci un ID valido");
@@ -407,11 +407,72 @@ async function restoreSurvey(){
 
 survey.onStarted.add(function(){ 
     document.getElementById('description').style.display = 'none'; 
-    document.getElementById('separator').style.display = 'none'; 
+    var seps = document.getElementsByClassName('separator');
+    for (var i = 0; i < seps.length; i++)
+        seps[i].style.display = 'none'; 
     document.getElementById('restore').style.display = 'none'; 
+    document.getElementById('chart').style.display = 'none'; 
 })
 survey.onComplete.add(surveyComplete);
 
 $(function() {
     $("#surveyContainer").Survey({ model: survey });
 });
+
+function setChart(scores){
+    const data = {
+        labels: [
+            'Responsabilità e Conformità',
+            'Precisione',
+            'Integrità e Riservatezza',
+            'Legalità, Equità e Trasparenza',
+            ['Limitazioni delle finalità e', 'minimizzazione dei dati'],
+            'Limiti di archiviazione'
+        ],
+        datasets: [{
+            label: 'Valori medi categorie GDPR',
+            data: scores,
+            fill: true,
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgb(255, 99, 132)',
+            pointBackgroundColor: 'rgb(255, 99, 132)',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: 'rgb(255, 99, 132)'
+        }] 
+    }
+
+    Chart.defaults.global.defaultFontSize = 14;
+    Chart.Legend.prototype.afterFit = function() {
+        this.height = this.height + 50;
+    };
+
+    const config = {
+        type: 'radar',
+        data: data,
+        options: {
+            elements: {
+                line: {
+                    borderWidth: 3
+                },
+                point: {
+                    radius: 7,
+                    hitRadius: 7
+                }
+            },
+            scale: {
+                pointLabels: {
+                    fontSize: 17
+                }
+            },
+            legend: {
+                labels: {
+                    fontSize: 22
+                }
+            }
+        }
+    };  
+
+    var ctx = document.getElementById("gdpr-chart").getContext('2d');
+    const gdprChart = new Chart(ctx, config);
+}

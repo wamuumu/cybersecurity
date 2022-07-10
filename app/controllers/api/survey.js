@@ -5,6 +5,19 @@ const router = express.Router();
 const formidable = require('formidable');
 const Survey = require("../../models/survey")
 
+router.get('/', async function(req, res){
+
+	let typeFilter = req.query.stype != undefined ? { type: req.query.stype } : {}
+
+	Survey.find(typeFilter)
+    .then(surveys => { res.status(200).json({status: 200, data: surveys}) })
+    .catch(err => {
+    	console.error(err);
+        res.status(500).json({status: 500, message: "Internal server error:" + err})
+    })
+
+});
+
 router.get('/:id', async function(req, res){
 
 	Survey.findOne({_id: req.params.id})

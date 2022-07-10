@@ -6,9 +6,10 @@
 	<script type="text/javascript" src="https://unpkg.com/survey-jquery"></script>
 	<script type="text/javascript" src="/static/scripts/GDPR_tools.js"></script>
 	<script type="text/javascript" src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
 	<title>Strumenti GDPR</title>
 </head>
-<body>
+<body onload="setChart([<%= categoriesScore %>])">
 	<%- include('../common/header.ejs') %>
 	<div class="body-container">
 		<div class="questionnaire-container">
@@ -24,7 +25,7 @@
 			<div id="surveyContainer"></div>
 			<div id="surveyResults"></div>
 
-			<div id="separator" class="separator">Oppure</div>
+			<div class="separator">Oppure</div>
 
 			<div id="restore">
 				<h3>Ripristina un questionario già compilato</h3>
@@ -35,6 +36,17 @@
 				<input type="text" id="restoreID" name="restoreID" />
 				<button type="button" onclick="restoreSurvey()">Ripristina</button>
 				<p>(e.g. 62c94aef9a224e776d9dbdb2 è un ID valido)</p>
+			</div>
+
+			<br><br>
+
+			<div class="separator"></div>
+
+			<br><br>
+			<div id="chart">
+				<center>
+					<canvas id="gdpr-chart"></canvas>
+				</center>
 			</div>
 		</div>
 	</div>
