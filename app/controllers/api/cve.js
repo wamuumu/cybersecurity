@@ -31,13 +31,15 @@ router.get('/cve', async function(req, res){
 	var results = []
 
 	for (var i = 0; i < data.results.length; i++) {
-		results[i] = {}
-		results[i]['id'] = data.results[i].id
-		results[i]['cvss'] = data.results[i].cvss
-		results[i]['cvss3'] = data.results[i].cvss3
-		results[i]['summary'] = data.results[i].summary
-		results[i]['updated'] = formatDate(data.results[i].Modified)
-		results[i]['published'] = formatDate(data.results[i].Published)
+		let item = {}
+		item['id'] = data.results[i].id
+		item['cvss'] = data.results[i].cvss
+		item['cvss3'] = data.results[i].cvss3
+		item['summary'] = data.results[i].summary
+		item['updated'] = formatDate(data.results[i].Modified)
+		item['published'] = formatDate(data.results[i].Published)
+
+		results.push(item);
  	}
 
  	data.results = results;

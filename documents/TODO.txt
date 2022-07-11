@@ -22,20 +22,22 @@ X Modello DB per questionari
 X Modello questionario GDPR (frontend)
 X Strumenti GDPR (backend) (migliorare quello che c’è)
 X Ripristino questionario GDPR tramite ID
-- Modello questionario self assessment (frontend)
-- Strumenti self assessment (backend) (migliorare quello che c’è)
-- Ripristino questionario self assessment tramite ID
 X Header basilare (per comodità)
+- Aggiungere filtri CVE
 
 POSSIBILITA':
-- ID questionario generato e utilizzato in un'altra pagina per i ottenere i risultati
-- Creazione account e nella sezione profilo, mostrare gli ID dei questionari <--- MIGLIORE
+X ID questionario generato dopo aver completato la compilazione e utilizzato in un form apposito per rivedere le risposte
+- Creazione account e nella sezione profilo, mostrare gli ID dei questionari <--- MIGLIORE (Questionari solo se loggati)
 
 DUBBI:
-~ Aggiungere fronted e backend per ricercare le cve (filtri e ricerca)
 ~ Ontologia facendo riferimento all’ontologia nazionale WebVOWL(sistema visualizzazione ontologie) https://github.com/VisualDataWeb/WebVOWL.git (va bene?)
 ~ Report vulnerabilità cve_id, cwe, vendors, products ... (frontend) (bisogna farlo?)
 ~ Rilevamento DGA - database pubblico è diventato a pagamento, serve richiedere una licenza https://osint.bambenekconsulting.com/feeds/dga-feed.txt (si fa?)
 ~ Virus Total Api key premium (si richiede? o si tiene quella gratuita?)
 ~ Fake followers e fake review (quando avrò accesso al servizio?)
+
+SELF ASSESSMENT: NON SI SANNO COME SI CALCOLANO I VALORI DEL RISCHIO
+- Modello questionario self assessment (frontend) [Veloce - 7TlvQtmMEMfvz5s]
+- Strumenti self assessment (backend) (migliorare quello che c’è)
+- Ripristino questionario self assessment tramite ID
 
