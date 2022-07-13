@@ -5,10 +5,18 @@ const router = express.Router();
 const axios = require('axios');
 
 //GET all CVE
-router.get('/cve', async function(req, res){
+router.post('/cve', async function(req, res){
 
-	const CVE_LIMIT = req.query.limit || 50;
-	const CVE_SKIP = req.query.skip * CVE_LIMIT || 0;
+	const CVE_LIMIT = req.body.limit || 50;
+	const CVE_SKIP = req.body.skip * CVE_LIMIT || 0;
+	const CVE_TIMETYPE = req.body.timetype || "";
+	const CVE_TIME = req.body.time || "";
+	const CVE_START_DATE = req.body.start || "";
+	const CVE_END_DATE = req.body.end || "";
+	const CVE_CVSS_VERSION = req.body.version || "V3";
+	const CVE_CVSS_SELECT = req.body.cvsstype || "";
+	const CVE_CVSS_SCORE = req.body.score || "";
+	const CVE_REJECTED = req.body.rejected || "";
 
 	var data;
 
@@ -18,7 +26,15 @@ router.get('/cve', async function(req, res){
 	  	headers: {
 	  		Accept: 'application/json',
 	  		limit: CVE_LIMIT,
-	  		skip: CVE_SKIP
+	  		skip: CVE_SKIP,
+	  		timeTypeSelect: CVE_TIMETYPE,
+	  		timeSelect: CVE_TIME,
+	  		startDate: CVE_START_DATE,
+	  		endDate: CVE_END_DATE,
+	  		cvssVersion: CVE_CVSS_VERSION,
+	  		cvssSelect: CVE_CVSS_SELECT,
+	  		cvss: CVE_CVSS_SCORE,
+	  		rejected: CVE_REJECTED
 	  	}
 	};
 

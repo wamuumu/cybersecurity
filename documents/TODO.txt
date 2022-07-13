@@ -23,7 +23,7 @@ X Modello questionario GDPR (frontend)
 X Strumenti GDPR (backend) (migliorare quello che c’è)
 X Ripristino questionario GDPR tramite ID
 X Header basilare (per comodità)
-- Aggiungere filtri CVE
+X Aggiungere filtri CVE
 
 POSSIBILITA':
 X ID questionario generato dopo aver completato la compilazione e utilizzato in un form apposito per rivedere le risposte
@@ -40,4 +40,7 @@ SELF ASSESSMENT: NON SI SANNO COME SI CALCOLANO I VALORI DEL RISCHIO
 - Modello questionario self assessment (frontend) [Veloce - 7TlvQtmMEMfvz5s]
 - Strumenti self assessment (backend) (migliorare quello che c’è)
 - Ripristino questionario self assessment tramite ID
+
+SUGGERIMENTI:
+- Implementazione servizio di Have I Been Pawned per vedere se email o telefono sono presenti in data breaches
 

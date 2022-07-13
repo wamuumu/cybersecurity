@@ -7,9 +7,9 @@ const axios = require('axios');
 router.get('/cve', async function(req, res) {
 
     var info;
-    let url = req.protocol + '://' + req.get('host') + '/api/cve-search/cve?limit=1';
+    let url = req.protocol + '://' + req.get('host') + '/api/cve-search/cve';
 
-    await axios.get(url)
+    await axios.post(url, {limit: 1})
     .then(res => info = res.data.data.total)
     .catch(err => console.log(err))
 

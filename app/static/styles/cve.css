@@ -132,9 +132,9 @@ table th {
 
 .interactions{
     width: 100%;
-    display: flex;
+    /*display: flex;
     justify-content: center;
-    align-items: center; 
+    align-items: center; */
 }
 
 .entries{
@@ -148,9 +148,44 @@ table th {
     border-radius: 5px;
 }
 
-.entries_picker{
-    margin-right: auto;
-    order: 2;
-    float: left;
+#toggleFilters{
+   margin: 10px 0px;
+}
+
+#filters{
+    width: 100%;
+    height: auto;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: 0.25rem;
+    display: none;
+    padding: 50px 10px;
+}
+
+.time, .cvss, .rejected, .enable {
+    display: table-row;
+}
+
+.time *, .cvss *, .rejected * {
+    display: table-cell;
+    width: 250px;
+    padding: 10px;
+    margin: 10 30;
+}
+
+.enable * {
+    display: table-cell;
+    padding: 10px;
+    margin: 10 30;
+}
+
+.filterSearch, #toggleFilters {
+    padding: 10px;
+    margin: 10;
+    background: #303F7D;
+    color: white;
+    font-size: 13px;
+    border: 1px solid grey;
+    cursor: pointer;
+    border-radius: 5px;
 }
 
