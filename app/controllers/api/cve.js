@@ -3,67 +3,79 @@
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
+const formidable = require('formidable');
 
 //GET all CVE
 router.post('/cve', async function(req, res){
 
-	const CVE_LIMIT = req.body.limit || 50;
-	const CVE_SKIP = req.body.skip * CVE_LIMIT || 0;
-	const CVE_TIMETYPE = req.body.timetype || "";
-	const CVE_TIME = req.body.time || "";
-	const CVE_START_DATE = req.body.start || "";
-	const CVE_END_DATE = req.body.end || "";
-	const CVE_CVSS_VERSION = req.body.version || "V3";
-	const CVE_CVSS_SELECT = req.body.cvsstype || "";
-	const CVE_CVSS_SCORE = req.body.score || "";
-	const CVE_REJECTED = req.body.rejected || "";
+	let form = new formidable.IncomingForm();
 
-	var data;
+	form.parse(req, async function (error, fields, files) {
 
-	const options = {
-	  	method: 'GET',
-	  	url: 'https://cvepremium.circl.lu/api/query',
-	  	headers: {
-	  		Accept: 'application/json',
-	  		limit: CVE_LIMIT,
-	  		skip: CVE_SKIP,
-	  		timeTypeSelect: CVE_TIMETYPE,
-	  		timeSelect: CVE_TIME,
-	  		startDate: CVE_START_DATE,
-	  		endDate: CVE_END_DATE,
-	  		cvssVersion: CVE_CVSS_VERSION,
-	  		cvssSelect: CVE_CVSS_SELECT,
-	  		cvss: CVE_CVSS_SCORE,
-	  		rejected: CVE_REJECTED
-	  	}
-	};
+		if(error){
+			console.error(error);
+			res.status(400).json({status: 400, message: error}) 
+		} else {
 
-	var status = 200, text = "";
+			const CVE_LIMIT = fields.limit || 50;
+			const CVE_SKIP = fields.skip * CVE_LIMIT || 0;
+			const CVE_TIMETYPE = fields.timetype || "";
+			const CVE_TIME = fields.time || "";
+			const CVE_START_DATE = fields.start || "";
+			const CVE_END_DATE = fields.end || "";
+			const CVE_CVSS_VERSION = fields.version || "V3";
+			const CVE_CVSS_SELECT = fields.cvsstype || "";
+			const CVE_CVSS_SCORE = fields.score || "";
+			const CVE_REJECTED = fields.rejected || "";
 
-	await axios.request(options)
-	.then(res => data = res.data)
-	.catch(err => { status = err.response.status; text = err.response.statusText });
+			var data;
 
-	var results = []
+			const options = {
+			  	method: 'GET',
+			  	url: 'https://cvepremium.circl.lu/api/query',
+			  	headers: {
+			  		Accept: 'application/json',
+			  		limit: CVE_LIMIT,
+			  		skip: CVE_SKIP,
+			  		timeTypeSelect: CVE_TIMETYPE,
+			  		timeSelect: CVE_TIME,
+			  		startDate: CVE_START_DATE,
+			  		endDate: CVE_END_DATE,
+			  		cvssVersion: CVE_CVSS_VERSION,
+			  		cvssSelect: CVE_CVSS_SELECT,
+			  		cvss: CVE_CVSS_SCORE,
+			  		rejected: CVE_REJECTED
+			  	}
+			};
 
-	for (var i = 0; i < data.results.length; i++) {
-		let item = {}
-		item['id'] = data.results[i].id
-		item['cvss'] = data.results[i].cvss
-		item['cvss3'] = data.results[i].cvss3
-		item['summary'] = data.results[i].summary
-		item['updated'] = formatDate(data.results[i].Modified)
-		item['published'] = formatDate(data.results[i].Published)
+			var status = 200, text = "";
 
-		results.push(item);
- 	}
+			await axios.request(options)
+			.then(res => data = res.data)
+			.catch(err => { status = err.response.status; text = err.response.statusText });
 
- 	data.results = results;
+			var results = []
 
-	if(status == 200)
-		res.status(status).json({status: status, data: data});
-	else
-		res.status(status).json({status: status, message: text});
+			for (var i = 0; i < data.results.length; i++) {
+				let item = {}
+				item['id'] = data.results[i].id
+				item['cvss'] = data.results[i].cvss
+				item['cvss3'] = data.results[i].cvss3
+				item['summary'] = data.results[i].summary
+				item['updated'] = formatDate(data.results[i].Modified)
+				item['published'] = formatDate(data.results[i].Published)
+
+				results.push(item);
+		 	}
+
+		 	data.results = results;
+
+			if(status == 200)
+				res.status(status).json({status: status, data: data});
+			else
+				res.status(status).json({status: status, message: text});
+		}
+	});
 });
 
 //GET specific CVE by ID

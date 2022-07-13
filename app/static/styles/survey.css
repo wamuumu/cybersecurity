@@ -44,3 +44,15 @@
 #gdpr-table td {
 	padding: 5 10;
 }
+
+#chart{
+	width: 70%;
+	margin: 0 auto;
+}
+
+.chart-title {
+	color: rgb(26, 179, 148);
+	color: #303F7D;
+	letter-spacing: .8px;
+	font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+}

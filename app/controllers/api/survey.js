@@ -38,7 +38,7 @@ router.get('/:id', async function(req, res){
 });
 
 
-router.post('/:id', async function(req, res){
+router.post('/', async function(req, res){
 
 	let form = new formidable.IncomingForm();
 

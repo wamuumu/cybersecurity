@@ -7,14 +7,6 @@ app.set('view engine', 'ejs');
 
 app.use('/static', express.static(path.join(__dirname, './static/'))); 
 
-app.use(
-	express.urlencoded({
-		extended: true,
-	})
-);
-
-app.use(express.json());
-
 app.use('/', require('./controllers/ui/index'))
 app.use('/api', require('./controllers/api/index'))
 

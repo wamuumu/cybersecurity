@@ -271,6 +271,7 @@ const survey = new Survey.Model(surveyModel);
 const categories = survey.pages.length - 1;
 
 async function surveyComplete(sender){
+    console.log("survey Complete")
     await saveSurveyResults(sender.data)
     displayResults(sender.data)
 }
@@ -282,13 +283,14 @@ async function saveSurveyResults(json) {
         "data": json
     }
 
-	await fetch("/api/survey/" + surveyID, {
+	await fetch("/api/survey", {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        headers: { 'Content-Type': 'application/json; charset=UTF-8' },
         body: JSON.stringify(data)
     })
     .then((resp) => { return resp.json() })
     .then(function(data) {
+        console.log(data)
     	if(data.status == 200){
     		console.log("Questionario GDPR completato")
             surveyID = data.surveyID;
@@ -430,22 +432,17 @@ function setChart(scores){
             'Limiti di archiviazione'
         ],
         datasets: [{
-            label: 'Valori medi categorie GDPR',
+            label: '',
             data: scores,
             fill: true,
-            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-            borderColor: 'rgb(255, 99, 132)',
-            pointBackgroundColor: 'rgb(255, 99, 132)',
+            backgroundColor: 'rgb(26, 179, 148, 0.2)',
+            borderColor: 'rgb(26, 179, 148)',
+            pointBackgroundColor: 'rgb(26, 179, 148)',
             pointBorderColor: '#fff',
             pointHoverBackgroundColor: '#fff',
-            pointHoverBorderColor: 'rgb(255, 99, 132)'
+            pointHoverBorderColor: 'rgb(26, 179, 148)'
         }] 
     }
-
-    Chart.defaults.global.defaultFontSize = 14;
-    Chart.Legend.prototype.afterFit = function() {
-        this.height = this.height + 50;
-    };
 
     const config = {
         type: 'radar',
@@ -460,16 +457,31 @@ function setChart(scores){
                     hitRadius: 7
                 }
             },
-            scale: {
-                pointLabels: {
-                    fontSize: 17
+            
+            scales: { 
+                r: {
+                    pointLabels: {
+                        font: {
+                            size: 17
+                        }
+                    },
+
+                    beginAtZero: true,
+                    max: 100,
+                    min: 0
                 }
             },
-            legend: {
-                labels: {
-                    fontSize: 22
+            
+            plugins: {
+                legend: {
+                    display: false,
+                    labels: {
+                        font: {
+                            size: 22
+                        }
+                    }
                 }
-            }
+            },
         }
     };  
 

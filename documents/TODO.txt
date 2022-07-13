@@ -23,7 +23,7 @@ X Modello questionario GDPR (frontend)
 X Strumenti GDPR (backend) (migliorare quello che c’è)
 X Ripristino questionario GDPR tramite ID
 X Header basilare (per comodità)
-X Aggiungere filtri CVE
+X Aggiungere filtri CVE 
 
 POSSIBILITA':
 X ID questionario generato dopo aver completato la compilazione e utilizzato in un form apposito per rivedere le risposte
