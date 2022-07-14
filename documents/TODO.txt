@@ -24,6 +24,7 @@ X Strumenti GDPR (backend) (migliorare quello che c’è)
 X Ripristino questionario GDPR tramite ID
 X Header basilare (per comodità)
 X Aggiungere filtri CVE 
+- Controllo errori (try catch, ogni possibilità per non far morire il server in ui, api, scripts) (external si presuppone che abbiano controlli)
 
 POSSIBILITA':
 X ID questionario generato dopo aver completato la compilazione e utilizzato in un form apposito per rivedere le risposte

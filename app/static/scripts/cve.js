@@ -205,7 +205,7 @@ function setControls(page){
 			control2.onclick = function(){
 				getCVE(2);
 			};
-		} else if(page >= 4 && page <= upperBound - 4){
+		} else if(page >= 4 && page < upperBound - 3){
 			control2.textContent = page;
 			control2.onclick = function(){
 				getCVE(page - 1)
@@ -226,7 +226,7 @@ function setControls(page){
 			control3.onclick = function(){
 				getCVE(3);
 			};
-		} else if(page >= 4 && page <= upperBound - 4){
+		} else if(page >= 4 && page < upperBound - 3){
 			control3.textContent = page + 1;
 			control3.classList.add('active')
 			control3.onclick = function(){
@@ -249,7 +249,7 @@ function setControls(page){
 			control4.onclick = function(){
 				getCVE(4);
 			};
-		} else if(page >= 4 && page <= upperBound - 4){
+		} else if(page >= 4 && page < upperBound - 3){
 			control4.textContent = page + 2;
 			control4.onclick = function(){
 				getCVE(page + 1);
@@ -270,7 +270,7 @@ function setControls(page){
 			control5.onclick = function(){
 				getCVE(upperBound - 1);
 			};
-		} else if(page > upperBound - 4){
+		} else if(page >= upperBound - 3){
 			control5.textContent = upperBound - 1;
 			control5.onclick = function(){
 				getCVE(upperBound - 2);
@@ -292,7 +292,7 @@ function setControls(page){
 	var currentControl;
 	if(page < 4 || upperBound <= 6)		
 		currentControl = document.getElementById('control'+ (page % 7))
-	else if (page >= 4 && page <= upperBound - 4)
+	else if (page >= 4 && page < upperBound - 3)
 		currentControl = control3
 	else
 		currentControl = document.getElementById('control'+ (7 - (upperBound - page) % 7))

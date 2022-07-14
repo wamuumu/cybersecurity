@@ -1,5 +1,5 @@
 /* ---- DGA ---- */
 
-#file-container, #domain-container{
+#file-container, #domain-container, #send_dga{
 	display: none;
 }

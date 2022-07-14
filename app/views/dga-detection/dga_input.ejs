@@ -10,7 +10,7 @@
 	<div class="body-container">
 		DGA Detection Tool - Input
 		<br><br>
-		<form enctype="multipart/form-data" action="/dga-detection/result" method="POST">
+		<form id="resultsForm" enctype="multipart/form-data" action="/dga-detection/result" method="POST">
 
 			<p>Scegli il tipo di analisi da effettuare</p>
 			<input type="radio" id="url" name="choice" onchange="showOption(this)" value="domain">
@@ -21,14 +21,14 @@
 			<br>
 			<div id="domain-container">
 				<label for="url">Dominio: </label>
-				<input type="text" name="domain" />
+				<input type="text" id="domain" name="domain" />
 			</div>
 			<div id="file-container">
 				<label for="filetoupload">File: </label>
-				<input type="file" name="filetoupload" accept=".cef,.txt" />
+				<input type="file" name="filetoupload" accept=".cef,.txt" onchange="readFile(this)" />
 			</div>
 			<br>
-			<button type="submit" id="send_dga" disabled>Invia</button>
+			<button type="submit" id="send_dga" onclick="resetDomain(event)" disabled>Invia</button>
 		</form>
 
 		<h3>Da notare: </h3>

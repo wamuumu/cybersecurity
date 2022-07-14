@@ -17,33 +17,47 @@ router.post('/result', async function(req, res) {
     var data = { status: 200 };
 
     const formdata = new FormData();
-    let form = new formidable.IncomingForm();
+    try {
+        let form = new formidable.IncomingForm();
 
-    form.parse(req, async function (error, fields, files) {
+        form.parse(req, async function (error, fields, files) {
 
-        let filePath = files.filetoupload.filepath;
-        let fileName = files.filetoupload.originalFilename;
-        let url = req.protocol + '://' + req.get('host') + '/api/dga-detection';
+            if(!isEmpty(files) || !isEmpty(fields)){
+                let filePath = files.filetoupload.filepath;
+                let fileName = files.filetoupload.originalFilename;
+                let url = req.protocol + '://' + req.get('host') + '/api/dga-detection';
 
-        if(fileName != ""){
-            const file = fs.createReadStream(filePath);
-            formdata.append('filetoupload', file, fileName);
-        } 
-        formdata.append('domain', fields.domain);
-        formdata.append('choice', fields.choice);
+                if(fileName != ""){
+                    const file = fs.createReadStream(filePath);
+                    formdata.append('filetoupload', file, fileName);
+                } 
+                formdata.append('domain', fields.domain);
+                formdata.append('choice', fields.choice);
 
-        await axios.post(url, formdata, {
-            maxContentLength: Infinity,
-            maxBodyLength: Infinity,
-            headers: {
-                'Content-Type': 'multipart/form-data; boundary=' + formdata.getBoundary()
+                await axios.post(url, formdata, {
+                    maxContentLength: Infinity,
+                    maxBodyLength: Infinity,
+                    headers: {
+                        'Content-Type': 'multipart/form-data; boundary=' + formdata.getBoundary()
+                    }
+                })
+                .then(res => data = res.data)
+                .catch(err => { data.status = err.response.data.status; data.text = err.response.data.message || "" })
+
+                res.render('dga-detection/dga_result', { data: data })
+            } else {
+                console.error("Missing files or fields");
+                res.redirect('/dga-detection');
             }
-        })
-        .then(res => data = res.data)
-        .catch(err => { data.status = err.response.data.status; data.text = err.response.data.message || "" })
-
-        res.render('dga-detection/dga_result', { data: data })
-    });
+        });
+    } catch(err){
+        console.error(err);
+        res.redirect('/dga-detection');
+    }
 })
+
+function isEmpty(obj) {
+    return Object.keys(obj).length === 0 || obj == undefined;
+}
 
 module.exports = router
