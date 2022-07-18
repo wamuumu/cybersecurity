@@ -10,47 +10,54 @@
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 	<title>Strumenti GDPR</title>
 </head>
-<body onload="setChart([<%= categoriesScore %>])">
-	<%- include('../common/header.ejs') %>
-	<div class="body-container">
-		<div class="questionnaire-container">
-			<div id="description">
-				<h3>Compila un nuovo questionario</h3>
-				<p>
-					Il servizio offre un sondaggio per la verifica della conformità di un’organizzazione al GDPR (General Data Protection Regulation) che ne disciplina il trattamento dei dati personali. Il GDPR si applica a tutte le attività di trattamento dei dati condotte da organizzazioni operanti all’interno della UE ma anche a quelle organizzazioni che risiedono al di fuori della UE e che forniscono prodotti e servizi a individui nella UE.
-					<br><br>
-					<b>N.B.</b> Una volta compilato un questionario, non è più possibile modificarlo. Pertanto presta attenzione alle risposte date!
-				</p>
-			</div>
+<% if(data.status != 200) { %>
+	<body onload="setError(<%= data.status %>, '<%= data.error %>')">
+		<%- include('../common/error.ejs') %>
+	</body>
+<% } else { %>
+	<body onload="setChart([<%= data.scores %>])">
+		<%- include('../common/header.ejs') %>
+		<div class="body-container">
+			<div class="questionnaire-container">
+				<div id="description">
+					<h3>Compila un nuovo questionario</h3>
+					<p>
+						Il servizio offre un sondaggio per la verifica della conformità di un’organizzazione al GDPR (General Data Protection Regulation) che ne disciplina il trattamento dei dati personali. Il GDPR si applica a tutte le attività di trattamento dei dati condotte da organizzazioni operanti all’interno della UE ma anche a quelle organizzazioni che risiedono al di fuori della UE e che forniscono prodotti e servizi a individui nella UE.
+						<br><br>
+						<b>N.B.</b> Una volta compilato un questionario, non è più possibile modificarlo. Pertanto presta attenzione alle risposte date!
+					</p>
+				</div>
 
-			<div id="surveyContainer"></div>
-			<div id="surveyResults"></div>
+				<div id="surveyContainer"></div>
+				<div id="surveyResults"></div>
 
-			<div class="separator">Oppure</div>
+				<div class="separator">Oppure</div>
 
-			<div id="restore">
-				<h3>Ripristina un questionario già compilato</h3>
-				<p>Una volta compilato un questionario, viene mostrato il suo identificativo univoco (ID) nella pagina dei risultati. Tramite
-				   tale ID è possibile recuperare il questionario per visionare le risposte date. Tuttavia, non è modificabile.
-				</p>
-				<label for="restoreID">ID questionario: </label>
-				<input type="text" id="restoreID" name="restoreID" />
-				<button type="button" onclick="restoreSurvey()">Ripristina</button>
-				<p>(e.g. 62c94aef9a224e776d9dbdb2 è un ID valido)</p>
-			</div>
+				<div id="restore">
+					<h3>Ripristina un questionario già compilato</h3>
+					<p>Una volta compilato un questionario, viene mostrato il suo identificativo univoco (ID) nella pagina dei risultati. Tramite
+					   tale ID è possibile recuperare il questionario per visionare le risposte date. Tuttavia, non è modificabile.
+					</p>
+					<label for="restoreID">ID questionario: </label>
+					<input type="text" id="restoreID" name="restoreID" />
+					<button type="button" onclick="restoreSurvey()">Ripristina</button>
+					<p>(e.g. 62c94aef9a224e776d9dbdb2 è un ID valido)</p>
+				</div>
 
-			<br><br>
+				<br><br>
 
-			<div class="separator"></div>
+				<div class="separator"></div>
 
-			<br><br>
-			<div id="chart">
-				<center>
-					<h2 class="chart-title">Valori medi (%)</h2>
-					<canvas id="gdpr-chart"></canvas>
-				</center>
+				<br><br>
+				<div id="chart">
+					<center>
+						<h2 class="chart-title">Valori medi (%)</h2>
+						<p># Questionari: <%= data.total %></p>
+						<canvas id="gdpr-chart"></canvas>
+					</center>
+				</div>
 			</div>
 		</div>
-	</div>
-</body>
+	</body>
+<% } %>
 </html>

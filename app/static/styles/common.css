@@ -33,7 +33,7 @@ html, body{
     background-color: #111;
 }
 
-/* --------------- */
+/* ----------- SEPARATOR --------- */
 
 
 .separator {
@@ -56,4 +56,24 @@ html, body{
 
 .separator:not(:empty)::after {
   margin-left: .25em;
+}
+
+/* -------------ALERT NOTIFICATION------------------ */
+
+.error-container{
+  width: 100%;
+  height: 90%;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.error{
+  text-align: center !important;
+}
+
+#errorStatus{
+  font-size: 50;
+  font-weight: bold;
+  color: #ff4d4d;
 }

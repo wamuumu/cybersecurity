@@ -2,7 +2,6 @@ const express = require('express');
 const path = require("path");
 const app = express();
 
-//Views Path
 app.set('views', path.join(require.main.path, './app/views/'));
 
 //Routing

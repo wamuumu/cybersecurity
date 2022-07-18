@@ -28,13 +28,16 @@ router.post('/', async function(req, res){
 
 			if(choice == "file" && fileName != ""){
 				let filePath = files.filetoupload.filepath;
+				console.log("File Detection")
 				python = spawn('python', [pyPath + '/dga_detector.py', '-f', filePath, '-p', pyPath]);
 			} else if (choice == "domain" && domain != ""){
+				console.log("Domain Detection")
 				python = spawn('python', [pyPath + '/dga_detector.py', '-d', domain, '-p', pyPath]);
 			} else {
 				status = 400;
 				console.error("Missing fields or files");
 				res.status(status).json({status: status, message: "Missing fields or files"});
+				return;
 			}			
 
 			if(status == 200){
@@ -45,34 +48,43 @@ router.post('/', async function(req, res){
 				python.on('exit', (code) => {
 					console.log('DGA Dection Complete');
 
-					let results = dataToSend.split("---")
+					try{
+						var results = dataToSend.split("---")
 
-					results.pop();
+						results.pop();
 
-					for (var i = 0; i < results.length; i++) {
-						if(isJsonString(results[i]))
-							results[i] = JSON.parse(results[i])
-						
-						if(results[i].exit_code != 0){
+						for (var i = 0; i < results.length; i++) {
+							if(isJsonString(results[i]))
+								results[i] = JSON.parse(results[i])
 							
-							switch(results[i].exit_code){
-								case 1:
-									results[i].error = "Tor domain skipped";
-									break;
+							if(results[i].exit_code != 0){
+								
+								switch(results[i].exit_code){
+									case 1:
+										results[i].error = "Tor domain skipped";
+										break;
 
-								case 2:
-									results[i].error = "Localized domain skipped";
-									break;
+									case 2:
+										results[i].error = "Localized domain skipped";
+										break;
 
-								case 3:
-									results[i].error = "Short domain skipped";
-									break;
+									case 3:
+										results[i].error = "Short domain skipped";
+										break;
+								}
 							}
-						}
-					}
 
-					res.status(200).json({status: 200, data: results});
-						
+							let str = results[i].domain.trim();
+
+							if(!str || str.length == 0)
+								results.splice(i, 1)
+						}
+
+						res.status(200).json({status: 200, data: results});
+					} catch(err){
+						console.error("Internal server error while parsing data")
+						res.status(500).json({status: 500, data: "Internal server error while parsing data"});
+					}
 				});
 			}
 		}

@@ -290,11 +290,13 @@ async function saveSurveyResults(json) {
     })
     .then((resp) => { return resp.json() })
     .then(function(data) {
-        console.log(data)
     	if(data.status == 200){
     		console.log("Questionario GDPR completato")
             surveyID = data.surveyID;
             console.log("SurveyID: " + surveyID);
+        } else {
+            alert('Compilazione fallita')
+            location.reload()
         }
     })
     .catch( error => console.error(error) );

@@ -14,21 +14,24 @@ def read_file(filename):
 
 
 def domain_check(domain):
-    # skip tor domains
+    
     global exit_code
-    if domain.endswith(".onion"):
+
+    # skip tor domains
+    if domain.endswith(".onion") and exit_code == 0:
         exit_code=1
-        return 
+    
     # we only interested in main domain name without subdomain and tld
     domain_without_sub = tldextract.extract(domain).domain
+    
     # skip localized domains
-    if domain_without_sub.startswith("xn-"):
+    if domain_without_sub.startswith("xn-") and exit_code == 0:
         exit_code=2
-        return
+
     # skip short domains
-    if len(domain_without_sub) < 6:
+    if len(domain_without_sub) < 6 and exit_code == 0:
         exit_code=3
-        return
+        
     domain_entropy = entropy(domain_without_sub)
     domain_consonants = count_consonants(domain_without_sub)
     domain_length = len(domain_without_sub)
@@ -45,6 +48,7 @@ def main():
     model_data = pickle.load(open(args.path + '/gib/gib_model.pki', 'rb'))
     model_mat = model_data['mat']
     threshold = model_data['thresh']
+
     if args.domain:
         if domain_check(args.domain):
             results = {"domain": "", "is_dga": "", "consonants": "", "entropy": "", "domain_length": "", "exit_code": 0}
@@ -59,6 +63,7 @@ def main():
                 results["is_dga"] = True
             else:
                 results['is_dga'] = False
+
         results["exit_code"] = exit_code
         print(json.dumps(results, indent=4))
         print("---")
@@ -84,6 +89,9 @@ def main():
             results["exit_code"] = exit_code
             print(json.dumps(results, indent=4))
             print("---")
+
+    else:
+        print('error')
 
     exit(exit_code)
 

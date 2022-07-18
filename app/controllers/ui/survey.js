@@ -9,28 +9,40 @@ const config = require('../../../config.js');
 router.get('/GDPR-tools', async function(req, res) {
     
     var surveys;
+    var error = {};
 
     let url = req.protocol + '://' + req.get('host') + '/api/survey?stype=gdpr';
 
     await axios.get(url)
-    .then(res => surveys = res.data)
-    .catch(err => console.log(err))
+    .then(res => { surveys = res.data })
+    .catch(err => { error['status'] = err.response.status; error['error'] = err.response.statusText })
 
     var tmp = [], results = []
     const categories = 6;
 
-    for (var i = 0; i < surveys.data.length; i++)
-        tmp.push(parseResults(JSON.parse(surveys.data[i].data), categories));
+    if(surveys){
+        for (var i = 0; i < surveys.data.length; i++)
+            tmp.push(parseResults(JSON.parse(surveys.data[i].data), categories));
 
-    for (var i = 0; i < categories; i++) {
-        let x = 0;
-        for (var j = 0; j < tmp.length; j++) {
-            x += parseFloat(tmp[j][i])
+        for (var i = 0; i < categories; i++) {
+            let x = 0;
+            for (var j = 0; j < tmp.length; j++) {
+                x += parseFloat(tmp[j][i])
+            }
+            results.push((x / tmp.length).toFixed(2));
         }
-        results.push((x / tmp.length).toFixed(2));
-    }
 
-    res.render('survey/GDPR_tools', { categoriesScore: results });
+        tmp = {}
+        tmp['status'] = 200
+        tmp['scores'] = results
+        tmp['total'] = surveys.data.length
+
+        res.render('survey/GDPR_tools', { data: tmp });
+
+    } else {
+        console.log(error);
+        res.render('survey/GDPR_tools', { data: error });
+    }
 })
 
 router.get('/GDPR-result', async function(req, res) {

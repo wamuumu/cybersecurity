@@ -114,13 +114,15 @@ async function getCVE(skipValue){
 	    })
 	    .then((resp) => { return resp.json() })
 	    .then(function(data){
-	    	result = data
-	    	totalEntries = data.data.total
-	    	upperBound = Math.ceil(totalEntries / limit); 
+	    	if(data.status == 200){
+		    	result = data
+		    	totalEntries = data.data.total
+		    	upperBound = Math.ceil(totalEntries / limit);
+		    }
 	    })
 	    .catch( error => console.error(error) );
 
-		if(result.status == 200){
+		if(!isEmpty(result)){
 			var tableBody = document.getElementById('cve-table').getElementsByTagName('tbody')[0];
 
 			removeRows(tableBody)
@@ -147,11 +149,17 @@ async function getCVE(skipValue){
 			document.getElementById('filterSearch').disabled = false;
 
 		} else {
-			alert("Errore")
+			alert('Errore: CVE al momento non disponibili')
+    		location.href="/";
 		}
 	} else {
 		console.error("Index out of bound")
+		alert('Limite raggiunto')
 	}
+}
+
+function isEmpty(obj) {
+	return Object.keys(obj).length === 0 || obj == undefined;
 }
 
 function setControls(page){

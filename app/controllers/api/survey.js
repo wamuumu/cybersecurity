@@ -13,7 +13,7 @@ router.get('/', async function(req, res){
     .then(surveys => { res.status(200).json({status: 200, data: surveys}) })
     .catch(err => {
     	console.error(err);
-        res.status(500).json({status: 500, message: "Internal server error:" + err})
+        res.status(500).json({status: 500, message: err.name + ": " + err.message})
     })
 
 });
@@ -33,7 +33,7 @@ router.get('/:id', async function(req, res){
     })
     .catch(err => {
     	console.error(err);
-        res.status(500).json({status: 500, message: "Internal server error:" + err})
+        res.status(500).json({status: 500, message: err.name + ": " + err.message})
     })
 });
 
@@ -59,8 +59,8 @@ router.post('/', async function(req, res){
 		        let survey = await new_survey.save()
 		        surveyID = survey._id.toString();
 		    }catch (err) {
-		        console.error('Error: ' + err);
-		    	res.status(500).json({status: 500, message: "Error: " + err})
+		        console.error("Internal server error: cannot add new survey");
+		    	res.status(500).json({status: 500, message: "Internal server error: cannot add new survey"})
 		    	return;
 		    }
 

@@ -56,23 +56,24 @@ router.post('/cve', async function(req, res){
 
 			var results = []
 
-			for (var i = 0; i < data.results.length; i++) {
-				let item = {}
-				item['id'] = data.results[i].id
-				item['cvss'] = data.results[i].cvss
-				item['cvss3'] = data.results[i].cvss3
-				item['summary'] = data.results[i].summary
-				item['updated'] = formatDate(data.results[i].Modified)
-				item['published'] = formatDate(data.results[i].Published)
+			if(status == 200){
 
-				results.push(item);
-		 	}
+				for (var i = 0; i < data.results.length; i++) {
+					let item = {}
+					item['id'] = data.results[i].id != undefined ? data.results[i].id : "-"
+					item['cvss'] = data.results[i].cvss != undefined ? data.results[i].cvss : "-"
+					item['cvss3'] = data.results[i].cvss3 != undefined ? data.results[i].cvss3 : "-"
+					item['summary'] = data.results[i].summary != undefined ? data.results[i].summary : "-"
+					item['updated'] = formatDate(data.results[i].Modified != undefined ? data.results[i].Modified : "")
+					item['published'] = formatDate(data.results[i].Published != undefined ? data.results[i].Published : "")
 
-		 	data.results = results;
+					results.push(item);
+			 	}
 
-			if(status == 200)
+			 	data.results = results;
+
 				res.status(status).json({status: status, data: data});
-			else
+			} else
 				res.status(status).json({status: status, message: text});
 		}
 	});
@@ -96,45 +97,46 @@ router.get('/cve/:id', async function(req, res){
 	.catch(err => { status = err.response.status; text = err.response.statusText });
 
 	var result = {}
-	result['id'] = req.params.id
-	result['summary'] = data.summary
-	result['updated'] = formatDate(data.Modified)
-	result['published'] = formatDate(data.Published)
-	result['references'] = data.references
-	result['vulnerable_configuration'] = []
-	result['capec'] = []
-	result['cwe'] = data.cwe
-	result['cvss'] = data.cvss
-	result['impactScore'] = data.impactScore
-	result['exploitabilityScore'] = data.exploitabilityScore
-	result['access'] = data.access
-	result['impact'] = data.impact
-	
-	if(data.cvss3 == undefined)
-		result['cvss3'] = "NONE"
-	else{
-		result['cvss3'] = data.cvss3
-		result['impactScore3'] = data.impactScore
-		result['exploitabilityScore3'] = data.exploitabilityScore
-		result['access3'] = data.exploitability3
-		result['impact3'] = data.impact3
-	}
 
-	if(data.vulnerable_configuration != undefined)
-		for (var i = 0; i < data.vulnerable_configuration.length; i++)
-			result['vulnerable_configuration'].push(data.vulnerable_configuration[i].title)
-
-	if(data.capec != undefined)
-		for (var i = 0; i < data.capec.length; i++){
-			var cap = {};
-			cap['name'] = data.capec[i].name
-			cap['description'] = data.capec[i].summary
-			result['capec'].push(cap)
+	if(status == 200){
+		result['id'] = req.params.id
+		result['summary'] = data.summary != undefined ? data.summary : "-"
+		result['updated'] = formatDate(data.Modified != undefined ? data.Modified : "-")
+		result['published'] = formatDate(data.Published != undefined ? data.Published : "-")
+		result['references'] = data.references != undefined ? data.references : "-"
+		result['vulnerable_configuration'] = []
+		result['capec'] = []
+		result['cwe'] = data.cwe != undefined ? data.cwe : "-"
+		result['cvss'] = data.cvss != undefined ? data.cvss : "-"
+		result['impactScore'] = data.impactScore != undefined ? data.impactScore : "-"
+		result['exploitabilityScore'] = data.exploitabilityScore != undefined ? data.exploitabilityScore : "-"
+		result['access'] = data.access != undefined ? data.access : "-"
+		result['impact'] = data.impact != undefined ? data.impact : "-"
+		
+		if(data.cvss3 == undefined)
+			result['cvss3'] = "NONE"
+		else{
+			result['cvss3'] = data.cvss3
+			result['impactScore3'] = data.impactScore3 != undefined ? data.impactScore3 : "-"
+			result['exploitabilityScore3'] = data.exploitabilityScore3 != undefined ? data.exploitabilityScore3 : "-"
+			result['access3'] = data.exploitability3 != undefined ? data.exploitability3 : "-"
+			result['impact3'] = data.impact3 != undefined ? data.impact3 : "-"
 		}
 
-	if(status == 200)
+		if(data.vulnerable_configuration != undefined)
+			for (var i = 0; i < data.vulnerable_configuration.length; i++)
+				result['vulnerable_configuration'].push(data.vulnerable_configuration[i].title)
+
+		if(data.capec != undefined)
+			for (var i = 0; i < data.capec.length; i++){
+				var cap = {};
+				cap['name'] = data.capec[i].name != undefined ? data.capec[i].name : "-"
+				cap['description'] = data.capec[i].summary != undefined ? data.capec[i].summary : "-"
+				result['capec'].push(cap)
+			}
+
 		res.status(status).json({status: status, data: result});
-	else
+	} else
 		res.status(status).json({status: status, message: text});
 });
 
@@ -160,9 +162,9 @@ router.get('/cwe', async function(req, res){
 	for (var i = 0; i < data.length; i++) {
 		if(data[i].status == "Stable"){
 			var result = {}
-			result['id'] = 'CWE-'+data[i].id
-			result['name'] = data[i].name
-			result['description'] = data[i].Description
+			result['id'] = data[i].id != undefined ? 'CWE-'+data[i].id : "-"
+			result['name'] = data[i].name != undefined ? data[i].name : "-"
+			result['description'] = data[i].Description != undefined ? data[i].Description : "-"
 			results.push(result)
 		}
  	}
@@ -251,11 +253,11 @@ router.get('/vendors/:name/:product', async function(req, res){
 
 	for (var i = 0; i < data.length; i++) {
 		results[i] = {}
-		results[i]['id'] = data[i].id
-		results[i]['cvss'] = data[i].cvss
-		results[i]['summary'] = data[i].summary
-		results[i]['updated'] = formatDate(data[i].Modified)
-		results[i]['published'] = formatDate(data[i].Published)
+		results[i]['id'] = data[i].id != undefined ? data[i].id : "-"
+		results[i]['cvss'] = data[i].cvss != undefined ? data[i].cvss : "-"
+		results[i]['summary'] = data[i].summary != undefined ? data[i].summary : "-"
+		results[i]['updated'] = formatDate(data[i].Modified != undefined ? data[i].Modified : "")
+		results[i]['published'] = formatDate(data[i].Published != undefined ? data[i].Published : "")
  	}
 
 	if(status == 200)
@@ -289,10 +291,13 @@ router.get('/info', async function(req, res){
 
 
 function formatDate(date){
-	var d = new Date(date)
-	var day = d.getDate() < 10 ? '0'+d.getDate() : d.getDate();
-	var month = d.getMonth()+1 < 10 ? '0'+(d.getMonth()+1) : d.getMonth()+1;
-	return day+"-"+month+"-"+d.getFullYear()
+	if(date != ""){
+		var d = new Date(date)
+		var day = d.getDate() < 10 ? '0'+d.getDate() : d.getDate();
+		var month = d.getMonth()+1 < 10 ? '0'+(d.getMonth()+1) : d.getMonth()+1;
+		return day+"-"+month+"-"+d.getFullYear()
+	}
+	return "-"
 }
 
 module.exports = router

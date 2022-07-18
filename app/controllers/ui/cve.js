@@ -6,14 +6,19 @@ const axios = require('axios');
 
 router.get('/cve', async function(req, res) {
 
-    var info;
+    var info = {}, error = {};
     let url = req.protocol + '://' + req.get('host') + '/api/cve-search/cve';
 
     await axios.post(url, {limit: 1})
-    .then(res => info = res.data.data.total)
-    .catch(err => console.log(err))
+    .then(res => { info['status'] = 200; info['total'] = res.data.data.total })
+    .catch(err => { error['status'] = err.response.status; error['error'] = err.response.statusText })
 
-    res.render('cve-search/cve', {total: info});
+    if(!isEmpty(info))
+        res.render('cve-search/cve', { data: info });
+    else{
+        console.error(error);
+        res.render('cve-search/cve', { data: error });
+    }
 })
 
 router.get('/cwe', async function(req, res) {
@@ -35,5 +40,9 @@ router.get('/vendors/:name', async function(req, res) {
 router.get('/vendors/:name/:product', async function(req, res) {
     res.render('cve-search/product_cve');
 })
+
+function isEmpty(obj) {
+    return Object.keys(obj).length === 0 || obj == undefined;
+}
 
 module.exports = router

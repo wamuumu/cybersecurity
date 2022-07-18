@@ -26,6 +26,10 @@ table th {
     height: 50px;
 }
 
+table td {
+    padding: 10px;
+}
+
 .cve-container{
     width: 95%;
     margin: 0 auto;
@@ -62,7 +66,7 @@ table th {
     padding: 0 35;
 }
 
-.loading p{
+.loading > p{
     margin-left: 10px;
     font-size: 1rem;
     font-weight: 400;
@@ -75,7 +79,7 @@ table th {
     width: 100%;
 }
 
-.controls-container div, p {
+.controls-container > div, .controls-container > p {
     display: inline-block;
 }
 
@@ -90,7 +94,7 @@ table th {
     display: table;
 }
 
-.controls button:not(:last-child) {
+.controls > button:not(:last-child) {
     border-right: none; /* Prevent double borders */
 }
 
@@ -104,12 +108,12 @@ table th {
     float: left;
 }
 
-.controls button:first-child{
+.controls > button:first-child{
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
 }
 
-.controls button:last-child{
+.controls > button:last-child{
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
 }
