@@ -4,7 +4,7 @@
   "description": "Studio e implementazione di assessment per la cybersecurity",
   "main": "index.js",
   "scripts": {
-    "install": "npm install package.json && pip -r requirements.txt",
+    "install": "npm install package.json && pip install -r requirements.txt",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
