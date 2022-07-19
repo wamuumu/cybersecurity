@@ -1,0 +1,18 @@
+<html>
+<head>
+	<%- include('common/imports.ejs') %>
+	<title>Login</title>
+</head>
+	<body>
+		<%- include('common/header.ejs') %>
+        <center>
+            <h2>Login</h2>
+            <input class="inputField" type="email" id="email" placeholder="Email" required><br>
+            <input class="inputField" type="password" id="password" placeholder="Password" required><br>
+			<br>
+            <button class="sendBtn" type="button" onclick="login()">Login</button>
+            <br><br>
+            <a href="/signin">Crea un nuovo utente</a>
+        </center>
+	</body>
+</html>

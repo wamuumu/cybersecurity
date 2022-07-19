@@ -17,20 +17,52 @@ html, body{
     background-color: #333;
 }
 
-.header > li {
-    float: left;
+.header > li, .header > div > li {
+  float: left;
 }
 
-.header > li a {
+.right {
+  float: right !important;
+}
+
+.header > li a, .header > div > li a {
     display: block;
     color: white;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
+    cursor: pointer;
 }
 
-.header > li a:hover {
+.header > li a:hover, .header > div > li a:hover {
     background-color: #111;
+}
+
+.inputField {
+  width: 250px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  resize: vertical;
+}
+
+.sendBtn{
+  background-color: rgb(75,191,182);
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  display: inline-block;
+  text-decoration: none;
+  cursor: pointer;
+  transition-duration: .3s;
+  margin: 20px 5px;
+}
+
+.crypted {
+  display: none;
 }
 
 /* ----------- SEPARATOR --------- */

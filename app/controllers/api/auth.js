@@ -79,7 +79,6 @@ router.post("/logout", auth, async function(req, res) {
         for(i = 0; i < req.session.tokens.length; i++){
             if(req.session.tokens[i].token == req.query.token){
                 let user = req.session.tokens.splice(i, 1);
-                console.log(user)
                 res.status(200).json({status: 200, message: "["+ user[0].email +"] logged out"});
                 return;
             }

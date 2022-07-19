@@ -48,7 +48,7 @@ router.post('/', async function(req, res) {
                 province: fields.province
             });
 
-            if(!new_user.name || !new_user.surname || !new_user.email || !new_user.password || !new_user.province){
+            if(!new_user.name || !new_user.surname || !new_user.email || !fields.password || !new_user.province){
                 res.status(400).json({status: 400, message: "Empty Fields Error: missing or invalid fields"})
                 return;
             }

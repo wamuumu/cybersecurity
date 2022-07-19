@@ -27,8 +27,10 @@ X Aggiungere filtri CVE
 X Controllo errori UI (al momento ok, da ricontrollare in futuro)
 X Controllo errori API
 X Controllo errori SCRIPTS
-- Middleware per controllo autenticazione
-- Gestione utenti
+X Middleware per controllo autenticazione
+X API Utenti
+X UI basilare registrazione, login
+- Gestione profilo
 
 POSSIBILITA':
 X ID questionario generato dopo aver completato la compilazione e utilizzato in un form apposito per rivedere le risposte
