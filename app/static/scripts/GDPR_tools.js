@@ -280,7 +280,8 @@ async function saveSurveyResults(json) {
 
     var data = {
         "type": "gdpr",
-        "data": json
+        "data": json,
+        "user": "pippo"
     }
 
 	await fetch("/api/survey", {

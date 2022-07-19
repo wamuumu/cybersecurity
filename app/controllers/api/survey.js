@@ -49,11 +49,14 @@ router.post('/', async function(req, res){
 		} else {
             
 			var surveyID = -1;
+			let date = new Date();
 
             try{
 		        var new_survey = new Survey({
 		            type: fields.type,
-		            data: JSON.stringify(fields.data)
+		            data: JSON.stringify(fields.data),
+		            user: fields.user,
+		            date: date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear()
 		        });
 
 		        let survey = await new_survey.save()
