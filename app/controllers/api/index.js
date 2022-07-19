@@ -7,4 +7,7 @@ app.use('/dga-detection', require('./dga'));
 app.use('/cve-search', require('./cve'));
 app.use('/survey', require('./survey'));
 
+app.use('/users', require('./user'));
+app.use('/', require('./auth'));
+
 module.exports = app
