@@ -1,6 +1,8 @@
 const express = require('express');
 const path = require("path")
 const app = express();
+const session = require('express-session');
+const parser = require('body-parser');
 const config = require('../config')
 
 app.set('view engine', 'ejs');
@@ -10,7 +12,15 @@ app.set('views', path.join(require.main.path, './app/views/'));
 
 app.use('/', require('./controllers/ui/index'))
 app.use('/api', require('./controllers/api/index'))
+app.use(parser.json())
 
+const oneDay = 1000 * 60 * 60 * 24;
+app.use(session({
+    secret: config.SESSION_KEY,
+    saveUninitialized: true,
+    cookie: { maxAge: oneDay },
+    resave: true
+}));
 
 // ERROR HANDLING
 
