@@ -8,15 +8,10 @@ router.get('/cve', async function(req, res) {
 
     let loggedUser = req.user != null ? true : false;
 
-    if(!loggedUser){
-        res.render('common/mustLogged', { loggedUser: loggedUser });
-        return;
-    }
-
     var info = {}, error = {};
     let url = req.protocol + '://' + req.get('host') + '/api/cve-search/cve';
 
-    await axios.post(url, {limit: 1})
+    await axios.post(url, { limit: 1 } )
     .then(res => { info['status'] = 200; info['total'] = res.data.data.total })
     .catch(err => { error['status'] = err.response.status; error['error'] = err.response.statusText })
 
