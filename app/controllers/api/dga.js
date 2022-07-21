@@ -6,8 +6,9 @@ const formidable = require('formidable');
 const fs = require('fs');
 const {spawn} = require('child_process');
 const path = require('path');
+const auth = require('../../middlewares/auth');
 
-router.post('/', async function(req, res){
+router.post('/', auth, async function(req, res){
 
 	let form = new formidable.IncomingForm();
 

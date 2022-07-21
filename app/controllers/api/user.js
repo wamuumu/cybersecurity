@@ -12,6 +12,7 @@ const router = express.Router();
 
 //ottiene tutti gli utenti
 router.get("/", auth, is_admin, async function(req, res) {
+    
     User.find({})
     .then(users => {
         for(i=0; i<users.length; i++){

@@ -1,16 +1,15 @@
 <ul class="header">
   <li><a href="/">Home</a></li>
-  <li><a href="/thesaurus">Thesaurus</a></li>
-  <li><a href="/ontology">Ontologia</a></li>
-  <div id="loginDiv">
+  <% if(!loggedUser) { %>
     <li class="right"><a href="/login">Login</a></li>
-  </div>
-  <div id="logoutDiv">
+  <% } else { %>
     <li><a href="/antimalware">Antimalware</a></li>
     <li><a href="/dga-detection">DGA Detection</a></li>
     <li><a href="/cve-search/cve">CVE</a></li>
     <li><a href="/survey/GDPR-tools">Strumenti GDPR</a></li>
     <li class="right"><a onclick="logout()">Logout</a></li>
-    <li class="right"><a href="/">Profilo</a></li>
-  </div>
+    <!--<li class="right"><a href="/">Profilo</a></li>-->
+  <% } %>
+  <li><a href="/thesaurus">Thesaurus</a></li>
+  <li><a href="/ontology">Ontologia</a></li>
 </ul>

@@ -4,9 +4,10 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 const formidable = require('formidable');
+const auth = require('../../middlewares/auth');
 
 //GET all CVE
-router.post('/cve', async function(req, res){
+router.post('/cve', auth, async function(req, res){
 
 	let form = new formidable.IncomingForm();
 
@@ -80,6 +81,7 @@ router.post('/cve', async function(req, res){
 });
 
 //GET specific CVE by ID
+/*
 router.get('/cve/:id', async function(req, res){
 
 	var data;
@@ -287,7 +289,7 @@ router.get('/info', async function(req, res){
 	else
 		res.status(status).json({status: status, message: text});
 });
-
+*/
 
 
 function formatDate(date){

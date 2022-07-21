@@ -30,11 +30,13 @@ X Controllo errori SCRIPTS
 X Middleware per controllo autenticazione
 X API Utenti
 X UI basilare registrazione, login
+X Redirect autenticazione
+X Render pagina "Non puoi usare il servizio fino a che non sei loggato"
 - Gestione profilo
 
 POSSIBILITA':
 X ID questionario generato dopo aver completato la compilazione e utilizzato in un form apposito per rivedere le risposte
-- Creazione account e nella sezione profilo, mostrare gli ID dei questionari <--- MIGLIORE (Questionari solo se loggati)
+- Nella sezione profilo, mostrare gli ID dei questionari <--- MIGLIORE (Questionari solo se loggati)
 
 DUBBI:
 ~ Ontologia facendo riferimento all’ontologia nazionale WebVOWL(sistema visualizzazione ontologie) https://github.com/VisualDataWeb/WebVOWL.git (va bene?)
@@ -50,4 +52,3 @@ SELF ASSESSMENT: NON SI SANNO COME SI CALCOLANO I VALORI DEL RISCHIO
 
 SUGGERIMENTI:
 - Implementazione servizio di Have I Been Pawned per vedere se email o telefono sono presenti in data breaches
-

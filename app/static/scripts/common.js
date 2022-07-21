@@ -1,39 +1,3 @@
-$( document ).ready(function() {
-    setHeader();
-	getManager();
-});
-
-function setHeader(){
-	var loginDiv = document.getElementById('loginDiv');
-	var logoutDiv = document.getElementById('logoutDiv');
-
-	let cookie = getCookie("userCookie");
-
-	if(cookie != null){
-		loginDiv.style.display = "none"
-		logoutDiv.style.display = "block"
-	} else {
-		loginDiv.style.display = "block"
-		logoutDiv.style.display = "none"
-	}
-}
-
-function getManager(){
-	let cookie = getCookie("userCookie");
-	let path = window.location.pathname.replace("/", "");
-
-	if(["login", "signin"].includes(path) && cookie != null){
-		//alert("[" + cookie.email + "] già autenticato")
-		window.history.back()
-	} else if(["survey/GDPR-tools", "antimalware", "dga-detection", "cve-search/cve"].includes(path)){
-        //alert("Il servizio è disponibile solo per gli utenti autenticati")
-        if(cookie == null)
-            location.href = "/login";
-        else
-            document.getElementsByClassName('crypted')[0].classList.remove('crypted');
-    }
-}
-
 function setError(status, text){
 	document.getElementById('errorStatus').innerHTML = status;
 	document.getElementById('errorText').innerHTML = "<strong>Errore: </strong>" + text;
@@ -45,23 +9,38 @@ function login(em, pass){
     let email = em == undefined ? document.getElementById('email').value : em;
     let password = pass == undefined ? document.getElementById('password').value : pass;
 
+    var details = {
+        'email': email,
+        'password': password
+    };
+
+    var formBody = [];
+    for (var property in details) {
+      var encodedKey = encodeURIComponent(property);
+      var encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+
     fetch('/api/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email, password: password })
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: formBody
     })
-    .then((resp) => {status = resp.status; return resp.json() })
-    .then(function(data) {
-
-        if(status == 200){
-            setCookie("userCookie", { token: data.token, email: data.email, name: data.name, surname: data.surname, id: data.id, role: data.role, organization: data.organization, province: data.province})
-            location.href = "/";
-        }
+    .then((resp) => { 
+        status = resp.status;
+        if(status == 200) 
+            return resp.json();
         else{
             alert("Credenziali errate")
+            return;
         }
-
-        return;
+    })
+    .then(function(data) {
+        if(data != undefined){
+            setCookie("userCookie", { email: data.email, name: data.name, surname: data.surname, id: data.id, role: data.role, organization: data.organization, province: data.province})
+            location.href = "/";
+        }
     })
     .catch( error => console.error(error) )
 }
@@ -80,7 +59,10 @@ function signin(){
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: name, surname: surname, email: email, password: password, organization: organization, province: province })
     })
-    .then((resp) => {status = resp.status; return resp.json() })
+    .then((resp) => {
+        status = resp.status; 
+        return resp.json() 
+    })
     .then(function(data) {
 
         if(status == 200){
@@ -100,11 +82,13 @@ function logout(){
     var status;
     if(getCookie("userCookie") == null) return;
 
-    fetch('/api/logout?token='+getCookie("userCookie").token, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+    fetch('/api/logout', {
+        method: 'POST'
     })
-    .then((resp) => {status = resp.status; return resp.json() })
+    .then((resp) => {
+        status = resp.status; 
+        return resp.json() 
+    })
     .then(function(data) {
 
         if(status == 200){

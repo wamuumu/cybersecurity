@@ -1,7 +1,9 @@
 module.exports = function(req, res, next) {
-    if(req.user.role != "admin" && (!req.logged || req.permission != req.params.id)){
-        res.status(401).json({status: 401, message: "Unauthorized"});
-        return;
+    if(req.user){
+        if(req.user.role == "user"){
+            next()
+            return;
+        }
     }
-    next()
+    res.status(401).json({status: 401, message: "Unauthorized"});
 }

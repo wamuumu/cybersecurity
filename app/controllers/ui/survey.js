@@ -3,26 +3,32 @@ var router = express.Router();
 const axios = require('axios');
 const Survey = require('../../models/survey')
 const config = require('../../../config.js');
+const formidable = require('formidable');
 
 //Routing for pages
 
 router.get('/GDPR-tools', async function(req, res) {
-    
+
+    let loggedUser = req.user != null ? true : false;
+
+    if(!loggedUser){
+        res.render('common/mustLogged', { loggedUser: loggedUser });
+        return;
+    }
+
     var surveys;
     var error = {};
 
-    let url = req.protocol + '://' + req.get('host') + '/api/survey?stype=gdpr';
-
-    await axios.get(url)
-    .then(res => { surveys = res.data })
+    await Survey.find({ type: "gdpr" })
+    .then(results => { surveys = results })
     .catch(err => { error['status'] = err.response.status; error['error'] = err.response.statusText })
 
     var tmp = [], results = []
     const categories = 6;
 
     if(surveys){
-        for (var i = 0; i < surveys.data.length; i++)
-            tmp.push(parseResults(JSON.parse(surveys.data[i].data), categories));
+        for (var i = 0; i < surveys.length; i++)
+            tmp.push(parseResults(JSON.parse(surveys[i].data), categories));
 
         for (var i = 0; i < categories; i++) {
             let x = 0;
@@ -35,18 +41,26 @@ router.get('/GDPR-tools', async function(req, res) {
         tmp = {}
         tmp['status'] = 200
         tmp['scores'] = results
-        tmp['total'] = surveys.data.length
+        tmp['total'] = surveys.length
 
-        res.render('survey/GDPR_tools', { data: tmp });
+        res.render('survey/GDPR_tools', { data: tmp, loggedUser: loggedUser });
 
     } else {
         console.log(error);
-        res.render('survey/GDPR_tools', { data: error });
+        res.render('survey/GDPR_tools', { data: error, loggedUser: loggedUser  });
     }
 })
 
-router.get('/GDPR-result', async function(req, res) {
-    res.sendFile(config.VIEWS + '/survey/gdpr_result.html');
+router.post('/GDPR-result', async function(req, res) {
+
+    let loggedUser = req.user != null ? true : false;
+
+    if(loggedUser){
+        res.sendFile(config.VIEWS + '/survey/GDPR_result.ejs');
+        return;
+    }
+
+    res.render('common/mustLogged', { loggedUser: loggedUser });
 })
 
 function parseResults(json, categories){

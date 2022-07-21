@@ -1,5 +1,5 @@
 module.exports = function(req, res, next) {
-    if(req.logged){
+    if(req.user){
         if(req.user.role == "admin"){
             next()
             return;

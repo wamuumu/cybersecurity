@@ -280,8 +280,7 @@ async function saveSurveyResults(json) {
 
     var data = {
         "type": "gdpr",
-        "data": json,
-        "user": "pippo"
+        "data": json
     }
 
 	await fetch("/api/survey", {
@@ -311,7 +310,8 @@ async function displayResults(json){
     var mean = 0;
 
     await fetch("/survey/GDPR-result", {
-        method: 'GET'
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json; charset=UTF-8' }
     })
     .then(function(response) { return response.text() })
     .then(function(html_results) {
@@ -425,6 +425,7 @@ $(function() {
 });
 
 function setChart(scores){
+
     const data = {
         labels: [
             'Responsabilità e Conformità',

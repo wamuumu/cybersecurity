@@ -6,6 +6,13 @@ const axios = require('axios');
 
 router.get('/cve', async function(req, res) {
 
+    let loggedUser = req.user != null ? true : false;
+
+    if(!loggedUser){
+        res.render('common/mustLogged', { loggedUser: loggedUser });
+        return;
+    }
+
     var info = {}, error = {};
     let url = req.protocol + '://' + req.get('host') + '/api/cve-search/cve';
 
@@ -14,14 +21,14 @@ router.get('/cve', async function(req, res) {
     .catch(err => { error['status'] = err.response.status; error['error'] = err.response.statusText })
 
     if(!isEmpty(info))
-        res.render('cve-search/cve', { data: info });
+        res.render('cve-search/cve', { data: info, loggedUser: loggedUser });
     else{
         console.error(error);
-        res.render('cve-search/cve', { data: error });
+        res.render('cve-search/cve', { data: error, loggedUser: loggedUser });
     }
 })
 
-router.get('/cwe', async function(req, res) {
+/*router.get('/cwe', async function(req, res) {
     res.render('cve-search/cwe');
 })
 
@@ -40,6 +47,7 @@ router.get('/vendors/:name', async function(req, res) {
 router.get('/vendors/:name/:product', async function(req, res) {
     res.render('cve-search/product_cve');
 })
+*/
 
 function isEmpty(obj) {
     return Object.keys(obj).length === 0 || obj == undefined;

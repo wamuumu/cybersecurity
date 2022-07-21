@@ -4,8 +4,10 @@ const express = require('express');
 const router = express.Router();
 const formidable = require('formidable');
 const Survey = require("../../models/survey")
+const auth = require('../../middlewares/auth');
+const is_admin = require('../../middlewares/is_admin');
 
-router.get('/', async function(req, res){
+router.get('/', auth, is_admin, async function(req, res){
 
 	let typeFilter = req.query.stype != undefined ? { type: req.query.stype } : {}
 
@@ -18,7 +20,7 @@ router.get('/', async function(req, res){
 
 });
 
-router.get('/:id', async function(req, res){
+router.get('/:id', auth, async function(req, res){
 
 	Survey.findOne({_id: req.params.id})
     .then(survey => {
@@ -28,6 +30,12 @@ router.get('/:id', async function(req, res){
             if(survey.toObject)
                 survey = survey.toObject();
             if("__v" in survey) delete survey.__v;
+
+            if(req.user.id != survey.user){
+            	res.status(401).json({status: 401, message: "Unauthorized"})
+            	return;
+            }
+
             res.status(200).json({status: 200, survey: survey})
         }
     })
@@ -38,7 +46,7 @@ router.get('/:id', async function(req, res){
 });
 
 
-router.post('/', async function(req, res){
+router.post('/', auth, async function(req, res){
 
 	let form = new formidable.IncomingForm();
 
@@ -55,7 +63,7 @@ router.post('/', async function(req, res){
 		        var new_survey = new Survey({
 		            type: fields.type,
 		            data: JSON.stringify(fields.data),
-		            user: fields.user,
+		            user: req.user.id,
 		            date: date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear()
 		        });
 
