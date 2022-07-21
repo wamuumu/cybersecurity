@@ -12,7 +12,7 @@ router.get('/GDPR-tools', async function(req, res) {
     let loggedUser = req.user != null ? true : false;
 
     if(!loggedUser){
-        res.render('common/mustLogged', { loggedUser: loggedUser });
+        res.render('common/error', { status:  401, message: "You need to login to access this service", loggedUser: loggedUser });
         return;
     }
 
@@ -60,7 +60,7 @@ router.post('/GDPR-result', async function(req, res) {
         return;
     }
 
-    res.render('common/mustLogged', { loggedUser: loggedUser });
+    res.render('common/error', { status:  401, message: "You need to login to access this service", loggedUser: loggedUser });
 })
 
 function parseResults(json, categories){

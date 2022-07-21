@@ -4,6 +4,7 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 const formidable = require('formidable');
+const auth = require('../../middlewares/auth');
 
 //GET all CVE
 router.post('/cve', async function(req, res){
