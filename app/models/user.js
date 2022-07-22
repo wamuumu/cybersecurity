@@ -6,14 +6,21 @@ var Schema = mongoose.Schema;
 const User = new Schema({
   name: String,
   surname: String,
-  email: String,
+  email: {
+    type: String,
+    unique: true
+  },
   password: String,
-  role: String,
+  role: {
+    type: String,
+    default: "user"
+  },
   organization: String,
-  province: String
+  province: String,
+  apikey: String
 })
 
-User.plugin(passportLocalMongoose);
+User.plugin(passportLocalMongoose, {usernameField: "email"});
 
 // set up a mongoose model
 module.exports = mongoose.model('User', User, 'user');

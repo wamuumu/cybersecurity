@@ -8,11 +8,9 @@ const fs = require('fs');
 //Routing for pages
 
 router.get('/', async function(req, res) {
-
-    let loggedUser = req.user != null ? true : false;
     
-    if(!loggedUser){
-        res.render('common/error', { status:  401, message: "You need to login to access this service", loggedUser: loggedUser });
+    if(!req.isAuthenticated()){
+        res.render('common/error', { status:  401, message: "You need to login to access this service", loggedUser: req.isAuthenticated() });
         return;
     }
 
@@ -20,15 +18,13 @@ router.get('/', async function(req, res) {
     var error = status == 400 ? "Pick a mode before making request" : "Missing files or fields";
 
     var data = { status: status, error: error }
-    res.render('dga-detection/dga_input', { data: data, loggedUser: loggedUser });
+    res.render('dga-detection/dga_input', { data: data, loggedUser: req.isAuthenticated() });
 })
 
 router.post('/result', async function(req, res) {
 
-    let loggedUser = req.user != null ? true : false;
-
-    if(!loggedUser){
-        res.render('common/error', { status:  401, message: "You need to login to access this service", loggedUser: loggedUser });
+    if(!req.isAuthenticated()){
+        res.render('common/error', { status:  401, message: "You need to login to access this service", loggedUser: req.isAuthenticated() });
         return;
     }
 
@@ -63,13 +59,14 @@ router.post('/result', async function(req, res) {
                 maxContentLength: Infinity,
                 maxBodyLength: Infinity,
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'multipart/form-data',
+                    "Cookie": "connect.sid=" + req.cookies["connect.sid"] +";"
                 }
             })
             .then(res => data = res.data)
             .catch(err => { data['status'] = err.response.status; data['error'] = err.response.statusText })
 
-            res.render('dga-detection/dga_result', { data: data, loggedUser: loggedUser })
+            res.render('dga-detection/dga_result', { data: data, loggedUser: req.isAuthenticated() })
 
         } else {
             res.redirect('/dga-detection?status=404')

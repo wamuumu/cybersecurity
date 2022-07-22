@@ -6,18 +6,8 @@ function setCommon(entries) {
 	totalEntries = entries; 
 	allControls = document.getElementById('controls').children;
 
-	var toggle = true;
-
 	$("#toggleFilters").click(function() {
-		$("#filters").slideToggle(250, function() {
-			/*if(toggle){
-				$("#toggleFilters").html('Nascondi filtri');
-				toggle = false;
-			} else {
-				$("#toggleFilters").html('Mostra filtri');
-				toggle = true;
-			}*/
-		});
+		$("#filters").slideToggle(250);
 	});
 }
 

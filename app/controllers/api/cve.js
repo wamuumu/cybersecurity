@@ -7,8 +7,8 @@ const formidable = require('formidable');
 const auth = require('../../middlewares/auth');
 
 //GET all CVE
-router.post('/cve', async function(req, res){
-
+router.post('/cve', auth, async function(req, res){
+	
 	let form = new formidable.IncomingForm();
 
 	form.parse(req, async function (error, fields, files) {

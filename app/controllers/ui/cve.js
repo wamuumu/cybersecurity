@@ -6,20 +6,27 @@ const axios = require('axios');
 
 router.get('/cve', async function(req, res) {
 
-    let loggedUser = req.user != null ? true : false;
+    if(!req.isAuthenticated()){
+        res.render('common/error', { status:  401, message: "You need to login to access this service", loggedUser: req.isAuthenticated() });
+        return;
+    }
 
     var info = {}, error = {};
     let url = req.protocol + '://' + req.get('host') + '/api/cve-search/cve';
 
-    await axios.post(url, { limit: 1 })
+    await axios.post(url, {limit: 1}, { 
+        headers: { 
+            "Cookie": "connect.sid=" + req.cookies["connect.sid"] +";" 
+        } 
+    })
     .then(res => { info['status'] = 200; info['total'] = res.data.data.total })
     .catch(err => { error['status'] = err.response.status; error['error'] = err.response.statusText })
 
     if(!isEmpty(info))
-        res.render('cve-search/cve', { data: info, loggedUser: loggedUser });
+        res.render('cve-search/cve', { data: info, loggedUser: req.isAuthenticated() });
     else{
         console.error(error);
-        res.render('cve-search/cve', { data: error, loggedUser: loggedUser });
+        res.render('cve-search/cve', { data: error, loggedUser: req.isAuthenticated() });
     }
 })
 

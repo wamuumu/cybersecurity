@@ -4,6 +4,7 @@ const User = require("../../models/user")
 const md5 = require("md5")
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy;
+const config = require('../../../config')
 
 passport.use('local', new LocalStrategy({
         usernameField: 'email',
@@ -29,8 +30,10 @@ passport.deserializeUser(function(user, done) {
         if(err || !result || result.length == 0)
             return done(null, false, { status: 404, message: 'User not found.' });
         else{
+
             result.password = undefined;
             result.__v = undefined;
+
             return done(null, result);
         }
     })
@@ -54,7 +57,8 @@ router.post('/login', passport.authenticate('local'), function(req, res, next) {
             email: user.email,
             role: user.role,
             organization: user.organization,
-            province: user.province
+            province: user.province,
+            apikey: user.apikey
         });
 
     })(req, res, next);

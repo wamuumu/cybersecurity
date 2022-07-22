@@ -3,8 +3,8 @@ const md5 = require("md5")
 const formidable = require('formidable');
 const config = require('../../../config')
 const auth = require("../../middlewares/auth")
-const is_user = require("../../middlewares/is_user")
 const is_admin = require("../../middlewares/is_admin")
+const { generateApiKey } = require('generate-api-key');
 const User = require("../../models/user")
 const Survey = require("../../models/survey")
 const router = express.Router();
@@ -19,7 +19,8 @@ router.get("/", auth, is_admin, async function(req, res) {
             if(users[i].toObject)
                 users[i] = users[i].toObject();
             users[i].password = undefined
-            if("__v" in users[i]) users[i].__v = undefined;
+            users[i].__v = undefined;
+            users[i].apikey = undefined
         }
         res.status(200).json({ total: users.length, users: users })
     })
@@ -44,15 +45,20 @@ router.post('/', async function(req, res) {
                 surname: fields.surname,
                 email: fields.email,
                 password: md5(fields.password),
-                role: "user",
                 organization: fields.organization || "",
                 province: fields.province
+            });
+
+            new_user.apikey = generateApiKey({
+                method: 'uuidv5',
+                name: new_user._id + "_" + new_user.email,
+                namespace: '1dfdf2c1-7365-4625-b7d9-d9db5210f18d'
             });
 
             if(!new_user.name || !new_user.surname || !new_user.email || !fields.password || !new_user.province){
                 res.status(400).json({status: 400, message: "Empty Fields Error: missing or invalid fields"})
                 return;
-            }
+            }  
 
             User.findOne({email: new_user.email})
             .then(result => {
@@ -60,6 +66,7 @@ router.post('/', async function(req, res) {
                     //nessun utente, quindi registra
                     new_user.save(function (err, user) {
                         if (err) {
+                            console.log(err.name + " - " + err.message)
                             res.status(500).json({status: 500, message: err.name + ": " + err.message})
                         } else {
                           console.log(user.email + " saved to user collection.");
@@ -77,6 +84,7 @@ router.post('/', async function(req, res) {
     });
 });
 
+/*
 //ottiene utente con un certo id
 router.get("/:id", auth, is_user, async function(req, res) {
 
@@ -151,14 +159,6 @@ router.delete("/:id", auth, is_user, async function(req, res) {
                 else {
                     console.log("["+ deletedUser.email +"] deleted");
 
-                    /*if(req.user.id == result._id)
-                        for(i = 0; i < req.session.tokens.length; i++){
-                            if(req.session.tokens[i].token == req.query.token){
-                                req.session.tokens.splice(i, 1);
-                                break;
-                            }
-                        }*/
-
                     res.status(200).json({status: 200, message: "["+ deletedUser.email +"] deleted successfully"});
                 }
             });
@@ -190,5 +190,6 @@ router.get("/:id/surveys", auth, is_user, async function(req, res) {
         }
     })
 });
+*/
 
 module.exports = router

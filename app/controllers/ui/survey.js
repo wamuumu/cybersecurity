@@ -9,19 +9,24 @@ const formidable = require('formidable');
 
 router.get('/GDPR-tools', async function(req, res) {
 
-    let loggedUser = req.user != null ? true : false;
-
-    if(!loggedUser){
-        res.render('common/error', { status:  401, message: "You need to login to access this service", loggedUser: loggedUser });
+    if(!req.isAuthenticated()){
+        res.render('common/error', { status:  401, message: "You need to login to access this service", loggedUser: req.isAuthenticated() });
         return;
     }
 
     var surveys;
     var error = {};
 
-    await Survey.find({ type: "gdpr" })
-    .then(results => { surveys = results })
-    .catch(err => { error['status'] = err.response.status; error['error'] = err.response.statusText })
+    let url = req.protocol + '://' + req.get('host') + '/api/survey?stype=gdpr';
+
+    await axios.get(url, { 
+        headers: {
+            "Cookie": "connect.sid=" + req.cookies["connect.sid"] +";"
+        } 
+    })
+    .then(res => { surveys = res.data.data })
+    .catch(err => { error["status"] = err.response.status; error['error'] = err.response.statusText })
+
 
     var tmp = [], results = []
     const categories = 6;
@@ -43,24 +48,22 @@ router.get('/GDPR-tools', async function(req, res) {
         tmp['scores'] = results
         tmp['total'] = surveys.length
 
-        res.render('survey/GDPR_tools', { data: tmp, loggedUser: loggedUser });
+        res.render('survey/GDPR_tools', { data: tmp, loggedUser: req.isAuthenticated() });
 
     } else {
         console.log(error);
-        res.render('survey/GDPR_tools', { data: error, loggedUser: loggedUser  });
+        res.render('survey/GDPR_tools', { data: error, loggedUser: req.isAuthenticated()  });
     }
 })
 
 router.post('/GDPR-result', async function(req, res) {
 
-    let loggedUser = req.user != null ? true : false;
-
-    if(loggedUser){
+    if(req.isAuthenticated()){
         res.sendFile(config.VIEWS + '/survey/GDPR_result.ejs');
         return;
     }
 
-    res.render('common/error', { status:  401, message: "You need to login to access this service", loggedUser: loggedUser });
+    res.render('common/error', { status:  401, message: "You need to login to access this service", loggedUser: req.isAuthenticated() });
 })
 
 function parseResults(json, categories){

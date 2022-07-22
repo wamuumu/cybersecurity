@@ -7,7 +7,7 @@ const Survey = require("../../models/survey")
 const auth = require('../../middlewares/auth');
 const is_admin = require('../../middlewares/is_admin');
 
-router.get('/', auth, is_admin, async function(req, res){
+router.get('/', auth, async function(req, res){
 
 	let typeFilter = req.query.stype != undefined ? { type: req.query.stype } : {}
 

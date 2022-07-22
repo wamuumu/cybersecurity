@@ -30,19 +30,18 @@ X Controllo errori SCRIPTS
 X Middleware per controllo autenticazione
 X API Utenti
 X UI basilare registrazione, login
-X Redirect autenticazione
-X Render pagina "Non puoi usare il servizio fino a che non sei loggato"
+- Sistema sicurezza e autenticazione
+- API KEY in header???
 - Gestione profilo
+- Google login
+- Captcha
+- CVE dettaglio con ID
+- Trovare altri algoritmi per rilevamento DGA e implementarli
+- Algoritmo calcolo rischio cibernetico per self assessment (cerca online)
+- Have I Been Pawned
 
-POSSIBILITA':
-X ID questionario generato dopo aver completato la compilazione e utilizzato in un form apposito per rivedere le risposte
-- Nella sezione profilo, mostrare gli ID dei questionari <--- MIGLIORE (Questionari solo se loggati)
-
-DUBBI:
-~ Ontologia facendo riferimento all’ontologia nazionale WebVOWL(sistema visualizzazione ontologie) https://github.com/VisualDataWeb/WebVOWL.git (va bene?)
-~ Report vulnerabilità cve_id, cwe, vendors, products ... (frontend) (bisogna farlo?)
+IN FUTURO:
 ~ Rilevamento DGA - database pubblico è diventato a pagamento, serve richiedere una licenza https://osint.bambenekconsulting.com/feeds/dga-feed.txt (si fa?)
-~ Virus Total Api key premium (si richiede? o si tiene quella gratuita?)
 ~ Fake followers e fake review (quando avrò accesso al servizio?)
 
 SELF ASSESSMENT: NON SI SANNO COME SI CALCOLANO I VALORI DEL RISCHIO
@@ -50,5 +49,3 @@ SELF ASSESSMENT: NON SI SANNO COME SI CALCOLANO I VALORI DEL RISCHIO
 - Strumenti self assessment (backend) (migliorare quello che c’è)
 - Ripristino questionario self assessment tramite ID
 
-SUGGERIMENTI:
-- Implementazione servizio di Have I Been Pawned per vedere se email o telefono sono presenti in data breaches

@@ -38,7 +38,7 @@ function login(em, pass){
     })
     .then(function(data) {
         if(data != undefined){
-            setCookie("userCookie", { email: data.email, name: data.name, surname: data.surname, id: data.id, role: data.role, organization: data.organization, province: data.province})
+            //setCookie("userCookie", { email: data.email, name: data.name, surname: data.surname, id: data.id, role: data.role, organization: data.organization, province: data.province})
             location.href = "/";
         }
     })
@@ -80,7 +80,7 @@ function signin(){
 
 function logout(){
     var status;
-    if(getCookie("userCookie") == null) return;
+    //if(getCookie("userCookie") == null) return;
 
     fetch('/api/logout', {
         method: 'POST'
@@ -92,7 +92,7 @@ function logout(){
     .then(function(data) {
 
         if(status == 200){
-            deleteCookie("userCookie")
+            //deleteCookie("userCookie")
             location.href = "/login";
         }else{
             alert("Errore di logout. Riprova...");
@@ -102,7 +102,7 @@ function logout(){
     .catch( error => console.error(error) )
 }
 
-function setCookie(cname, cvalue) {
+/*function setCookie(cname, cvalue) {
     const d = new Date();
     d.setTime(d.getTime() + 24*60*60*1000); //one day
     let expires = "expires="+ d.toUTCString();
@@ -126,4 +126,4 @@ function getCookie(cname) {
 
 function deleteCookie(cname){
     document.cookie = cname + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-}
+}*/
