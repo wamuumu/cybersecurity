@@ -31,7 +31,7 @@ X Middleware per controllo autenticazione
 X API Utenti
 X UI basilare registrazione, login
 - Sistema sicurezza e autenticazione
-- API KEY in header???
+X API KEY in header e query string
 - Gestione profilo
 - Google login
 - Captcha

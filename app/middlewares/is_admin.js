@@ -1,8 +1,9 @@
 const User = require("../models/user")
 
 async function hasAPIKEY(req){
-    if(req.query.apikey){
-        let user = await User.findOne({ apikey: req.query.apikey })
+    if(req.query.apikey || req.headers.apikey){
+        let key = req.query.apikey || req.headers.apikey;
+        let user = await User.findOne({ apikey: key })
         if(!user) return false
         else if(user.role == "admin") return true;
     }   

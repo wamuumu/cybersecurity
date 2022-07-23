@@ -36,9 +36,14 @@ router.post('/', async function(req, res) {
 
     form.parse(req, async function (error, fields, files) {
         if(error){
-            console.error(error);
-            res.status(400).json({status: 400, message: error}) 
+            console.error(error.name + ": " + error.message);
+            res.status(400).json({status: 400, message: error.name + ": " + error.message}) 
         } else {
+
+            if(!fields.name || !fields.surname || !fields.email || !fields.password || !fields.province){
+                res.status(400).json({status: 400, message: "Empty Fields Error: missing or invalid fields"})
+                return;
+            }  
 
             var new_user = new User({
                 name: fields.name,
@@ -54,11 +59,6 @@ router.post('/', async function(req, res) {
                 name: new_user._id + "_" + new_user.email,
                 namespace: '1dfdf2c1-7365-4625-b7d9-d9db5210f18d'
             });
-
-            if(!new_user.name || !new_user.surname || !new_user.email || !fields.password || !new_user.province){
-                res.status(400).json({status: 400, message: "Empty Fields Error: missing or invalid fields"})
-                return;
-            }  
 
             User.findOne({email: new_user.email})
             .then(result => {
@@ -83,6 +83,10 @@ router.post('/', async function(req, res) {
         }
     });
 });
+
+function isEmpty(obj) {
+    return Object.keys(obj).length === 0 || obj == undefined;
+}
 
 /*
 //ottiene utente con un certo id
@@ -111,8 +115,8 @@ router.put("/:id", auth, is_user, async function(req, res) {
 
     form.parse(req, async function (error, fields, files) {
         if(error){
-            console.error(error);
-            res.status(400).json({status: 400, message: error}) 
+            console.error(error.name + ": " + error.message);
+            res.status(400).json({status: 400, message: error.name + ": " + error.message}) 
         } else {
 
             User.findOne({_id: req.params.id}, async function(err, user){

@@ -37,6 +37,7 @@ router.post('/result', async function(req, res) {
     form.parse(req, async function (error, fields, files) {
 
         if(error){
+            console.error(error.name + ": " + error.message)
             res.redirect('/dga-detection?status=404')
         } else if(!isEmpty(files) || !isEmpty(fields)){
 

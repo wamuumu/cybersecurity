@@ -14,7 +14,7 @@ router.get('/', auth, async function(req, res){
 	Survey.find(typeFilter)
     .then(surveys => { res.status(200).json({status: 200, data: surveys}) })
     .catch(err => {
-    	console.error(err);
+    	console.error(err.name + ": " + err.message);
         res.status(500).json({status: 500, message: err.name + ": " + err.message})
     })
 
@@ -52,10 +52,15 @@ router.post('/', auth, async function(req, res){
 
 	form.parse(req, async function (error, fields, files) {
 		if(error){
-			console.error(error);
-			res.status(400).json({status: 400, message: error}) 
+			console.error(error.name + ": " + error.message);
+			res.status(400).json({status: 400, message: error.name + ": " + error.message}) 
 		} else {
             
+			if(!fields.data || !fields.type){
+                res.status(400).json({status: 400, message: "Empty Fields Error: missing or invalid fields"})
+                return;
+            } 
+
 			var surveyID = -1;
 			let date = new Date();
 

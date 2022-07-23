@@ -14,8 +14,8 @@ router.post('/', auth, async function(req, res){
 
 	form.parse(req, async function (error, fields, files) {
 		if(error){
-			console.error(error);
-			res.status(400).json({status: 400, message: error}) 
+			console.error(error.name + ": " + error.message);
+			res.status(400).json({status: 400, message: error.name + ": " + error.message}) 
 		} else {
 
 			var python, dataToSend = "", fileName = "";
