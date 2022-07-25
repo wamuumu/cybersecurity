@@ -34,7 +34,7 @@ X API KEY in header e query string
 X Captcha
 X CVE dettaglio con ID
 - Gestione profilo
-- Trovare altri algoritmi per rilevamento DGA e implementarli
+X Trovare altri algoritmi per rilevamento DGA e implementarli
 - Algoritmo calcolo rischio cibernetico per self assessment (cerca online)
 ~ Controllo sicurezza e autenticazione
 - Have I Been Pawned
