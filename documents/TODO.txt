@@ -33,11 +33,11 @@ X UI basilare registrazione, login
 X API KEY in header e query string
 X Captcha
 X CVE dettaglio con ID
-- Gestione profilo
 X Trovare altri algoritmi per rilevamento DGA e implementarli
+- Gestione profilo
 - Algoritmo calcolo rischio cibernetico per self assessment (cerca online)
-~ Controllo sicurezza e autenticazione
 - Have I Been Pawned
+~ Controllo sicurezza e autenticazione
 
 IN FUTURO:
 ~ Fake followers e fake review - richiesto
