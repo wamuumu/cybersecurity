@@ -30,19 +30,17 @@ X Controllo errori SCRIPTS
 X Middleware per controllo autenticazione
 X API Utenti
 X UI basilare registrazione, login
-- Sistema sicurezza e autenticazione
 X API KEY in header e query string
+X Captcha
+X CVE dettaglio con ID
 - Gestione profilo
-- Google login
-- Captcha
-- CVE dettaglio con ID
 - Trovare altri algoritmi per rilevamento DGA e implementarli
 - Algoritmo calcolo rischio cibernetico per self assessment (cerca online)
+~ Controllo sicurezza e autenticazione
 - Have I Been Pawned
 
 IN FUTURO:
-~ Rilevamento DGA - database pubblico è diventato a pagamento, serve richiedere una licenza https://osint.bambenekconsulting.com/feeds/dga-feed.txt (si fa?)
-~ Fake followers e fake review (quando avrò accesso al servizio?)
+~ Fake followers e fake review - richiesto
 
 SELF ASSESSMENT: NON SI SANNO COME SI CALCOLANO I VALORI DEL RISCHIO
 - Modello questionario self assessment (frontend) [Veloce - 7TlvQtmMEMfvz5s]

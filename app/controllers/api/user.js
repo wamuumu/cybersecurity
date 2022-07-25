@@ -7,8 +7,8 @@ const is_admin = require("../../middlewares/is_admin")
 const { generateApiKey } = require('generate-api-key');
 const User = require("../../models/user")
 const Survey = require("../../models/survey")
+const axios = require('axios');
 const router = express.Router();
-
 
 //ottiene tutti gli utenti
 router.get("/", auth, is_admin, async function(req, res) {
@@ -37,13 +37,26 @@ router.post('/', async function(req, res) {
     form.parse(req, async function (error, fields, files) {
         if(error){
             console.error(error.name + ": " + error.message);
-            res.status(400).json({status: 400, message: error.name + ": " + error.message}) 
+            return res.status(400).json({status: 400, message: error.name + ": " + error.message}) 
         } else {
 
-            if(!fields.name || !fields.surname || !fields.email || !fields.password || !fields.province){
-                res.status(400).json({status: 400, message: "Empty Fields Error: missing or invalid fields"})
-                return;
-            }  
+            if(!fields.captchaToken)
+                return res.status(404).json({status: 404, message: "Captcha token not found"})
+
+            const url = `https://www.google.com/recaptcha/api/siteverify?secret=${config.SECRET_KEY}&response=${fields.captchaToken}`
+
+            var captchaSuccess = false;
+            await axios.post(url)
+            .then((response) => { captchaSuccess = response.data.success })
+            .catch((error) => {
+                console.error(error)
+            })
+
+            if(!captchaSuccess)
+                return res.status(400).json({status: 400, message: "Invalid captcha"})
+
+            if(!fields.name || !fields.surname || !fields.email || !fields.password || !fields.province)
+                return res.status(400).json({status: 400, message: "Empty Fields Error: missing or invalid fields"});
 
             var new_user = new User({
                 name: fields.name,
@@ -67,18 +80,18 @@ router.post('/', async function(req, res) {
                     new_user.save(function (err, user) {
                         if (err) {
                             console.log(err.name + " - " + err.message)
-                            res.status(500).json({status: 500, message: err.name + ": " + err.message})
+                            return res.status(500).json({status: 500, message: err.name + ": " + err.message})
                         } else {
                           console.log(user.email + " saved to user collection.");
-                          res.status(200).json({status: 200, message: "[" + user.email + "] created successfully"}) 
+                          return res.status(200).json({status: 200, message: "[" + user.email + "] created successfully"}) 
                         }
                     });
                 }
                 else
-                    res.status(409).json({status: 409, message: "Duplicate Email Error: [" + new_user.email + "] is already taken"})
+                    return res.status(409).json({status: 409, message: "Duplicate Email Error: [" + new_user.email + "] is already taken"})
             })
             .catch(err => {
-                res.status(500).json({status: 500, message: err.name + ": " + err.message})
+                return res.status(500).json({status: 500, message: err.name + ": " + err.message})
             })
         }
     });

@@ -81,7 +81,7 @@ router.post('/cve', auth, async function(req, res){
 });
 
 //GET specific CVE by ID
-/*
+
 router.get('/cve/:id', async function(req, res){
 
 	var data;
@@ -109,11 +109,11 @@ router.get('/cve/:id', async function(req, res){
 		result['vulnerable_configuration'] = []
 		result['capec'] = []
 		result['cwe'] = data.cwe != undefined ? data.cwe : "-"
-		result['cvss'] = data.cvss != undefined ? data.cvss : "-"
+		result['cvss'] = data.cvss != undefined ? data.cvss : "NONE"
 		result['impactScore'] = data.impactScore != undefined ? data.impactScore : "-"
 		result['exploitabilityScore'] = data.exploitabilityScore != undefined ? data.exploitabilityScore : "-"
-		result['access'] = data.access != undefined ? data.access : "-"
-		result['impact'] = data.impact != undefined ? data.impact : "-"
+		result['access'] = data.access != undefined ? data.access : {}
+		result['impact'] = data.impact != undefined ? data.impact : {}
 		
 		if(data.cvss3 == undefined)
 			result['cvss3'] = "NONE"
@@ -121,8 +121,8 @@ router.get('/cve/:id', async function(req, res){
 			result['cvss3'] = data.cvss3
 			result['impactScore3'] = data.impactScore3 != undefined ? data.impactScore3 : "-"
 			result['exploitabilityScore3'] = data.exploitabilityScore3 != undefined ? data.exploitabilityScore3 : "-"
-			result['access3'] = data.exploitability3 != undefined ? data.exploitability3 : "-"
-			result['impact3'] = data.impact3 != undefined ? data.impact3 : "-"
+			result['access3'] = data.exploitability3 != undefined ? data.exploitability3 : {}
+			result['impact3'] = data.impact3 != undefined ? data.impact3 : {}
 		}
 
 		if(data.vulnerable_configuration != undefined)
@@ -136,6 +136,8 @@ router.get('/cve/:id', async function(req, res){
 				cap['description'] = data.capec[i].summary != undefined ? data.capec[i].summary : "-"
 				result['capec'].push(cap)
 			}
+		else
+			result['capec'] = 'NONE'
 
 		res.status(status).json({status: status, data: result});
 	} else
@@ -143,7 +145,7 @@ router.get('/cve/:id', async function(req, res){
 });
 
 //GET all CWE
-router.get('/cwe', async function(req, res){
+/*router.get('/cwe', async function(req, res){
 
 	var data;
 

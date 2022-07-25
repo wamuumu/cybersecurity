@@ -32,13 +32,35 @@ router.get('/cve', async function(req, res) {
 
 /*router.get('/cwe', async function(req, res) {
     res.render('cve-search/cwe');
-})
+})*/
 
 router.get('/cve/:id', async function(req, res) {
-    res.render('cve-search/cve_detail');
+
+    if(!req.isAuthenticated()){
+        res.render('common/error', { status:  401, message: "You need to login to access this service", loggedUser: req.isAuthenticated() });
+        return;
+    }
+
+    var cve = {}, error = {};
+    let url = req.protocol + '://' + req.get('host') + '/api/cve-search/cve/' + req.params.id;
+    
+    await axios.get(url, { 
+        headers: { 
+            "Cookie": "connect.sid=" + req.cookies["connect.sid"] +";" 
+        } 
+    })
+    .then(res => { cve['status'] = 200; cve['cve'] = res.data.data })
+    .catch(err => { error['status'] = err.response.status; error['error'] = err.response.statusText })
+
+    if(!isEmpty(cve))
+        res.render('cve-search/cve_detail', { loggedUser: req.isAuthenticated(), data: cve } );
+    else{
+        console.error(error);
+        res.render('cve-search/cve_detail', { loggedUser: req.isAuthenticated(), data: error } );
+    }
 })
 
-router.get('/vendors', async function(req, res) {
+/*router.get('/vendors', async function(req, res) {
     res.render('cve-search/vendors');
 })
 

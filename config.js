@@ -5,6 +5,7 @@ module.exports = {
     PORT: process.env.PORT,
     DB_URL: process.env.DB_URL,
     VIRUS_TOTAL_KEY: process.env.VIRUS_TOTAL_KEY,
+    SITE_KEY: process.env.SITE_KEY,
     SECRET_KEY: process.env.SECRET_KEY,
     SESSION_KEY: process.env.SESSION_KEY
 }

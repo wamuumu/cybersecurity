@@ -1,5 +1,7 @@
 var express = require('express');
 var router = express.Router();
+const config = require('../../../config.js');
+
 
 router.get('/', function(req, res){
     console.log(req.user);
@@ -7,6 +9,7 @@ router.get('/', function(req, res){
 })
 
 router.get('/login', async function(req, res) {
+
     if(!req.isAuthenticated())
         res.render('login', { loggedUser: req.isAuthenticated() });
     else
@@ -15,7 +18,7 @@ router.get('/login', async function(req, res) {
 
 router.get('/signin', async function(req, res) {
     if(!req.isAuthenticated())
-        res.render('signin', { loggedUser: req.isAuthenticated() });
+        res.render('signin', { loggedUser: req.isAuthenticated(), site_key: config.SITE_KEY });
     else
         res.redirect('/');
 })

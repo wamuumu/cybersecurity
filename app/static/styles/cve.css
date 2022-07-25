@@ -35,6 +35,41 @@ table td {
     margin: 0 auto;
 }
 
+.cvss-container{
+    margin-top: 100px;
+    width: 100%;
+}
+
+.cvss-container > table {
+    display: inline;
+    margin-right: 50px;
+}
+
+.slider {
+    height: 200px;
+    overflow-y: scroll;
+    display: block !important;
+    cursor: pointer;
+    transition: 3s;
+}
+
+.slider > i {
+    position: relative;
+    float: right;
+    margin: 5px;
+}
+
+.red {
+    background-color: #ff4d4d;
+    color: #fff;
+    font-weight: bold;
+    border: 1px solid #b30000;
+}
+
+.left {
+    text-align: left;
+}
+
 .modal{
     position: fixed;
     top: 50%;

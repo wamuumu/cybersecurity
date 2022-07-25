@@ -1,6 +1,7 @@
 <html>
 <head>
 	<%- include('common/imports.ejs') %>
+	<script src="https://www.google.com/recaptcha/api.js?onload=setCaptcha&render=explicit" async defer></script>
 	<title>Registrazione</title>
 </head>
 	<body>
@@ -123,6 +124,7 @@
 				<option value="VT">Viterbo</option>
 			</select>
 			<br>
+			<div id="captcha" class="g-recaptcha" data-sitekey="<%= site_key %>"></div><br>
             <button class="sendBtn" type="button" onclick="signin()">Registrati</button>
             <br><br>
             <a href="/login">Hai già un account?</a>

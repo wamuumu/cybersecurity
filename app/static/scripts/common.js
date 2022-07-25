@@ -1,6 +1,14 @@
+var captchaToken;
+
 function setError(status, text){
 	document.getElementById('errorStatus').innerHTML = status;
 	document.getElementById('errorText').innerHTML = "<strong>Errore: </strong>" + text;
+}
+
+function setCaptcha(){
+    grecaptcha.render('captcha', {
+      'callback' : function(res) { captchaToken = res }
+    });
 }
 
 function login(em, pass){
@@ -54,10 +62,15 @@ function signin(){
     var organization = document.getElementById("organization").value;
     var province = document.getElementById("province").value;
 
+    if(!captchaToken){
+        alert("Captcha invalido")
+        return;
+    }
+
     fetch('/api/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name, surname: surname, email: email, password: password, organization: organization, province: province })
+        body: JSON.stringify({ name: name, surname: surname, email: email, password: password, organization: organization, province: province, captchaToken: captchaToken })
     })
     .then((resp) => {
         status = resp.status; 
@@ -69,10 +82,14 @@ function signin(){
             login(email, password)
             alert("Utente creato correttamente")
         }
-        else if(status == 409)
+        else if(status == 409){
+            grecaptcha.reset();
             alert("Utente già esistente")
-        else if(status == 400)
+        }
+        else if(status == 400){
+            grecaptcha.reset();
             alert("Dati mancanti o errati")
+        }
         return;
     })
     .catch( error => console.error(error))

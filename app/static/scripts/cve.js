@@ -2,13 +2,30 @@ var totalEntries = 0;
 var upperBound = 0;
 var allControls;
 
-function setCommon(entries) { 
+function setCVE(entries) { 
 	totalEntries = entries; 
 	allControls = document.getElementById('controls').children;
 
 	$("#toggleFilters").click(function() {
 		$("#filters").slideToggle(250);
 	});
+}
+
+function setCVEDetail(){
+	$(".slider").click(function () {
+	    toggle($(this))
+	});
+}
+
+function toggle(item) {
+    if (item.height() > 200){
+    	item.css('overflow-y', 'scroll')
+        item.css('height', 200);
+    }
+    else{
+    	item.css('height', 'auto')
+    	item.css('overflow-y', 'hidden')
+    }
 }
 
 function showOption(e){
