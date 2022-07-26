@@ -44,7 +44,7 @@ IN FUTURO:
 - Controllo generale applicazione
 
 SELF ASSESSMENT: NON SI SANNO COME SI CALCOLANO I VALORI DEL RISCHIO
-- Modello questionario self assessment (frontend) [Veloce - 7TlvQtmMEMfvz5s]
+- Modello questionario self assessment (frontend) [Veloce - 7TlvQtmMEMfvz5s DfWmmMtqssbcvSZ]
 - Strumenti self assessment (backend) (migliorare quello che c’è)
 - Ripristino questionario self assessment tramite ID
 
