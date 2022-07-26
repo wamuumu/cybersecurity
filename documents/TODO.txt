@@ -34,13 +34,14 @@ X API KEY in header e query string
 X Captcha
 X CVE dettaglio con ID
 X Trovare altri algoritmi per rilevamento DGA e implementarli
-- Gestione profilo
+X Gestione profilo
 - Algoritmo calcolo rischio cibernetico per self assessment (cerca online)
-- Have I Been Pawned
 ~ Controllo sicurezza e autenticazione
+- Have I Been Pawned
 
 IN FUTURO:
 ~ Fake followers e fake review - richiesto
+- Controllo generale applicazione
 
 SELF ASSESSMENT: NON SI SANNO COME SI CALCOLANO I VALORI DEL RISCHIO
 - Modello questionario self assessment (frontend) [Veloce - 7TlvQtmMEMfvz5s]

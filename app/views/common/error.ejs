@@ -15,6 +15,11 @@
     <% } else { %>
       <p id="errorText"></p>
     <% } %>
-    <a href="/">Return to Home</a>
+
+    <% if(status == 401) { %>
+      <a href="/login">Login</a>
+    <% } else { %>
+      <a href="/">Return to Home</a>
+    <% } %>
   </div>
 </div>

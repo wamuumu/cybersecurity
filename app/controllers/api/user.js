@@ -121,9 +121,10 @@ router.get("/:id", auth, is_user, async function(req, res) {
         res.status(500).json({status: 500, message: err.name + ": " + err.message})
     })
 });
+*/
 
 //modifica l'utente
-router.put("/:id", auth, is_user, async function(req, res) {
+router.put("/:id", auth, async function(req, res) {
     let form = new formidable.IncomingForm();
 
     form.parse(req, async function (error, fields, files) {
@@ -139,12 +140,27 @@ router.put("/:id", auth, is_user, async function(req, res) {
                     res.status(404).json({status: 404, message: "Error: User not found"})
                 else {
                     
-                    filter = { _id: user._id };
-                    
-                    update = { name: fields.name, surname: fields.surname, email: fields.email, password: md5(fields.password), organization: fields.organization, province: fields.province };
-                    if(!update.name || !update.surname || !update.email || !fields.password || !update.province){
-                        res.status(400).json({status: 400, message: "Empty Fields Error: missing or invalid fields"})
-                        return;
+                    let filter = { _id: user._id };
+                    var update = {}
+
+                    if(!fields.newpassword){
+                        console.log("Account updating")
+                        update = { name: fields.name, surname: fields.surname, email: fields.email, role: fields.role, organization: fields.organization, province: fields.province };
+
+                        if(!update.name || !update.surname || !update.email || !update.role || !update.province){
+                            res.status(400).json({status: 400, message: "Error: Empty Fields"})
+                            return;
+                        }
+
+                    } else {
+                        console.log("Password updating")
+                        update = { password: md5(fields.newpassword) };
+
+                        if(!fields.cpassword || fields.newpassword != fields.cpassword)
+                            return res.status(400).json({status: 400, message: "Error: password mismatching"})
+
+                        if(user.password != md5(fields.oldpassword))
+                            return res.status(401).json({status: 401, message: "Error: old password incorrect"})
                     }
 
                     User.findOneAndUpdate(filter, update, {new: true}, async function(err, updatedUser){
@@ -152,7 +168,7 @@ router.put("/:id", auth, is_user, async function(req, res) {
                             res.status(500).json({status: 500, message: err.name + ": " + err.message});
                         } else {
                             console.log("["+ updatedUser.email +"] updated");
-                            res.status(200).json(updatedUser);
+                            res.status(200).json({ status: 200, message: updatedUser.email + " updated"});
                         }
                     });
                 }
@@ -162,21 +178,21 @@ router.put("/:id", auth, is_user, async function(req, res) {
 });
 
 //elimina utente mantenendo però i questionari da lui compilati
-router.delete("/:id", auth, is_user, async function(req, res) {
+router.delete("/:id", auth, async function(req, res) {
     User.findOne({_id: req.params.id}, async function(err, user){
         if(err)
             res.status(500).json({status: 500, message: err.name + ": " + err.message})
         else if(!user)
             res.status(404).json({status: 404, message: "Error: User not found"})
         else {
-
+            let email = user.email;
             User.deleteOne({ _id: user._id }, async function(err, deletedUser){
                 if(err)
                     res.status(500).json({status: 500, message: err.name + ": " + err.message});
                 else {
-                    console.log("["+ deletedUser.email +"] deleted");
-
-                    res.status(200).json({status: 200, message: "["+ deletedUser.email +"] deleted successfully"});
+                    req.logout(function() {});
+                    console.log("["+ email +"] deleted");
+                    res.status(200).json({status: 200, message: "["+ email +"] deleted successfully"});
                 }
             });
         }
@@ -184,7 +200,7 @@ router.delete("/:id", auth, is_user, async function(req, res) {
 });
 
 //ottiene i questionari [id, tipo, data] di un utente
-router.get("/:id/surveys", auth, is_user, async function(req, res) {
+router.get("/:id/surveys", auth, async function(req, res) {
 
     User.findOne({_id: req.params.id}, async function(err, user){
         if(err)
@@ -201,12 +217,12 @@ router.get("/:id/surveys", auth, is_user, async function(req, res) {
                         if("user" in surveys[i]) surveys[i].user = undefined
                         if("data" in surveys[i]) surveys[i].data = undefined
                     }
-                    res.status(200).json({ total: surveys.length, surveys: surveys })
+                    res.status(200).json({ surveys: surveys })
                 }
             })
         }
     })
 });
-*/
+
 
 module.exports = router
