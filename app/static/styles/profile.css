@@ -95,22 +95,18 @@
 	display: none;
 }
 
-.surveys-table {
-    clear: both;
-    margin-top: 6px;
-    margin-bottom: 6px;
-    border-collapse: separate;
-    border-spacing: 0;
-    width: 100%;
-    text-align: left;
+#survey-section > div {
+	overflow-y: scroll;
+	width: 100%;
+	height: 85%;
+	border: 1px solid #f1f1f1;
 }
 
-.surveys-table tr:nth-child(even){background-color: #ffffff;}
-.surveys-table tr:nth-child(odd){background-color: #f2f2f2;}
+.surveyID {
+	margin-bottom: 20px;
+}
 
-.surveys-table td {
-    color: #fff;
-    background-color: #343a40;
-    border-color: #454d55;
-    height: 40px;
+.date {
+	color: #666666;
+	font-size: 13px;
 }

@@ -200,11 +200,14 @@
 				</div>
 				<div id="survey-section">
 					<h2>Questionari</h2>
-					<ul>
-						<% for(var i=0; i < surveys.length; i++) { %>
-							<li><b><%= surveys[i]._id %></b> di tipo <b><%= surveys[i].type %></b></li>
-						<% } %>
-					</ul>
+					<p>Copia l'ID del questionario e inseriscilo nell'apposita pagina (GDPR o SELF ASSESSMENT) per vederne le risposte date. <br>Si fa presente che un ID GDPR non funziona su pagina SELF ASSESSMENT e viceversa.</p>
+					<div>
+						<ul>
+							<% for(var i=0; i < surveys.length; i++) { %>
+								<li class="surveyID"><b><%= surveys[i]._id %></b> di tipo <b><%= surveys[i].type %></b> <span class="date">[<%= surveys[i].date %>]</span></li>
+							<% } %>
+						</ul>
+					</div>
 				</div>
 			</div>
 		</div>	

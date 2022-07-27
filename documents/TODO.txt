@@ -35,12 +35,12 @@ X Captcha
 X CVE dettaglio con ID
 X Trovare altri algoritmi per rilevamento DGA e implementarli
 X Gestione profilo
-- Algoritmo calcolo rischio cibernetico per self assessment (cerca online)
+X Algoritmo calcolo rischio cibernetico per self assessment (online -> nulla, circa implementato con percentuali mie)
+- MongoDB Atals cloud
+- Cloudflare
 ~ Controllo sicurezza e autenticazione
-- Have I Been Pawned
 
 IN FUTURO:
-~ Fake followers e fake review - richiesto
 - Controllo generale applicazione
 
 SELF ASSESSMENT: NON SI SANNO COME SI CALCOLANO I VALORI DEL RISCHIO

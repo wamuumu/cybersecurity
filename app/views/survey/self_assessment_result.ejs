@@ -6,39 +6,47 @@
 		<canvas id="gauge"></canvas>
 		<div id="gauge-value"></div>
 	</div>
-	<p>In totale, sei al <b>{mean}%</b> conforme con il GDPR</p>
+	<p>In totale, hai il <b>{mean}%</b> di probabilità di incorrere in un rischio cibernetico</p>
 	<br><br>
 	<table id="survey-table">
 		<thead>
 			<tr>
 				<th>Categoria</th>
-				<th>Risultato (%)</th>
+				<th>Rischio (%)</th>
 		  	</tr>
 	  	</thead>
 	  	<tbody>
 	  		<tr>
-	  			<td>Responsabilità e Conformità</td>
+	  			<td>Informazioni sull'organizzazione</td>
 	  			<td>{result_1}</td>
 	  		</tr>
 	  		<tr>
-	  			<td>Precisione</td>
+	  			<td>Informazioni sulla rete</td>
 	  			<td>{result_2}</td>
 	  		</tr>
 	  		<tr>
-	  			<td>Integrità e Riservatezza</td>
+	  			<td>Informazioni sulle risorse dati</td>
 	  			<td>{result_3}</td>
 	  		</tr>
 	  		<tr>
-	  			<td>Legalità, Equità e Trasparenza</td>
+	  			<td>Protezione informatica [Management]</td>
 	  			<td>{result_4}</td>
 	  		</tr>
 	  		<tr>
-	  			<td>Limitazioni delle finalità e minimizzazione dei dati</td>
+	  			<td>Protezione informatica [Domande non techniche]</td>
 	  			<td>{result_5}</td>
 	  		</tr>
 	  		<tr>
-	  			<td>Limiti di archiviazione</td>
+	  			<td>Protezione Informatica [Access control]</td>
 	  			<td>{result_6}</td>
+	  		</tr>
+	  		<tr>
+	  			<td>Protezione informatica [Domande techniche]</td>
+	  			<td>{result_7}</td>
+	  		</tr>
+	  		<tr>
+	  			<td>Attacchi</td>
+	  			<td>{result_8}</td>
 	  		</tr>
 	  	</tbody>
 	</table>

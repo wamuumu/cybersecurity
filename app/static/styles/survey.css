@@ -20,7 +20,7 @@
 	font-size: 24px;
 }
 
-#gdpr-table {
+#survey-table {
     clear: both;
     margin-top: 6px;
     margin-bottom: 6px;
@@ -30,10 +30,10 @@
     width: 90%;
 }
 
-#gdpr-table tr:nth-child(even){background-color: #ffffff;}
-#gdpr-table tr:nth-child(odd){background-color: #f2f2f2;}
+#survey-table tr:nth-child(even){background-color: #ffffff;}
+#survey-table tr:nth-child(odd){background-color: #f2f2f2;}
 
-#gdpr-table th {
+#survey-table th {
     color: #fff;
     background-color: #343a40;
     border-color: #454d55;
@@ -41,7 +41,7 @@
     padding: 10;
 }
 
-#gdpr-table td {
+#survey-table td {
 	padding: 5 10;
 }
 

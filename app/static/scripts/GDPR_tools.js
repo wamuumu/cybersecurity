@@ -1,8 +1,3 @@
-var surveyID = -1;
-
-Survey.StylesManager.applyTheme("modern");
-Survey.surveyLocalization.locales[Survey.surveyLocalization.defaultLocale].requiredError = "Campo obbligatorio";
-Survey.defaultBootstrapCss.navigation.start = "start-survey";
 
 const surveyModel = {
     pages: [{
@@ -272,41 +267,15 @@ const categories = survey.pages.length - 1;
 
 async function surveyComplete(sender){
     console.log("survey Complete")
-    await saveSurveyResults(sender.data)
+    await saveSurveyResults(sender.data, type)
     displayResults(sender.data)
-}
-
-async function saveSurveyResults(json) {
-
-    var data = {
-        "type": "gdpr",
-        "data": json
-    }
-
-	await fetch("/api/survey", {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-        body: JSON.stringify(data)
-    })
-    .then((resp) => { return resp.json() })
-    .then(function(data) {
-    	if(data.status == 200){
-    		console.log("Questionario GDPR completato")
-            surveyID = data.surveyID;
-            console.log("SurveyID: " + surveyID);
-        } else {
-            alert('Compilazione fallita')
-            location.reload()
-        }
-    })
-    .catch( error => console.error(error) );
 }
 
 async function displayResults(json){
     var results = document.getElementById('surveyResults');
 
     var resultTable;
-    let parse = parseResults(json);
+    let parse = parseResults(json, categories);
     var mean = 0;
 
     await fetch("/survey/GDPR-result", {
@@ -320,109 +289,14 @@ async function displayResults(json){
             mean += parseFloat(parse[i]);
             html_results = html_results.replace("{result_"+ (i+1) +"}", parse[i]);
         }
-        mean = (mean / 6).toFixed(2);
+        mean = (mean / categories).toFixed(2);
         html_results = html_results.replace("{mean}", mean);
         results.innerHTML += html_results; 
     })
     .catch(function(err) {  console.log('Failed to fetch page: ', err); });
 
-    var opts = {
-        angle: 0.35, // The span of the gauge arc
-        lineWidth: 0.1, // The line thickness
-        radiusScale: 1, // Relative radius
-        pointer: {
-            length: 0.6, // // Relative to gauge radius
-            strokeWidth: 0.035, // The thickness
-            color: '#000000' // Fill color
-        },
-        limitMax: false,     // If false, max value increases automatically if value > maxValue
-        limitMin: false,     // If true, the min value of the gauge will be fixed
-        colorStart: '#6F6EA0',   // Colors
-        colorStop: '#C0C0DB',    // just experiment with them
-        strokeColor: '#EEEEEE',  // to see which ones work best for you
-        generateGradient: true,
-        highDpiSupport: true,     // High resolution support
-    };
-    
-    var target = document.getElementById('gauge'); // your canvas element
-    var text = document.getElementById('gauge-value'); // your text element
-    text.innerHTML = mean;
-    var gauge = new Donut(target).setOptions(opts); // create sexy gauge!
-    gauge.maxValue = 100; // set max gauge value
-    gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
-    gauge.animationSpeed = 32; // set animation speed (32 is default value)
-    gauge.text = mean;
-    gauge.set(mean); // set actual value
+    setGauge(mean);
 }
-
-function parseResults(json){
-    var parseArr = [], count = [], isPositive = []
-
-    for (var i = 0; i < categories; i++){
-        parseArr[i] = 0;
-        count[i] = 0;
-        isPositive[i] = 0;
-    } 
-
-    for (const field in json) {
-        var info = getFieldInfo(field);
-        count[info['page']] += 1
-        if(json[field] == 1)
-            isPositive[info['page']] += 1
-    }
-
-    for (var i = 0; i < categories; i++) {
-        parseArr[i] = ((isPositive[i] / count[i]) * 100).toFixed(2)
-    }
-
-    return parseArr;
-}
-
-function getFieldInfo(field){
-    let values = field.split("f");
-    values[0] = values[0].substring(1);
-    return { "page" : parseInt(values[0]), "field": parseInt(values[1]) };
-}
-
-async function restoreSurvey(){
-    var restoreID = document.getElementById('restoreID').value.replaceAll(/\s/g,'');
-
-    if(!restoreID){
-        alert("Inserisci un ID valido");
-        return;
-    }
-
-    await fetch("/api/survey/" + restoreID, {
-        method: 'GET'
-    })
-    .then((resp) => { return resp.json() })
-    .then(function(data) {
-        if(data.status == 200){
-            console.log("Questionario ripristinato")
-            survey.data = JSON.parse(data.survey.data);
-            survey.mode = "display";
-            survey.start()
-        } else {
-            alert("Inserisci un ID valido");
-            return;
-        }
-    })
-    .catch( error => console.error(error) );
-}
-
-survey.onStarted.add(function(){ 
-    document.getElementById('description').style.display = 'none'; 
-    var seps = document.getElementsByClassName('separator');
-    for (var i = 0; i < seps.length; i++)
-        seps[i].style.display = 'none'; 
-    document.getElementById('restore').style.display = 'none'; 
-    document.getElementById('chart').style.display = 'none'; 
-})
-survey.onComplete.add(surveyComplete);
-
-$(function() {
-    $("#surveyContainer").Survey({ model: survey });
-});
 
 function setChart(scores){
 
@@ -492,3 +366,11 @@ function setChart(scores){
     var ctx = document.getElementById("gdpr-chart").getContext('2d');
     const gdprChart = new Chart(ctx, config);
 }
+
+survey.onStarted.add(uiManager);
+survey.onComplete.add(surveyComplete);
+
+$(function() {
+    type="GDPR";
+    $("#surveyContainer").Survey({ model: survey });
+});

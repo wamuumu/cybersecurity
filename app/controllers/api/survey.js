@@ -20,9 +20,11 @@ router.get('/', auth, async function(req, res){
 
 });
 
-router.get('/:id', auth, async function(req, res){
+router.get('/:type/:id', auth, async function(req, res){
 
-	Survey.findOne({_id: req.params.id})
+	let type = req.params.type == "gdpr" ? "GDPR" : "SELF_ASSESSMENT";
+
+	Survey.findOne({_id: req.params.id, type: type})
     .then(survey => {
         if(!survey)
             res.status(404).json({status: 404, message: "Survey not found"})
