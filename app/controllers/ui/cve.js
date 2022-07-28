@@ -7,7 +7,8 @@ const axios = require('axios');
 router.get('/cve', async function(req, res) {
 
     if(!req.isAuthenticated()){
-        res.render('common/error', { status:  401, message: "You need to login to access this service", loggedUser: req.isAuthenticated() });
+        let data = { status: 401, message: "You need to login to access this service" }
+        res.render('common/error', { data: data, loggedUser: req.isAuthenticated() });
         return;
     }
 
@@ -37,7 +38,8 @@ router.get('/cve', async function(req, res) {
 router.get('/cve/:id', async function(req, res) {
 
     if(!req.isAuthenticated()){
-        res.render('common/error', { status:  401, message: "You need to login to access this service", loggedUser: req.isAuthenticated() });
+        let data = { status: 401, message: "You need to login to access this service" }
+        res.render('common/error', { data: data, loggedUser: req.isAuthenticated() });
         return;
     }
 

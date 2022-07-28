@@ -10,7 +10,8 @@ const formidable = require('formidable');
 router.get('/GDPR-tools', async function(req, res) {
 
     if(!req.isAuthenticated()){
-        res.render('common/error', { status:  401, message: "You need to login to access this service", loggedUser: req.isAuthenticated() });
+        let data = { status: 401, message: "You need to login to access this service" }
+        res.render('common/error', { data: data, loggedUser: req.isAuthenticated() });
         return;
     }
 
@@ -63,13 +64,15 @@ router.post('/GDPR-result', async function(req, res) {
         return;
     }
 
-    res.render('common/error', { status:  401, message: "You need to login to access this service", loggedUser: req.isAuthenticated() });
+    let data = { status: 401, message: "You need to login to access this service" }
+    res.render('common/error', { data: data, loggedUser: req.isAuthenticated() });
 })
 
 router.get('/self-assessment', async function(req, res) {
 
     if(!req.isAuthenticated()){
-        res.render('common/error', { status:  401, message: "You need to login to access this service", loggedUser: req.isAuthenticated() });
+        let data = { status: 401, message: "You need to login to access this service" }
+        res.render('common/error', { data: data, loggedUser: req.isAuthenticated() });
         return;
     }
 
@@ -122,7 +125,8 @@ router.post('/self-assessment-result', async function(req, res) {
         return;
     }
 
-    res.render('common/error', { status:  401, message: "You need to login to access this service", loggedUser: req.isAuthenticated() });
+    let data = { status: 401, message: "You need to login to access this service" }
+    res.render('common/error', { data: data, loggedUser: req.isAuthenticated() });
 })
 
 function parseResults(json, categories){

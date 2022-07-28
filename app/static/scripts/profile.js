@@ -68,7 +68,12 @@ function modifyAccount(){
 
 	//console.log(new_name, new_surname, new_email, new_organization, new_province)
 	if(!new_name || !new_surname || !new_email || !new_organization || !new_province){
-		alert("Campi mancanti richiesti")
+		alert("Modifica non eseguita: Campi mancanti richiesti")
+		return;
+	}
+
+	if(new_name == user.name && new_surname == user.surname && new_email == user.email && new_organization == user.organization && new_province == user.province){
+		alert("Modifica non eseguita: I nuovi campi sono identici a quelli precedenti")
 		return;
 	}
 

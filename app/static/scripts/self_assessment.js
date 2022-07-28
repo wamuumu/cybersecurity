@@ -1,3 +1,13 @@
+var myCss = {
+    navigation: {
+        complete: "sv-btn sv-footer__complete-btn custom",
+        prev: "sv-btn sv-footer__prev-btn custom",
+        next: "sv-btn sv-footer__next-btn custom",
+        start: "sv-btn sv-footer__start-btn custom",
+        preview: "sv-btn sv-footer__preview-btn custom",
+        edit: "sv-btn sv-footer__edit-btn custom",
+    },
+};
 
 const surveyModel = {
     pages: [{
@@ -461,6 +471,7 @@ const surveyModel = {
 };
 
 const survey = new Survey.Model(surveyModel);
+survey.css = myCss;
 const categories = survey.pages.length - 1;
 
 async function surveyComplete(sender){

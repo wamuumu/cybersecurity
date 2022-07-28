@@ -5,7 +5,7 @@ const config = require('../../../config.js');
 
 
 router.get('/', function(req, res){
-    console.log(req.user);
+    //console.log(req.user);
     res.render('home', { loggedUser: req.isAuthenticated() });
 })
 

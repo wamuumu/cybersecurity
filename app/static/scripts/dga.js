@@ -30,7 +30,6 @@ function showOption(radio){
 	let domainContainer = document.getElementById("domain-container");
 	let fileContainer = document.getElementById("file-container");
 	let algContainer = document.getElementById("alg-container");
-	let button = document.getElementById('send_dga');
 
 	let sendButton = document.getElementById("send_dga");
 	sendButton.disabled = false;
@@ -39,10 +38,10 @@ function showOption(radio){
 	if(radio.value == "domain"){
 		domainContainer.style.display = "block";
 		fileContainer.style.display = "none";
-		button.style.display = "block";
+		sendButton.style.display = "block";
 	} else {
 		domainContainer.style.display = "none";
 		fileContainer.style.display = "block";
-		button.style.display = "none";
+		sendButton.style.display = "none";
 	}
 }

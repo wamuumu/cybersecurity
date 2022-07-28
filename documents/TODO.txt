@@ -36,7 +36,7 @@ X CVE dettaglio con ID
 X Trovare altri algoritmi per rilevamento DGA e implementarli
 X Gestione profilo
 X Algoritmo calcolo rischio cibernetico per self assessment (online -> nulla, circa implementato con percentuali mie)
-- MongoDB Atals cloud
+X MongoDB Atlas cloud
 - Cloudflare
 ~ Controllo sicurezza e autenticazione
 

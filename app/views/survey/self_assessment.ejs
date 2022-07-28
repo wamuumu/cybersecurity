@@ -1,9 +1,22 @@
 <html>
 <head>
 	<%- include('../common/imports.ejs') %>
-	<link type="text/css" rel="stylesheet" href="/static/styles/survey_jquery.css">
+	<style>
+		.custom, .sv-progress__bar, .sv-checkbox--checked .sv-checkbox__svg{
+			background-color: rgb(255, 99, 132) !important;
+		}
+
+		.sv-text:focus, .sv-item__control:focus + .sv-item__decorator {
+			border-color: rgb(255, 99, 132) !important;
+		}
+
+		.sv-question__title--answer {
+			background-color: rgb(255, 99, 132, 0.2) !important;
+		}
+	</style>
+	<link href="https://unpkg.com/survey-jquery/modern.min.css" type="text/css" rel="stylesheet">
 	<link type="text/css" rel="stylesheet" href="/static/styles/survey.css">
-	<script type="text/javascript" src="/static/scripts/survey_jquery.js"></script>
+	<script type="text/javascript" src="https://unpkg.com/survey-jquery"></script>
 	<script type="text/javascript" src="/static/scripts/survey.js"></script>
 	<script type="text/javascript" src="/static/scripts/self_assessment.js"></script>
 	<script type="text/javascript" src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>

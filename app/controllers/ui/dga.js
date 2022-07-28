@@ -10,21 +10,23 @@ const fs = require('fs');
 router.get('/', async function(req, res) {
     
     if(!req.isAuthenticated()){
-        res.render('common/error', { status:  401, message: "You need to login to access this service", loggedUser: req.isAuthenticated() });
+        let data = { status: 401, message: "You need to login to access this service" }
+        res.render('common/error', { data: data, loggedUser: req.isAuthenticated() });
         return;
     }
 
     let status = parseInt(req.query.status) || 200;
     var error = status == 400 ? "Pick a mode before making request" : "Missing files or fields";
 
-    var data = { status: status, error: error }
+    var data = status == 200 ? { status: status, error: "" } : { status: status, error: error }
     res.render('dga-detection/dga_input', { data: data, loggedUser: req.isAuthenticated() });
 })
 
 router.post('/result', async function(req, res) {
 
     if(!req.isAuthenticated()){
-        res.render('common/error', { status:  401, message: "You need to login to access this service", loggedUser: req.isAuthenticated() });
+        let data = { status: 401, message: "You need to login to access this service" }
+        res.render('common/error', { data: data, loggedUser: req.isAuthenticated() });
         return;
     }
 
