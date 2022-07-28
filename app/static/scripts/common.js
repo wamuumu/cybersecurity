@@ -53,6 +53,16 @@ function login(em, pass){
     .catch( error => console.error(error) )
 }
 
+function keypress(e, type){
+    if(e.key == "Enter"){
+        e.preventDefault();
+        if(type == 'login')
+            login();
+        else if(type == 'signin')
+            signin();
+    }
+}
+
 function signin(){
     var status;
     var name = document.getElementById("name").value;

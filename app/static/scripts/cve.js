@@ -156,7 +156,7 @@ async function getCVE(skipValue){
 			document.getElementById('filterSearch').disabled = false;
 
 		} else {
-			alert('Errore: CVE al momento non disponibili')
+			console.log('Errore: CVE al momento non disponibili')
     		location.href="/";
 		}
 	} else {
