@@ -4,8 +4,10 @@ async function hasAPIKEY(req){
     if(req.query.apikey || req.headers.apikey){
         let key = req.query.apikey || req.headers.apikey;
         let user = await User.findOne({ apikey: key});
-        if(user)
+        if(user){
+            req.user = user
             return true;
+        }
     } else
         return false;   
 }

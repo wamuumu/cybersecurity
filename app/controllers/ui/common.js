@@ -26,8 +26,10 @@ router.get('/signin', async function(req, res) {
 
 router.get('/profile', async function(req, res) {
 
-    if(!req.isAuthenticated())
-        res.render('common/error', { status:  401, message: "You need to login to see your profile", loggedUser: req.isAuthenticated() });
+    if(!req.isAuthenticated()){
+        let data = { status: 401, message: "You need to login to see your profile" }
+        res.render('common/error', { data: data, loggedUser: req.isAuthenticated() });
+    }
     else{
 
         var data = {};

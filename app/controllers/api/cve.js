@@ -82,7 +82,7 @@ router.post('/cve', auth, async function(req, res){
 
 //GET specific CVE by ID
 
-router.get('/cve/:id', async function(req, res){
+router.get('/cve/:id', auth, async function(req, res){
 
 	var data;
 

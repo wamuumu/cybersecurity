@@ -37,11 +37,18 @@ X Trovare altri algoritmi per rilevamento DGA e implementarli
 X Gestione profilo
 X Algoritmo calcolo rischio cibernetico per self assessment (online -> nulla, circa implementato con percentuali mie)
 X MongoDB Atlas cloud
-- Cloudflare
-~ Controllo sicurezza e autenticazione
 
 IN FUTURO:
 - Controllo generale applicazione
+- Cloudflare
+- CI / CD (GitHub workflow)
+
+DA CHIEDERE:
+- SELF ASSESSMENT (va bene?)
+- COSA SERVE IL DATASET CHE MI HA INVIATO? 	(Ho già implementato controllo malware URL)
+- QUANDO AVRO' IL DOMINIO PER CARICARE IL SITO ONLINE?
+- MODULO FINE TIROCINIO
+- COME GESTIRE LA STESURA DELLA TESI (di cosa parlare principalmente)
 
 SELF ASSESSMENT: NON SI SANNO COME SI CALCOLANO I VALORI DEL RISCHIO
 - Modello questionario self assessment (frontend) [Veloce - 7TlvQtmMEMfvz5s DfWmmMtqssbcvSZ]

@@ -30,13 +30,15 @@ router.post('/', auth, async function(req, res){
 			let algchoice = fields.algchoice;
 			var status = 200;
 
+			console.log(fileName, domain, choice, algchoice)
+
 			if(algchoice == 'alg1'){
 
 				if(choice == "file" && fileName != ""){
 					let filePath = files.filetoupload.filepath;
 					console.log("File Detection [1]")
 					python = spawn('python', [pyPath + '/dga_detector.py', '-f', filePath, '-p', pyPath]);
-				} else if (choice == "domain" && domain != ""){
+				} else if (choice == "domain" && domain != "" && domain != undefined){
 					console.log("Domain Detection [1]")
 					python = spawn('python', [pyPath + '/dga_detector.py', '-d', domain, '-p', pyPath]);
 				} else {
@@ -127,7 +129,7 @@ router.post('/', auth, async function(req, res){
 
 					return res.status(200).json({status: 200, data: results});
 
-				} else if (choice == "domain" && domain != ""){
+				} else if (choice == "domain" && domain != "" && domain != undefined){
 					console.log("Domain Detection [2]")
 					
 					await dgadetective.checkDGA(domain)
@@ -148,6 +150,9 @@ router.post('/', auth, async function(req, res){
 					res.status(status).json({status: status, message: "Missing fields or files"});
 					return;
 				}
+			}else {
+				console.error("Algorithm invalid or not specified");
+				return res.status(404).json({status: 404, message: "Algorithm invalid or not specified"});
 			}
 		}
 	});

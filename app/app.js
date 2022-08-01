@@ -23,6 +23,8 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+// PATHS
+
 app.set('view engine', 'ejs');
 
 app.use('/static', express.static(path.join(__dirname, './static/'))); 
@@ -35,11 +37,13 @@ app.use('/api', require('./controllers/api/index'))
 // ERROR HANDLING
 
 app.get('/api/*', function(req, res, next){
-    res.status(404).render('common/error', { status: 404, message: "API not found", loggedUser: req.isAuthenticated()})
+    let data = { status: 404, message: "Service not found" }
+    res.status(404).render('common/error', { data: data, loggedUser: req.isAuthenticated()})
 });
 
 app.get('/*', function(req, res, next){
-    res.status(404).render('common/error', { status: 404, message: "Page not found", loggedUser: req.isAuthenticated()})
+    let data = { status: 404, message: "Page not found" }
+    res.status(404).render('common/error', { data: data, loggedUser: req.isAuthenticated()})
 });
 
 
