@@ -8,9 +8,18 @@ const config = require('../../../config')
 
 passport.use('local', new LocalStrategy({
         usernameField: 'email',
-        passwordField: 'password'
+        passwordField: 'password',
+        passReqToCallback: true
     },
-    function(email, password, done) {
+    function(req, email, password, done) {
+
+        let captchaToken = req.body.captcha == "undefined" ? undefined : req.body.captcha;
+
+        if(!captchaToken){
+            console.error("[LOGIN] Captcha invalido")
+            return done(null, false, { status: 404, message: 'Captcha token not found' });
+        }
+
         User.findOne({email: email, password: md5(password) }, function (err, user) {
             if (err) return done(null, false, { status: 500, message: "Authentication failed: " + err.message });
 

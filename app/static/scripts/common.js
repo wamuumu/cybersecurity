@@ -14,12 +14,18 @@ function setCaptcha(){
 function login(em, pass){
     var status;
 
+    if(!captchaToken){
+        alert("Captcha invalido")
+        return;
+    }
+
     let email = em == undefined ? document.getElementById('email').value : em;
     let password = pass == undefined ? document.getElementById('password').value : pass;
 
     var details = {
         'email': email,
-        'password': password
+        'password': password,
+        'captcha': captchaToken
     };
 
     var formBody = [];

@@ -12,7 +12,7 @@ router.get('/', function(req, res){
 router.get('/login', async function(req, res) {
 
     if(!req.isAuthenticated())
-        res.render('login', { loggedUser: req.isAuthenticated() });
+        res.render('login', { loggedUser: req.isAuthenticated(), site_key: config.SITE_KEY });
     else
         res.redirect('/');
 })

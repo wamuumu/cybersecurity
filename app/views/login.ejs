@@ -1,6 +1,7 @@
 <html>
 <head>
 	<%- include('common/imports.ejs') %>
+    <script src="https://www.google.com/recaptcha/api.js?onload=setCaptcha&render=explicit" async defer></script>
 	<title>Login</title>
 </head>
 	<body>
@@ -11,6 +12,7 @@
                 <input class="inputField" type="email" name="email" id="email" placeholder="Email" onkeypress="keypress(event, 'login')" required><br>
                 <input class="inputField" type="password" name="password" id="password" placeholder="Password" onkeypress="keypress(event, 'login')" required><br>
     			<br>
+                <div id="captcha" class="g-recaptcha" data-sitekey="<%= site_key %>"></div><br>
                 <button class="sendBtn" type="button" onclick="login()">Login</button>
                 <br><br>
                 <a href="/signin">Crea un nuovo utente</a>

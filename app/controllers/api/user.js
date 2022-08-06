@@ -40,8 +40,10 @@ router.post('/', async function(req, res) {
             return res.status(400).json({status: 400, message: error.name + ": " + error.message}) 
         } else {
 
-            if(!fields.captchaToken)
+            if(!fields.captchaToken){
+                console.error("[SIGNIN] Captcha invalido")
                 return res.status(404).json({status: 404, message: "Captcha token not found"})
+            }
 
             const url = `https://www.google.com/recaptcha/api/siteverify?secret=${config.SECRET_KEY}&response=${fields.captchaToken}`
 
