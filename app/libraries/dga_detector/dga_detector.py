@@ -1,99 +1,205 @@
-import pickle
-from gib import gib_detect_train
-from dga_routines import count_consonants, entropy
-import tldextract
+from pandas import read_csv, concat
+
+from sklearn.model_selection import train_test_split
+
+from keras_preprocessing.sequence import pad_sequences
+from keras.models import Sequential, load_model
+from keras.layers.core import Dense, Dropout, Activation
+from tensorflow.keras.layers import Embedding
+from keras.layers import LSTM
+
+import numpy as np
+import tldextract as tlde
+import tensorflow as tf
+import tensorflowjs as tfjs
+import re as regex
+import math
+import os
 import argparse
 import json
 
-exit_code = 0
+# disable annoying messages from tensorflow
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
+
+global validChars, maxFeatures, maxLength, domains_train, domains_test, labels_train, labels_test
 
 def read_file(filename):
     with open(filename) as f:
         for line in f:
             yield line.strip("\n")
 
+def entropy(string):
+    # Shannon entropy
+    # get probability of chars in string
+    prob = [ float(string.count(c)) / len(string) for c in dict.fromkeys(list(string)) ]
+    entropy = - sum([ p * math.log(p) / math.log(2.0) for p in prob ])
+    return entropy
 
-def domain_check(domain):
-    
-    global exit_code
+def create_dataset():
+	print("Creating dataset...")
+	# read the csv file containing domains
+	cisco_domains = read_csv('cisco_domains.csv', names=['raw_domain'])
+	dga_domains = read_csv('dga_domains.csv', names=['raw_domain'])
 
-    # skip tor domains
-    if domain.endswith(".onion") and exit_code == 0:
-        exit_code=1
-    
-    # we only interested in main domain name without subdomain and tld
-    domain_without_sub = tldextract.extract(domain).domain
-    
-    # skip localized domains
-    if domain_without_sub.startswith("xn-") and exit_code == 0:
-        exit_code=2
+	# extract the top level domain and remove unwanted chars
+	cisco_domains['domain'] = [regex.sub('[^A-Za-z0-9]+', '', tlde.extract(d).domain) for d in cisco_domains['raw_domain']]
+	dga_domains['domain'] = [regex.sub('[^A-Za-z0-9]+', '', tlde.extract(d).domain) for d in dga_domains['raw_domain']]
 
-    # skip short domains
-    if len(domain_without_sub) < 6 and exit_code == 0:
-        exit_code=3
-        
-    domain_entropy = entropy(domain_without_sub)
-    domain_consonants = count_consonants(domain_without_sub)
-    domain_length = len(domain_without_sub)
-    return domain_without_sub, domain_entropy, domain_consonants, domain_length
+	# assign label to each domain
+	cisco_domains['label'] = 0
+	dga_domains['label'] = 1
+
+	# remove unwanted columns and duplicates
+	cisco_domains = cisco_domains.drop(columns=['raw_domain'])
+	cisco_domains = cisco_domains.drop_duplicates(subset=['domain'])
+	dga_domains = dga_domains.drop(columns=['raw_domain'])
+	dga_domains = dga_domains.drop_duplicates(subset=['domain'])
+
+	print(cisco_domains)
+	print(dga_domains)
+
+	# combine the two datesets and shuffle them
+	domains = concat([cisco_domains, dga_domains], ignore_index=True).sample(frac=1).reset_index(drop=True)
+	domains = domains.drop_duplicates(subset=['domain'])
+	domains.to_csv('./domains.csv', index=False)
+	print("Dataset created!")
+
+	print(domains)
+
+def setup(path):
+	global validChars, maxFeatures, maxLength, domains_train, domains_test, labels_train, labels_test
+
+	test_cases = read_csv(path + '/domains.csv', skipinitialspace=True, skiprows=1, names=['domain','label'])
+	domains, labels = test_cases['domain'], test_cases['label']
+
+	doms = {}
+	charSet = set()
+	for i, value in domains.items():
+		val = str(value).lower()
+		doms[value] = int(labels[i]) 
+		for j in range(len(val)):
+			charSet.add(val[j])
+
+	validChars = { x: idx + 1 for idx, x in enumerate(charSet)}
+	maxFeatures = len(validChars) + 1 #different chars
+	maxLength = np.max([len(str(x)) for x in domains]) #longest domain
+
+	#obj = { 'validChars': validChars, 'maxFeatures': int(maxFeatures), 'maxLength': int(maxLength)}
+
+	#json_string = json.dumps(obj)
+	#with open('../../static/tfjs/setup.json', 'w+') as outfile:
+	#	outfile.write(json_string)
+
+	#json_string = json.dumps(doms)
+	#with open('../../static/tfjs/domains.json', 'w+') as outfile:
+	#	outfile.write(json_string)
+
+	# encode each char of each domain into its validChar representation
+	domains = [[validChars[y] for y in str(x)] for x in domains]
+	domains = pad_sequences(domains, maxlen=maxLength)
+
+	domains_train, domains_test, labels_train, labels_test = train_test_split(domains, labels, test_size=0.2)
+
+def train():
+
+	setup('.')
+
+	global maxFeatures, maxLength, domains_train, labels_train
+
+	print("Start training...")
+
+	# build LSTM Model
+	model = Sequential()
+	model.add(Embedding(maxFeatures, 128, input_length=maxLength)) #layer to turn input sequence into fixed-length vector
+	model.add(LSTM(128)) # layer with 128 neurons
+	model.add(Dropout(0.5)) # layer to prevent overfitting
+	model.add(Dense(1))
+	model.add(Activation('sigmoid')) # final layer that produce the result
+
+	# being that the model is binary ('legit' or 'dga'), use binary loss function to improve accurancy and reduce training time
+	model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+
+	# train 
+	for i in range(5):
+		print("Train [" + str(i+1) + "]")
+		model.fit(domains_train, labels_train, epochs=1)
+		model.save('cisco_dm_' + str(i+1), overwrite=True)
+		tfjs.converters.save_keras_model(model, '../../static/tfjs/cisco_dm_' + str(i+1))
+
+	print("Training complete!")
+
+def detect(domainName, path):
+
+	setup(path)
+
+	modelName = path + '/cisco_dm'
+
+	global validChars, maxLength
+
+	detection_model = load_model(modelName)
+
+	domain = [[validChars[ch] for ch in tlde.extract(domainName).domain]]
+	domain = pad_sequences(domain, maxlen=maxLength)
+
+	prediction = True if detection_model.predict(domain, verbose = 0)[0][0] > 0.5 else False
+
+	print("[" + modelName + "] " + domainName + " is " + str(prediction) + "(" + str(detection_model.predict(domain)[0][0]) + ")")
+
+	return prediction
+
+if __name__ == "__main__":
+
+	parser = argparse.ArgumentParser(description="DGA domain detection")
+	parser.add_argument("-d", "--domain", help="Domain to check")
+	parser.add_argument("-f", "--file", help="File with domains. One per line")
+	parser.add_argument("-p", "--path", default=".", help="Folder path")
+
+	parser.add_argument('--func', nargs='?', default="")
+	
+	subparsers = parser.add_subparsers()
+	
+	parser_dataset = subparsers.add_parser('dataset', help='Create a new dataset')
+	parser_dataset.set_defaults(func=create_dataset)
+
+	parser_dataset = subparsers.add_parser('train', help='Train the model')
+	parser_dataset.set_defaults(func=train)
+	
+
+	args = parser.parse_args()
 
 
-def main():
-    global exit_code
-    parser = argparse.ArgumentParser(description="DGA domain detection")
-    parser.add_argument("-d", "--domain", help="Domain to check")
-    parser.add_argument("-f", "--file", help="File with domains. One per line")
-    parser.add_argument("-p", "--path", help="Folder path")
-    args = parser.parse_args()
-    model_data = pickle.load(open(args.path + '/gib/gib_model.pki', 'rb'))
-    model_mat = model_data['mat']
-    threshold = model_data['thresh']
+	if args.func != "":
+		args.func()
 
-    if args.domain:
-        if domain_check(args.domain):
-            results = {"domain": "", "is_dga": "", "consonants": "", "entropy": "", "domain_length": "", "exit_code": 0}
-            domain_without_sub, domain_entropy, domain_consonants, domain_length = domain_check(args.domain)
-            
-            results["domain"] = args.domain
-            results["entropy"] = domain_entropy
-            results["consonants"] = domain_consonants
-            results["domain_length"] = domain_length
-            
-            if not gib_detect_train.avg_transition_prob(domain_without_sub, model_mat) > threshold:
-                results["is_dga"] = True
-            else:
-                results['is_dga'] = False
+	else:
 
-        results["exit_code"] = exit_code
-        print(json.dumps(results, indent=4))
-        print("---")
+		results = {"domain": "", "is_dga": ""}
 
-    elif args.file:
-        domains = read_file(args.file)
-        results = {"domain": "", "is_dga": "", "consonants": "", "entropy": "", "domain_length": "", "exit_code": 0}
+		if args.domain:
+			prediction = detect(args.domain, args.path)
 
-        for domain in domains:
-            results["domain"] = domain
-            exit_code = 0
-            if domain_check(domain):
-                #print(domain, exit_code)
-                domain_without_sub, domain_entropy, domain_consonants, domain_length = domain_check(domain)
-                results["entropy"] = domain_entropy
-                results["consonants"] = domain_consonants
-                results["domain_length"] = domain_length
-                if not gib_detect_train.avg_transition_prob(domain_without_sub, model_mat) > threshold:
-                    results["is_dga"] = True
-                else:
-                    results["is_dga"] = False
+			results['domain'] = args.domain
+			results['is_dga'] = prediction
 
-            results["exit_code"] = exit_code
-            print(json.dumps(results, indent=4))
-            print("---")
+			print(json.dumps(results, indent=4))
+			print("---")
 
-    else:
-        print('error')
+		elif args.file:
+			domains = read_file(args.file)
 
-    exit(exit_code)
+			for domain in domains:
+				prediction = detect(domain, args.path)
 
-if __name__ == '__main__':
-    main()
+				results['domain'] = domain
+				results['is_dga'] = prediction
+
+				print(json.dumps(results, indent=4))
+				print("---")
+		else:
+			print("Error")
+
+	exit(0)
+
+
+

@@ -1,5 +1,36 @@
 /* ---- DGA ---- */
 
-#file-container, #domain-container, #alg-container, #send_dga{
+#file-container, #domain-container, #send_dga{
 	display: none;
+}
+
+.detected {
+    color: #ff1f4a;
+}
+
+.results {
+    clear: both;
+    margin-top: 6px;
+    margin-bottom: 6px;
+    max-width: none;
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 80%;
+    margin: 50 auto;
+    text-align: center;
+}
+
+.results tr:nth-child(even){background-color: #ffffff;}
+.results tr:nth-child(odd){background-color: #f2f2f2;}
+
+.results th {
+    color: #fff;
+    background-color: #343a40;
+    border-color: #454d55;
+    min-height: 50px;
+    height: 50px;
+}
+
+.results td {
+    padding: 10px;
 }

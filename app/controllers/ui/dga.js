@@ -49,11 +49,6 @@ router.post('/result', async function(req, res) {
             } else
                 formdata.append('choice', fields.choice);
 
-            if(!fields.algchoice)
-                formdata.append('algchoice', 'alg1')
-            else
-                formdata.append('algchoice', fields.algchoice)
-
             let filePath = files.filetoupload.filepath;
             let fileName = files.filetoupload.originalFilename;
             let url = req.protocol + '://' + req.get('host') + '/api/dga-detection';

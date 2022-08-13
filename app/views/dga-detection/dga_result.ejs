@@ -16,17 +16,26 @@
 			Risultati dell'analisi
 			<br><br>
 			<% if(data.status == 200) { %>
-				<% for(var i=0; i < data.data.length; i++) { %>
-					<% if(data.data[i].domain) { %>
-						<b>Dominio: </b><%= data.data[i].domain %><br>
-						<% if(data.data[i].error) { %>
-							<b>Motivo skip: </b><%= data.data[i].error %>
-						<% } else { %>
-							<b>DGA: </b><%= data.data[i].is_dga %> 
+				<table class="results sortable">
+					<tr>
+						<th>Dominio</th>
+						<th>DGA</th>
+						<th>Rilevato (volte)</th>
+					</tr>
+					<% for(var i=0; i < data.data.length; i++) { %>
+						<tr>
+						<% if(data.data[i].domain) { %>
+							<td><%= data.data[i].domain %></td>
+							<% if(data.data[i].is_dga) { %>
+								<td class="detected">Si</td>
+							<% } else { %>
+								<td>Probabilmente no</td>
+							<% } %>
+							<td><%= data.data[i].detected_by_engine %></b>/<%= data.engines_count %></td>
 						<% } %>
-						<br><br>
+						</tr>
 					<% } %>
-				<% } %>
+				</table>
 			<% } else { %>
 				Errore <%= data.status %>: <%= data.text %>
 			<% } %>

@@ -9,6 +9,13 @@ var myCss = {
     },
 };
 
+// R = P * G (prob * grav * settore)
+// prob = [molto bassa, bassa, medio, alta, molto alta] = [0.2, 0.4, 0.6, 0.8, 1]
+// grav = [trascurabile, modesta, notevole, ingente] = [0.25, 0.5, 0.75, 1]
+// settore = [...]
+
+//e.g. assunzioni medie italiane: 980000
+
 const surveyModel = {
     pages: [{
 
