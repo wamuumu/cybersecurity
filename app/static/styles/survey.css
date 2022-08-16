@@ -55,3 +55,23 @@
 	color: #303F7D;
 	letter-spacing: .8px;
 }
+
+.uploadFile {
+    border: 1px solid #3a4eff;
+    color:  #3a4eff;
+    padding: 10px 40px;
+    text-align: center;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+.uploadFile:hover{
+    color: #0000ff;
+    border-color: #0000ff;
+}
+
+#file-container {
+    display: none;
+}

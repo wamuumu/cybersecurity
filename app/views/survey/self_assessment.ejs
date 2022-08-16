@@ -34,6 +34,18 @@
 			<div class="questionnaire-container">
 				<div id="description">
 					<h3>Compila un nuovo questionario di SELF ASSESSMENT</h3>
+					
+					Default: <input type="radio" name="configuration" value="default" onchange="showOption(this)" checked="checked">
+					File: <input type="radio" name="configuration" value="file" onchange="showOption(this)">
+
+					<div id="file-container">
+						<div id="uploadFile" class="uploadFile" onclick="getFile()">Scegli file di configurazione (.json)</div>
+					  	<div style='height: 0px; width: 0px; overflow:hidden;'>
+							<input type="file" name="configuration" id="configuration" accept=".json" onchange="readFile(event)" />
+						</div>
+					</div>
+
+					<p>Se non viene selezionato nessun file, automaticamente si applica la configurazione di default</p>
 					<p>
 						Il servizio offre uno strumento semplice e rapido per l'autovalutazione per il calcolo del rischio cibernetico. Il servizio richiede due tipi di input: quelli relativi alle misure di sicurezza e quelli sulle risorse dell'azienda. A questionario completo, il servizio stima il rischio cibernetico derivante da ogni categoria. Più il valore è alto, più la probabilità di rischio è alta.
 						<br><br>

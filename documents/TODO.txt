@@ -53,3 +53,9 @@ SELF ASSESSMENT: NON SI SANNO COME SI CALCOLANO I VALORI DEL RISCHIO
 - Strumenti self assessment (backend) (migliorare quello che c’è)
 - Ripristino questionario self assessment tramite ID
 
+
+aziende impreparate, statistiche attacchi con particolare attenzione aziende medio piccole
+sert, se aziende hanno problemi a chi si rivolgono
+
+prima sommario, introduzione con argomenti sopra
+rinomina sommario in "il mio progetto"
