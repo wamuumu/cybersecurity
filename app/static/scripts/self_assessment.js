@@ -19,14 +19,108 @@ function readFile(e){
     else if(file.type == "application/json"){
         var reader = new FileReader();
         reader.onload = function(evt) { 
-            fileConf = JSON.parse(evt.target.result); 
-            configuration = fileConf;
+            fileConf = JSON.parse(evt.target.result);
+
+            //controllo configurazione corretta
+            const max = [
+                { "1": 5, "2": 5 },
+                { "1": 3, "2": 6, "3": 4, "4": 4, "5": 5},
+                { "1": 3, "2": 4, "3": 6},
+                { "1": 4, "2": 3, "3": 6},
+                { "1": 3, "2": 5, "3": 4, "4": 4},
+                { "1": 2, "2": 5, "3": 3},
+                { "1": 4, "2": 7, "3": 6, "4": 3, "5": 2}
+            ]
+
+            console.log(fileConf)
+            var lastCat = "", lastQuest = "", lastType = ""
+            for (const key in fileConf) {
+                if(key != "type"){
+
+                    let index;
+                    var isValid = true
+                    if(!key.includes("category")){
+                        isValid = false
+                        break
+                    }else
+                        index = parseInt(key[key.length-1]) - 1; 
+
+                    if(key != "category8")
+                        for(const question in fileConf[key]){
+                            let probArr = fileConf[key][question]['probability']
+                            if(!Array.isArray(probArr) || probArr.length != max[index][question] || !onlyNumbers(probArr)){
+                                lastQuest = question
+                                lastType = "probabilità"
+                                isValid = false
+                                break
+                            }
+
+                            let impArr = fileConf[key][question]['impact']
+                            if(!Array.isArray(impArr) || (impArr.length != max[index][question] && impArr.length != 1) || !onlyNumbers(impArr)){
+                                lastQuest = question
+                                lastType = "impatto"
+                                isValid = false
+                                break
+                            }
+                        }
+                    else
+                        for(const question in fileConf[key]){
+                            if(!checkNumber(fileConf[key][question]['probability'])){
+                                lastQuest = question
+                                lastType = "probabilità"
+                                isValid = false
+                                break
+                            }
+
+                            if(!checkNumber(fileConf[key][question]['impact'])){
+                                lastQuest = question
+                                lastType = "impatto"
+                                isValid = false
+                                break
+                            }
+                        }
+
+                    console.log(key + " " + isValid)
+
+                    if(!isValid){
+                        lastCat = key
+                        break
+                    }
+                }
+            }
+
+            if(isValid){
+                alert("Configurazione valida")
+                configuration = fileConf;
+            } else {
+                if(lastCat != "")
+                    alert('Configurazione invalida su ' + lastCat + ", domanda " + lastQuest + " (" + lastType + ")")
+                else
+                    alert("Configurazione invalida")
+                document.getElementById("configuration").value = "" //reset del file
+                configuration = defaultConf;
+            }
+
             setUpSurvey()
         };
         reader.readAsText(file);
     } else {
         alert("File invalido!")
     }
+}
+
+function onlyNumbers(array) {
+    for (var i = 0; i < array.length; i++) {
+        if(!(typeof array[i] === 'number' && array[i] >= 0 && array[i] <= 1))
+            return false
+    }
+    return true
+}
+
+function checkNumber(x) {
+    if(typeof x == 'number' && !isNaN(x))
+        return true
+    return false
 }
 
 function showOption(radio){
@@ -71,11 +165,7 @@ var myCss = {
 
 // file di configurazione con valori
 
-//e.g. assunzioni medie italiane: 980000
-
 function setUpSurvey(){
-
-    console.log(configuration)
 
     surveyModel = {
     "pages": [{
@@ -84,26 +174,48 @@ function setUpSurvey(){
         "title": "Categoria: Informazioni sull'organizzazione",
         "elements": [{
             "name": "p0f0",
+            "title": "Settore:",
+            "type": "radiogroup",
+            "choices": [
+                { "value": 0.15, "text": "Governo / Militare / Logistica" },
+                { "value": 0.14, "text": "Informazione e Comunicazione" },
+                { "value": 0.130, "text": "Target multipli" },
+                { "value": 0.131, "text": "Assistenza medica" },
+                { "value": 0.09, "text": "Educazione" },
+                { "value": 0.07, "text": "Servizi finanziari" },
+                { "value": 0.039, "text": "Professionale / Scientifico / Tecnico" },
+                { "value": 0.04, "text": "Vendita al dettaglio / all'ingrosso" },
+                { "value": 0.041, "text": "Trasporto e Deposito" },
+                { "value": 0.042, "text": "Produzione" },
+                { "value": 0.029, "text": "News / Multimedia" },
+                { "value": 0.030, "text": "Organizzazione" },
+                { "value": 0.020, "text": "Energia e Gas" },
+                { "value": 0.021, "text": "Arte / Intrattenimento" },
+                { "value": 0.031, "text": "Altro" }
+            ],
+            "isRequired": true
+        },{
+            "name": "p0f1",
             "title": "Turnover:",
             "type": "radiogroup",
             "choices": [
-                { "value": 1, "text": ">20 milioni per anno" },
-                { "value": 0.75, "text": "10-20 milioni per anno" },
-                { "value": 0.58, "text": "2-10 milioni per anno" },
-                { "value": 0.42, "text": "1-2 milioni per anno" },
-                { "value": 0.25, "text": "<1 milione per anno" }
+                { "value": 0, "text": "<1 milione per anno" },
+                { "value": 1, "text": "1-2 milioni per anno" },
+                { "value": 2, "text": "2-10 milioni per anno" },
+                { "value": 3, "text": "10-20 milioni per anno" },
+                { "value": 4, "text": ">20 milioni per anno" }
             ],
             "isRequired": true
         }, {
-            "name": "p0f1",
+            "name": "p0f2",
             "title": "Numero dipendenti:",
             "type": "radiogroup",
             "choices": [
-                { "value": 1, "text": "50-250" },
-                { "value": 0.75, "text": "20-50" },
-                { "value": 0.58, "text": "10-20" },
-                { "value": 0.42, "text": "5-10" },
-                { "value": 0.25, "text": "<5" }
+                { "value": 0, "text": "<5" },
+                { "value": 1, "text": "5-10" },
+                { "value": 2, "text": "10-20" },
+                { "value": 3, "text": "20-50" },
+                { "value": 4, "text": "50-250" }
             ],
             "isRequired": true
         }]
@@ -114,9 +226,9 @@ function setUpSurvey(){
             "title": "La tua organizzazione possiede una rete IT?",
             "type": "radiogroup",
             "choices": [
-                { "value": 1, "text": "Sì, ma la rete è condivisa con altre entità" },
-                { "value": 0.5, "text": "Sì" },
-                { "value": 0, "text": "No" }
+                { "value": 0, "text": "No" },
+                { "value": 1, "text": "Sì" },
+                { "value": 2, "text": "Sì, ma la rete è condivisa con altre entità" }
             ],
             "isRequired": true
         }, {
@@ -124,12 +236,12 @@ function setUpSurvey(){
             "title": "Computer tradizionali:",
             "type": "radiogroup",
             "choices": [
-                { "value": 1, "text": ">250" },
-                { "value": 0.83, "text": "50-250" },
-                { "value": 0.66, "text": "20-50" },
-                { "value": 0.50, "text": "10-20" },
-                { "value": 0.33, "text": "5-10" },
-                { "value": 0.17, "text": "<5" }
+                { "value": 0, "text": "<5" },
+                { "value": 1, "text": "5-10" },
+                { "value": 2, "text": "10-20" },
+                { "value": 3, "text": "20-50" },
+                { "value": 4, "text": "50-250" },
+                { "value": 5, "text": ">250" }
             ],
             "isRequired": true,
             "enableIf": "{p1f0}>0"
@@ -138,10 +250,10 @@ function setUpSurvey(){
             "title": "Server:",
             "type": "radiogroup",
             "choices": [
-                { "value": 1, "text": ">5" },
-                { "value": 0.66, "text": "2-5" },
-                { "value": 0.33, "text": "1" },
-                { "value": 0, "text": "0" }
+                { "value": 0, "text": "0" },
+                { "value": 1, "text": "1" },
+                { "value": 2, "text": "2-5" },
+                { "value": 3, "text": ">5" }
             ],
             "isRequired": true,
             "enableIf": "{p1f0}>0"
@@ -150,10 +262,10 @@ function setUpSurvey(){
             "title": "Servizi Cloud:",
             "type": "radiogroup",
             "choices": [
-                { "value": 1, "text": ">5" },
-                { "value": 0.66, "text": "2-5" },
-                { "value": 0.33, "text": "1" },
-                { "value": 0, "text": "0" }
+                { "value": 0, "text": "0" },
+                { "value": 1, "text": "1" },
+                { "value": 2, "text": "2-5" },
+                { "value": 3, "text": ">5" }
             ],
             "isRequired": true,
             "enableIf": "{p1f0}>0"
@@ -162,11 +274,11 @@ function setUpSurvey(){
             "title": "Altri dispositivi elettronici connessi alla rete (Stampanti, Fax, Telefoni VoIP, etc.):",
             "type": "radiogroup",
             "choices": [
-                { "value": 1, "text": ">50" },
-                { "value": 0.75, "text": "20-50" },
-                { "value": 0.58, "text": "10-20" },
-                { "value": 0.42, "text": "5-10" },
-                { "value": 0.25, "text": "<5" }
+                { "value": 0, "text": "<5" },
+                { "value": 1, "text": "5-10" },
+                { "value": 2, "text": "10-20" },
+                { "value": 3, "text": "20-50" },
+                { "value": 4, "text": ">50" }
             ],
             "isRequired": true,
             "enableIf": "{p1f0}>0"
@@ -182,9 +294,9 @@ function setUpSurvey(){
             "title": "Informazioni del cliente:",
             "type": "checkbox",
             "choices": [
-                { "value": 0.329, "text": "Informazioni sanitarie personali" },
-                { "value": 0.330, "text": "Informazioni personali identificabili" },
-                { "value": 0.331, "text": "Informazioni finanziarie" }
+                { "value": 0, "text": "Informazioni finanziarie" },
+                { "value": 1, "text": "Informazioni personali identificabili" },
+                { "value": 2, "text": "Informazioni sanitarie personali" }
             ],
             "isRequired": true
         }, {
@@ -192,10 +304,10 @@ function setUpSurvey(){
             "title": "Informazioni di altre aziende partner:",
             "type": "checkbox",
             "choices": [
-                { "value": 0.249, "text": "Record finanziari" },
-                { "value": 0.250, "text": "Know-how" },
-                { "value": 0.251, "text": "Informazioni sulle transazioni" },
-                { "value": 0.252, "text": "Informazioni sui clienti del partner" }
+                { "value": 0, "text": "Informazioni sui clienti del partner" },
+                { "value": 1, "text": "Informazioni sulle transazioni" },
+                { "value": 2, "text": "Know-how" },
+                { "value": 3, "text": "Record finanziari" }
             ],
             "isRequired": true
         }, {
@@ -203,12 +315,12 @@ function setUpSurvey(){
             "title": "Informazioni dell’azienda:",
             "type": "checkbox",
             "choices": [
-                { "value": 0.1663, "text": "Informazioni finanziarie" },
-                { "value": 0.1664, "text": "Dati operativi" },
-                { "value": 0.1665, "text": "Know-how" },
-                { "value": 0.1666, "text": "Informazioni su transazioni" },
-                { "value": 0.1667, "text": "Audit e Log" },
-                { "value": 0.1668, "text": "Media" }
+                { "value": 0, "text": "Media" },
+                { "value": 1, "text": "Audit e Log" },
+                { "value": 2, "text": "Informazioni su transazioni" },
+                { "value": 3, "text": "Know-how" },
+                { "value": 4, "text": "Dati operativi" },
+                { "value": 5, "text": "Informazioni finanziarie" }
             ],
             "isRequired": true
         }]
@@ -223,10 +335,10 @@ function setUpSurvey(){
             "title": " La sua azienda ha formalmente definito delle politiche di sicurezza:",
             "type": "radiogroup",
             "choices": [
-                { "value": 0.25, "text": "Sì, tutti i dipendenti hanno familiarità con esse e lo staff responsabile assicura che vengano seguiti" },
-                { "value": 0.5, "text": "Sì, tutti i dipendenti ne sono a conoscenza (almeno all'inizio del loro impiego)" },
-                { "value": 0.75, "text": "Sì, le politiche sono definite e il personale responsabile è a conoscenza di esse" },
-                { "value": 1, "text": "No" }
+                { "value": 0, "text": "Sì, tutti i dipendenti hanno familiarità con esse e lo staff responsabile assicura che vengano seguiti" },
+                { "value": 1, "text": "Sì, tutti i dipendenti ne sono a conoscenza (almeno all'inizio del loro impiego)" },
+                { "value": 2, "text": "Sì, le politiche sono definite e il personale responsabile è a conoscenza di esse" },
+                { "value": 3, "text": "No" }
             ],
             "isRequired": true
         }, {
@@ -234,9 +346,9 @@ function setUpSurvey(){
             "title": "Politiche sui dispositivi mobili:",
             "type": "radiogroup",
             "choices": [
-                { "value": 0.33, "text": "Solo i dispositivi mobili dell’azienda (configurati e gestiti dal personale IT interno) possono connettersi alla rete aziendale" },
-                { "value": 0.66, "text": "Tutti i dispositivi mobili sono obbligati a soddisfare le politiche dell'azienda" },
-                { "value": 0.80, "text": "I dispositivi mobili possono connettersi liberamente alla rete, presupponendo che vengano fornite le credenziali corrette" }
+                { "value": 0, "text": "Solo i dispositivi mobili dell’azienda (configurati e gestiti dal personale IT interno) possono connettersi alla rete aziendale" },
+                { "value": 1, "text": "Tutti i dispositivi mobili sono obbligati a soddisfare le politiche dell'azienda" },
+                { "value": 2, "text": "I dispositivi mobili possono connettersi liberamente alla rete, presupponendo che vengano fornite le credenziali corrette" }
             ],
             "isRequired": true
         }, {
@@ -248,12 +360,12 @@ function setUpSurvey(){
             "title": "La sua azienda ha una persona ufficialmente responsabile della sicurezza informatica (colui/colei che distribuisce il budget per la sicurezza informatica, stabilisce gli obiettivi strategici e definisce le politiche di sicurezza, ecc.):",
             "type": "radiogroup",
             "choices": [
-                { "value": 0.25, "text": "Un’organizzazione per la gestione IT" },
-                { "value": 0.400, "text": "Il nostro amministratore IT" },
-                { "value": 0.401, "text": "Un responsabile dedicato alla sicurezza informatica" },
-                { "value": 0.50, "text": "Un amministratore condiviso nell’area IT" },
-                { "value": 0.75, "text": "Uno o più dipendenti che si occupano anche dell’aspetto di sicurezza informatica" },
-                { "value": 1, "text": "No" }
+                { "value": 0, "text": "Un’organizzazione per la gestione IT" },
+                { "value": 1, "text": "Il nostro amministratore IT" },
+                { "value": 2, "text": "Un responsabile dedicato alla sicurezza informatica" },
+                { "value": 3, "text": "Un amministratore condiviso nell’area IT" },
+                { "value": 4, "text": "Uno o più dipendenti che si occupano anche dell’aspetto di sicurezza informatica" },
+                { "value": 5, "text": "No" }
             ],
             "isRequired": true
         }]
@@ -268,9 +380,9 @@ function setUpSurvey(){
             "title": "Qual è il livello di consapevolezza da parte dei suoi dipendenti della sicurezza informatica nella sua azienda:",
             "type": "checkbox",
             "choices": [
-                { "value": 0.329, "text": "I dipendenti leggono (e firmano un documento speciale) sulle politiche di sicurezza informatica" },
-                { "value": 0.330, "text": "Vengono effettuate attività speciali di formazione sulla sicurezza informatica organizzate dall'azienda" },
-                { "value": 0.331, "text": "Vengono effettuate corsi di formazione sulla sicurezza informatica da una ditta esterna" }
+                { "value": 0, "text": "Vengono effettuate corsi di formazione sulla sicurezza informatica da una ditta esterna" },
+                { "value": 1, "text": "Vengono effettuate attività speciali di formazione sulla sicurezza informatica organizzate dall'azienda" },
+                { "value": 2, "text": "I dipendenti leggono (e firmano un documento speciale) sulle politiche di sicurezza informatica" }
             ],
             "isRequired": true,
             "hasNone": true,
@@ -284,11 +396,11 @@ function setUpSurvey(){
             "title": "Quali beni sono inclusi in un inventario mantenuto dalla sua azienda:",
             "type": "checkbox",
             "choices": [
-                { "value": 0.198, "text": "Dispositivi fisici (workstation, server, router, ecc.)" },
-                { "value": 0.199, "text": "Dispositivi mobili" },
-                { "value": 0.200, "text": "Software" },
-                { "value": 0.201, "text": "Servizi (ad es. Cloud, social network, siti Web, email, ecc.)" },
-                { "value": 0.202, "text": "Dati" }
+                { "value": 0, "text": "Dati" },
+                { "value": 1, "text": "Servizi (ad es. Cloud, social network, siti Web, email, ecc.)" },
+                { "value": 2, "text": "Software" },
+                { "value": 3, "text": "Dispositivi mobili" },
+                { "value": 4, "text": "Dispositivi fisici (workstation, server, router, ecc.)" }
             ],
             "isRequired": true,
             "hasNone": true,
@@ -302,10 +414,10 @@ function setUpSurvey(){
             "title": "In che modo l'accesso fisico ai locali dell’azienda è protetto e controllato:",
             "type": "checkbox",
             "choices": [
-                { "value": 0.250, "text": "La stanza del server è bloccata e solo il personale responsabile ha accesso ad essa" },
-                { "value": 0.251, "text": "Uffici. L'accesso agli uffici principali è severamente vietato ai visitatori esterni se nessuno dei presenti è all'interno" },
-                { "value": 0.66, "text": "Perimetro. L'accesso all'area è sorvegliato dall'addetto alla reception" },
-                { "value": 1, "text": "L'accesso di visitatori esterni non è monitorato" }
+                { "value": 0, "text": "La stanza del server è bloccata e solo il personale responsabile ha accesso ad essa" },
+                { "value": 1, "text": "Uffici. L'accesso agli uffici principali è severamente vietato ai visitatori esterni se nessuno dei presenti è all'interno" },
+                { "value": 2, "text": "Perimetro. L'accesso all'area è sorvegliato dall'addetto alla reception" },
+                { "value": 3, "text": "L'accesso di visitatori esterni non è monitorato" }
             ],
             "isRequired": true
         }, {
@@ -317,10 +429,10 @@ function setUpSurvey(){
             "title": "L'organizzazione ha un certificato di sicurezza informatica:",
             "type": "checkbox",
             "choices": [
-                { "value": 0.250, "text": "Cobit" },
-                { "value": 0.251, "text": "ISO 2700X" },
-                { "value": 0.252, "text": "(N)CSF" },
-                { "value": 0.253, "text": "Altro" }
+                { "value": 0, "text": "(N)CSF" },
+                { "value": 1, "text": "ISO 2700X" },
+                { "value": 2, "text": "Cobit" },
+                { "value": 3, "text": "Altro" }
             ],
             "isRequired": true,
             "hasNone": true,
@@ -342,11 +454,11 @@ function setUpSurvey(){
             "title": "Politiche di gestione della password e dell'identità:",
             "type": "radiogroup",
             "choices": [
-                { "value": 0.10, "text": "Altri metodi di autenticazione, oltre al semplice login-password, sono in uso (come le smart card, la biometria, ecc.)" },
-                { "value": 0.15, "text": "L'autorizzazione a multi-fattori viene applicata" },
-                { "value": 0.25, "text": "Le password vengono emesse esclusivamente dal software personale di gestione delle password" },
-                { "value": 0.60, "text": "Le password possono essere selezionate dai dipendenti, ma controllate e devono soddisfare i requisiti interni" },
-                { "value": 1, "text": "Le password possono essere selezionate dai dipendenti, senza ulteriori controlli sulla sicurezza della password" }
+                { "value": 0, "text": "Altri metodi di autenticazione, oltre al semplice login-password, sono in uso (come le smart card, la biometria, ecc.)" },
+                { "value": 1, "text": "L'autorizzazione a multi-fattori viene applicata" },
+                { "value": 2, "text": "Le password vengono emesse esclusivamente dal software personale di gestione delle password" },
+                { "value": 3, "text": "Le password possono essere selezionate dai dipendenti, ma controllate e devono soddisfare i requisiti interni" },
+                { "value": 4, "text": "Le password possono essere selezionate dai dipendenti, senza ulteriori controlli sulla sicurezza della password" }
             ],
             "isRequired": true,
             "enableIf": "{p5f0}=0"
@@ -355,9 +467,9 @@ function setUpSurvey(){
             "title": "Qual è la procedura per garantire l'accesso alle risorse informative:",
             "type": "radiogroup",
             "choices": [
-                { "value": 0.25, "text": "Esiste una procedura formale per garantire l'accesso e la revoca al dipendente" },
-                { "value": 0.50, "text": "L'accesso è concesso per quanto riguarda il lavoro svolto dal dipendente e solo per quello" },
-                { "value": 1, "text": "Non esiste una procedura particolare. L'accesso è concesso quando è necessario" }
+                { "value": 0, "text": "Esiste una procedura formale per garantire l'accesso e la revoca al dipendente" },
+                { "value": 1, "text": "L'accesso è concesso per quanto riguarda il lavoro svolto dal dipendente e solo per quello" },
+                { "value": 2, "text": "Non esiste una procedura particolare. L'accesso è concesso quando è necessario" }
             ],
             "isRequired": true,
             "enableIf": "{p5f0}=0"
@@ -374,9 +486,9 @@ function setUpSurvey(){
             "type": "radiogroup",
             "choices": [
                 { "value": 0, "text": "Non è consentito l'accesso remoto" },
-                { "value": 0.40, "text": "Questo è gestito direttamente dall'amministratore IT" },
-                { "value": 0.41, "text": "I dati vengono crittografati con un protocollo di sicurezza (HTTPS, TLS, SSL, ecc.) o inviati tramite una VPN" },
-                { "value": 1, "text": "I dati inviati non vengono criptati" }
+                { "value": 1, "text": "Questo è gestito direttamente dall'amministratore IT" },
+                { "value": 2, "text": "I dati vengono crittografati con un protocollo di sicurezza (HTTPS, TLS, SSL, ecc.) o inviati tramite una VPN" },
+                { "value": 3, "text": "I dati inviati non vengono criptati" }
             ],
             "isRequired": true
         }, {
@@ -388,13 +500,13 @@ function setUpSurvey(){
             "title": "Quali meccanismi di protezione sono installati:",
             "type": "checkbox",
             "choices": [
-                { "value": 0.1417, "text": "Protezione da malware (ad es. antivirus)" },
-                { "value": 0.1418, "text": "Protezione della rete (ad es. firewall)" },
-                { "value": 0.1419, "text": "Backup regolare" },
-                { "value": 0.1420, "text": "Registrazione degli eventi" },
-                { "value": 0.1421, "text": "Crittografia dei dati (per le principali risorse informative)" },
-                { "value": 0.1422, "text": "Scansione periodica delle vulnerabilità" },
-                { "value": 0.1423, "text": "Analisi degli eventi informatici (anche esternalizzati)" }
+                { "value": 0, "text": "Protezione da malware (ad es. antivirus)" },
+                { "value": 1, "text": "Protezione della rete (ad es. firewall)" },
+                { "value": 2, "text": "Backup regolare" },
+                { "value": 3, "text": "Registrazione degli eventi" },
+                { "value": 4, "text": "Crittografia dei dati (per le principali risorse informative)" },
+                { "value": 5, "text": "Scansione periodica delle vulnerabilità" },
+                { "value": 6, "text": "Analisi degli eventi informatici (anche esternalizzati)" }
             ],
             "isRequired": true
         }, {
@@ -402,12 +514,12 @@ function setUpSurvey(){
             "title": "Con quale frequenza aggiorni i tuoi sistemi (inclusi sistemi operativi, servizi Web, browser, database, ecc.):",
             "type": "radiogroup",
             "choices": [
-                { "value": 0.28, "text": "Gli aggiornamenti vengono eseguiti automaticamente utilizzando le regole predefinite del software" },
-                { "value": 0.30, "text": "Gli aggiornamenti vengono applicati in base alle politiche di sicurezza informatica, ma non meno di ogni settimana" },
-                { "value": 0.40, "text": "Gli aggiornamenti vengono applicati in base alle politiche di sicurezza informatica, ma non meno di ogni un mese" },
-                { "value": 0.60, "text": "Gli aggiornamenti vengono applicati in base alle politiche di sicurezza informatica, ma non meno di ogni 3 mesi" },
-                { "value": 0.80, "text": "Gli aggiornamenti vengono applicati in base alle politiche di sicurezza informatica, ma non meno di ogni 6 mesi" },
-                { "value": 1, "text": "Non c'è controllo sugli aggiornamenti. Gli aggiornamenti automatici potrebbero essere disabilitati" }
+                { "value": 0, "text": "Gli aggiornamenti vengono eseguiti automaticamente utilizzando le regole predefinite del software" },
+                { "value": 1, "text": "Gli aggiornamenti vengono applicati in base alle politiche di sicurezza informatica, ma non meno di ogni settimana" },
+                { "value": 2, "text": "Gli aggiornamenti vengono applicati in base alle politiche di sicurezza informatica, ma non meno di ogni un mese" },
+                { "value": 3, "text": "Gli aggiornamenti vengono applicati in base alle politiche di sicurezza informatica, ma non meno di ogni 3 mesi" },
+                { "value": 4, "text": "Gli aggiornamenti vengono applicati in base alle politiche di sicurezza informatica, ma non meno di ogni 6 mesi" },
+                { "value": 5, "text": "Non c'è controllo sugli aggiornamenti. Gli aggiornamenti automatici potrebbero essere disabilitati" }
             ],
             "isRequired": true
         }, {
@@ -415,9 +527,9 @@ function setUpSurvey(){
             "title": "Hai mai superato un controllo di sicurezza informatica:",
             "type": "radiogroup",
             "choices": [
-                { "value": 0.30, "text": "Si" },
-                { "value": 0.40, "text": "Si, come parte di altri audit" },
-                { "value": 0.80, "text": "No" }
+                { "value": 0, "text": "Si" },
+                { "value": 1, "text": "Si, come parte di altri audit" },
+                { "value": 2, "text": "No" }
             ],
             "isRequired": true
         }, {
@@ -429,7 +541,7 @@ function setUpSurvey(){
             "title": "L'organizzazione ha una serie di azioni prescritte e un elenco di possibili punti di contatto (ad es. esperti di sicurezza informatica) nel caso si verificasse un incidente di sicurezza informatica?",
             "type": "radiogroup",
             "choices": [
-                { "value": 0.35, "text": "Si" },
+                { "value": 0, "text": "Si" },
                 { "value": 1, "text": "No" }
             ],
             "isRequired": true
@@ -439,10 +551,10 @@ function setUpSurvey(){
         "elements": [{
             "type": "html",
             "name": "p7first",
-            "html": "<p>Quali e quanti incidenti informatici la sua azienda ha riscontrato negli ultimi 3 anni (numero):</p>"
+            "html": "<p>Quali e quanti incidenti informatici la sua azienda ha riscontrato nell'ultimo anno(numero):</p>"
         }, {
-            "name": "p7f1",
-            "title": "Malware / Hacker:",
+            "name": "p7f0",
+            "title": "Malware o Mobile malware:",
             "type": "text",
             "inputType": "number",
             "min": 0,
@@ -455,7 +567,7 @@ function setUpSurvey(){
                 }
             ]
         }, {
-            "name": "p7f2",
+            "name": "p7f1",
             "title": "Ransomware:",
             "type": "text",
             "inputType": "number",
@@ -469,7 +581,7 @@ function setUpSurvey(){
                 }
             ]
         }, {
-            "name": "p7f3",
+            "name": "p7f2",
             "title": "Phishing:",
             "type": "text",
             "inputType": "number",
@@ -483,7 +595,7 @@ function setUpSurvey(){
                 }
             ]
         }, {
-            "name": "p7f4",
+            "name": "p7f3",
             "title": "Cyber Fraud (denaro rubato):",
             "type": "text",
             "inputType": "number",
@@ -497,8 +609,22 @@ function setUpSurvey(){
                 }
             ]
         }, {
+            "name": "p7f4",
+            "title": "DDoS",
+            "type": "text",
+            "inputType": "number",
+            "min": 0,
+            "isRequired": true,
+            "validators": [
+                {
+                    "type": "regex",
+                    "text": "Inserisci un numero intero",
+                    "regex": "^[0-9]*$"
+                }
+            ]
+        }, {
             "name": "p7f5",
-            "title": "Comportamento scorretto dei dipendenti:",
+            "title": "Spam o Botnet",
             "type": "text",
             "inputType": "number",
             "min": 0,
@@ -512,7 +638,7 @@ function setUpSurvey(){
             ]
         }, {
             "name": "p7f6",
-            "title": "Numero di altri incidenti registrati:",
+            "title": "Toolkit (Rootkit, Metaexploit)",
             "type": "text",
             "inputType": "number",
             "min": 0,
@@ -571,10 +697,64 @@ async function surveyComplete(sender){
 
     if(json.p4f3.includes("none"))
         json.p4f3[0] = 1
+
+    await saveSurveyResults(json, type, configuration)
+
+    json = computeRisk(json, configuration)
     
+    console.log(configuration)
     console.log(json)
-    await saveSurveyResults(json, type)
+
     displayResults(json)
+}
+
+function computeRisk(json, configuration){
+    let sectorMultiplier = 1;
+
+    for (const key in json) {
+        let info = getFieldInfo(key)
+
+        if(info['page'] == 0 && info['field'] == 0)
+            sectorMultiplier = json[key]
+        else {
+            let category = "category" + (info['page'] + 1)
+            let id = json[key]
+            let question = info['page'] == 0 ? info['field'].toString() : (info['field'] + 1).toString()
+            
+            if(configuration[category][question]['probability'] != undefined)
+                if(Array.isArray(json[key]))
+                    for (var i = 0; i < json[key].length; i++){
+                        id = json[key][i]
+                        json[key][i] = sectorMultiplier * configuration[category][question]['probability'][id]
+                    }
+                else{
+                    if(category == "category8") //for malwares probabilities
+                        json[key] = json[key] * sectorMultiplier * configuration[category][question]['probability']
+                    else
+                        json[key] = sectorMultiplier * configuration[category][question]['probability'][id]
+                }
+
+            if(configuration[category][question]['impact'] != undefined)
+                if(Array.isArray(json[key]))
+                    for (var i = 0; i < json[key].length; i++){
+                        id = configuration[category][question]['impact'].length == 1 ? 0 : json[key][i]
+                        json[key][i] = json[key][i] * configuration[category][question]['impact'][id]
+                    }
+                else{
+                    if(category == "category8") //for malwares impacts
+                        json[key] = json[key] * sectorMultiplier * configuration[category][question]['probability']
+                    else{
+                        id = configuration[category][question]['impact'].length == 1 ? 0 : json[key]
+                        json[key] = json[key] * configuration[category][question]['impact'][id]
+                    }
+                }
+            
+
+            console.log(key + ": " + category + " - " + question + " --> " + json[key])
+        }
+    }
+
+    return json
 }
 
 async function displayResults(json){
@@ -673,10 +853,6 @@ function setChart(scores){
 
     var ctx = document.getElementById("gdpr-chart").getContext('2d');
     const selfassessmetChart = new Chart(ctx, config);
-}
-
-function isEmpty(obj) {
-    return Object.keys(obj).length === 0 || obj == undefined;
 }
 
 $(function() {

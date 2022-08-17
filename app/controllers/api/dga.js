@@ -32,14 +32,13 @@ router.post('/', auth, async function(req, res){
 			
 			var score = 0, bound = 80, results = []	
 
-			const PERSONAL = 0.5
+			const PERSONAL = 0.4
 			const EXPOSE = 0.2
-			const DETECTIVE = 0.3
+			const DETECTIVE = 0.4
 
 			var fileName = ""
 			if(!isEmpty(files) && files.filetoupload && choice == "file")
 				fileName = files.filetoupload.originalFilename;
-
 
 
 			if(choice == "file" && fileName != ""){

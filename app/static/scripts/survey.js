@@ -5,10 +5,11 @@ Survey.StylesManager.applyTheme("modern");
 Survey.surveyLocalization.locales[Survey.surveyLocalization.defaultLocale].requiredError = "Campo obbligatorio";
 Survey.defaultBootstrapCss.navigation.start = "start-survey";
 
-async function saveSurveyResults(json, type) {
+async function saveSurveyResults(json, type, configuration) {
 
     var data = {
         "type": type,
+        "configuration": configuration,
         "data": json
     }
 
@@ -26,6 +27,38 @@ async function saveSurveyResults(json, type) {
         } else {
             alert('Compilazione fallita')
             location.reload()
+        }
+    })
+    .catch( error => console.error(error) );
+}
+
+async function restoreSurvey(){
+    var restoreID = document.getElementById('restoreID').value.replaceAll(/\s/g,'');
+
+    if(!restoreID){
+        alert("Inserisci un ID valido");
+        return;
+    }
+
+    let url = type == "GDPR" ? "/api/survey/gdpr/" : "/api/survey/self-assessment/";
+
+    await fetch(url + restoreID, {
+        method: 'GET'
+    })
+    .then((resp) => { return resp.json() })
+    .then(function(data) {
+        console.log(data);
+        if(data.status == 200){
+            console.log("Questionario ripristinato")
+            survey.data = JSON.parse(data.survey.data);
+            survey.mode = "display";
+            survey.start()
+        } else if(data.status == 401) {
+            alert("Non sei autorizzato ad accedere a questionari altrui")
+            return;
+        } else {
+            alert("Inserisci un ID valido");
+            return;
         }
     })
     .catch( error => console.error(error) );
@@ -69,42 +102,14 @@ function parseResults(json, categories){
     return parseArr;
 }
 
+function isEmpty(obj) {
+    return Object.keys(obj).length === 0 || obj == undefined;
+}
+
 function getFieldInfo(field){
     let values = field.split("f");
     values[0] = values[0].substring(1);
     return { "page" : parseInt(values[0]), "field": parseInt(values[1]) };
-}
-
-async function restoreSurvey(){
-    var restoreID = document.getElementById('restoreID').value.replaceAll(/\s/g,'');
-
-    if(!restoreID){
-        alert("Inserisci un ID valido");
-        return;
-    }
-
-    let url = type == "GDPR" ? "/api/survey/gdpr/" : "/api/survey/self-assessment/";
-
-    await fetch(url + restoreID, {
-        method: 'GET'
-    })
-    .then((resp) => { return resp.json() })
-    .then(function(data) {
-        console.log(data);
-        if(data.status == 200){
-            console.log("Questionario ripristinato")
-            survey.data = JSON.parse(data.survey.data);
-            survey.mode = "display";
-            survey.start()
-        } else if(data.status == 401) {
-            alert("Non sei autorizzato ad accedere a questionari altrui")
-            return;
-        } else {
-            alert("Inserisci un ID valido");
-            return;
-        }
-    })
-    .catch( error => console.error(error) );
 }
 
 function setGauge(mean){

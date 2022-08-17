@@ -37,6 +37,7 @@ X Trovare altri algoritmi per rilevamento DGA e implementarli
 X Gestione profilo
 X Algoritmo calcolo rischio cibernetico per self assessment (online -> nulla, circa implementato con percentuali mie)
 X MongoDB Atlas cloud
+- sistemare surveys ui se non ci sono ultime surveys da mostrare
 
 IN FUTURO:
 - Controllo generale applicazione

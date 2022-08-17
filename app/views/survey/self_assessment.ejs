@@ -23,65 +23,69 @@
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 	<title>Self Assessment</title>
 </head>
-<% if(data.status != 200) { %>
+<% if(data.status != 200 && data.status != 201) { %>
 	<body onload="setError(<%= data.status %>, '<%= data.error %>')">
 		<%- include('../common/error.ejs') %>
 	</body>
 <% } else { %>
-	<body onload="setChart([<%= data.scores %>])">
-		<%- include('../common/header.ejs') %>
-		<div class="body-container">
-			<div class="questionnaire-container">
-				<div id="description">
-					<h3>Compila un nuovo questionario di SELF ASSESSMENT</h3>
-					
-					Default: <input type="radio" name="configuration" value="default" onchange="showOption(this)" checked="checked">
-					File: <input type="radio" name="configuration" value="file" onchange="showOption(this)">
 
-					<div id="file-container">
-						<div id="uploadFile" class="uploadFile" onclick="getFile()">Scegli file di configurazione (.json)</div>
-					  	<div style='height: 0px; width: 0px; overflow:hidden;'>
-							<input type="file" name="configuration" id="configuration" accept=".json" onchange="readFile(event)" />
+	<% if(data.status == 200) { %>
+		<body onload="setChart([<%= data.scores %>])">
+	<% } else { %>
+		<body onload="document.getElementById('chart').style.display='none'">
+	<% } %>
+			<%- include('../common/header.ejs') %>
+			<div class="body-container">
+				<div class="questionnaire-container">
+					<div id="description">
+						<h3>Compila un nuovo questionario di SELF ASSESSMENT</h3>
+						
+						Default: <input type="radio" name="configuration" value="default" onchange="showOption(this)" checked="checked">
+						File: <input type="radio" name="configuration" value="file" onchange="showOption(this)">
+
+						<div id="file-container">
+							<div id="uploadFile" class="uploadFile" onclick="getFile()">Scegli file di configurazione (.json)</div>
+						  	<div style='height: 0px; width: 0px; overflow:hidden;'>
+								<input type="file" name="configuration" id="configuration" accept=".json" onchange="readFile(event)" />
+							</div>
 						</div>
+
+						<p>Se non viene selezionato nessun file, automaticamente si applica la configurazione di default</p>
+						<p>
+							Il servizio offre uno strumento semplice e rapido per l'autovalutazione per il calcolo del rischio cibernetico. Il servizio richiede due tipi di input: quelli relativi alle misure di sicurezza e quelli sulle risorse dell'azienda. A questionario completo, il servizio stima il rischio cibernetico derivante da ogni categoria. Più il valore è alto, più la probabilità di rischio è alta.
+							<br><br>
+							<b>N.B.</b> Una volta compilato un questionario, non è più possibile modificarlo. Pertanto presta attenzione alle risposte date!
+						</p>
 					</div>
 
-					<p>Se non viene selezionato nessun file, automaticamente si applica la configurazione di default</p>
-					<p>
-						Il servizio offre uno strumento semplice e rapido per l'autovalutazione per il calcolo del rischio cibernetico. Il servizio richiede due tipi di input: quelli relativi alle misure di sicurezza e quelli sulle risorse dell'azienda. A questionario completo, il servizio stima il rischio cibernetico derivante da ogni categoria. Più il valore è alto, più la probabilità di rischio è alta.
+					<div id="surveyContainer"></div>
+					<div id="surveyResults"></div>
+
+					<div class="separator">Oppure</div>
+
+					<div id="restore">
+						<h3>Ripristina un questionario già compilato</h3>
+						<p>Una volta compilato un questionario, il suo identificativo univoco (ID) viene mostrato nella pagina dei risultati e salvato nel profilo dell'utente. Tramite tale ID è possibile recuperare il questionario per visionare le risposte date. Tuttavia, non è modificabile.
+						</p>
+						<label for="restoreID">ID questionario (SELF ASSESSMENT): </label>
+						<input type="text" id="restoreID" name="restoreID" />
+						<button type="button" onclick="restoreSurvey()">Ripristina</button>
+					</div>
+
+					<div id="chart">
 						<br><br>
-						<b>N.B.</b> Una volta compilato un questionario, non è più possibile modificarlo. Pertanto presta attenzione alle risposte date!
-					</p>
-				</div>
-
-				<div id="surveyContainer"></div>
-				<div id="surveyResults"></div>
-
-				<div class="separator">Oppure</div>
-
-				<div id="restore">
-					<h3>Ripristina un questionario già compilato</h3>
-					<p>Una volta compilato un questionario, il suo identificativo univoco (ID) viene mostrato nella pagina dei risultati e salvato nel profilo dell'utente. Tramite tale ID è possibile recuperare il questionario per visionare le risposte date. Tuttavia, non è modificabile.
-					</p>
-					<label for="restoreID">ID questionario (SELF ASSESSMENT): </label>
-					<input type="text" id="restoreID" name="restoreID" />
-					<button type="button" onclick="restoreSurvey()">Ripristina</button>
-				</div>
-
-				<br><br>
-
-				<div class="separator"></div>
-
-				<br><br>
-				<div id="chart">
-					<center>
-						<h2 class="chart-title">Rischio medio(%)</h2>
-						<p>#Questionari <b>totali</b> consultati: <%= data.total %></p>
-						<p>Il grafico sotto riportato mostra i valori medi del rischio cibernetico tra i questionari consultati. Più i valori sono alti, più il rischio è elevato.</p>
-						<canvas id="gdpr-chart"></canvas>
-					</center>
+						<div class="separator"></div>
+						<br><br>
+						<center>
+							<h2 class="chart-title">Rischio(%) Ultimo Questionario</h2>
+							<p><b>ID: </b><%= data.lastID %> &nbsp; <b>Data: </b><%= data.date %></p> &nbsp; <b>Settore: </b><%= data.sector %></p>
+							<p>Il grafico sotto riportato mostra i valori del rischio cibernetico dell'ultimo grafico da te compilato.<br> Più i valori sono alti, più il rischio è elevato.</p>
+							<p><b>N.B.</b> Valori bassi non indicano che sei totalmente al sicuro in quanto il calcolo viene fatto considerando il settore lavorativo di appartenenza.</p>
+							<canvas id="gdpr-chart"></canvas>
+						</center>
+					</div>
 				</div>
 			</div>
-		</div>
-	</body>
-<% } %>
+		</body>
+	<% } %>
 </html>

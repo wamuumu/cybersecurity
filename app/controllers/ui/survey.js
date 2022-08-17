@@ -18,38 +18,26 @@ router.get('/GDPR-tools', async function(req, res) {
     var surveys;
     var error = {};
 
-    let url = req.protocol + '://' + req.get('host') + '/api/survey?stype=GDPR';
+    let url = req.protocol + '://' + req.get('host') + '/api/users/' + req.user.id + '/surveys?stype=GDPR';
 
     await axios.get(url, { 
         headers: {
             "Cookie": "connect.sid=" + req.cookies["connect.sid"] +";"
         } 
     })
-    .then(res => { surveys = res.data.data })
+    .then(res => { surveys = res.data.surveys })
     .catch(err => { error["status"] = err.response.status; error['error'] = err.response.statusText })
 
-
-    var tmp = [], results = []
     const categories = 6;
 
-    if(surveys){
-        for (var i = 0; i < surveys.length; i++)
-            tmp.push(parseResults(JSON.parse(surveys[i].data), categories));
+    if(surveys.length > 0){
+        let survey = surveys[0]
+        let results = parseResults(JSON.parse(survey.data), categories);
 
-        for (var i = 0; i < categories; i++) {
-            let x = 0;
-            for (var j = 0; j < tmp.length; j++) {
-                x += parseFloat(tmp[j][i])
-            }
-            results.push((x / tmp.length).toFixed(2));
-        }
+        res.render('survey/GDPR_tools', { data: { status: 200, scores: results, lastID: survey._id, date: survey.date }, loggedUser: req.isAuthenticated() });
 
-        tmp = {}
-        tmp['status'] = 200
-        tmp['scores'] = results
-        tmp['total'] = surveys.length
-
-        res.render('survey/GDPR_tools', { data: tmp, loggedUser: req.isAuthenticated() });
+    } else if(surveys.length == 0){
+        res.render('survey/GDPR_tools', { data: { status: 201 }, loggedUser: req.isAuthenticated() });
 
     } else {
         console.log(error);
@@ -79,38 +67,53 @@ router.get('/self-assessment', async function(req, res) {
     var surveys;
     var error = {};
 
-    let url = req.protocol + '://' + req.get('host') + '/api/survey?stype=SELF_ASSESSMENT';
+    let url = req.protocol + '://' + req.get('host') + '/api/users/' + req.user.id + '/surveys?stype=SELF_ASSESSMENT';
 
     await axios.get(url, { 
         headers: {
             "Cookie": "connect.sid=" + req.cookies["connect.sid"] +";"
         } 
     })
-    .then(res => { surveys = res.data.data })
+    .then(res => { surveys = res.data.surveys })
     .catch(err => { error["status"] = err.response.status; error['error'] = err.response.statusText })
 
-
-    var tmp = [], results = []
     const categories = 8;
 
-    if(surveys){
-        for (var i = 0; i < surveys.length; i++)
-            tmp.push(parseResults(JSON.parse(surveys[i].data), categories));
+    const sectors = [
+        { "value": 0.15, "text": "Governo / Militare / Logistica" },
+        { "value": 0.14, "text": "Informazione e Comunicazione" },
+        { "value": 0.130, "text": "Target multipli" },
+        { "value": 0.131, "text": "Assistenza medica" },
+        { "value": 0.09, "text": "Educazione" },
+        { "value": 0.07, "text": "Servizi finanziari" },
+        { "value": 0.039, "text": "Professionale / Scientifico / Tecnico" },
+        { "value": 0.04, "text": "Vendita al dettaglio / all'ingrosso" },
+        { "value": 0.041, "text": "Trasporto e Deposito" },
+        { "value": 0.042, "text": "Produzione" },
+        { "value": 0.029, "text": "News / Multimedia" },
+        { "value": 0.030, "text": "Organizzazione" },
+        { "value": 0.020, "text": "Energia e Gas" },
+        { "value": 0.021, "text": "Arte / Intrattenimento" },
+        { "value": 0.031, "text": "Altro" }
+    ]
 
-        for (var i = 0; i < categories; i++) {
-            let x = 0;
-            for (var j = 0; j < tmp.length; j++) {
-                x += parseFloat(tmp[j][i])
+    if(surveys.length > 0){
+        let survey = surveys[0]
+        let risk = computeRisk(JSON.parse(survey.data), JSON.parse(survey.configuration))
+        let sec = JSON.parse(survey.data).p0f0
+
+        for (var i = 0; i < sectors.length; i++)
+            if(sectors[i].value == sec){
+                sec = sectors[i].text + " (rischio del " + (sectors[i].value * 100) + "%)"
+                break;
             }
-            results.push((x / tmp.length).toFixed(2));
-        }
 
-        tmp = {}
-        tmp['status'] = 200
-        tmp['scores'] = results
-        tmp['total'] = surveys.length
+        let results = parseResults(risk, categories);
 
-        res.render('survey/self_assessment', { data: tmp, loggedUser: req.isAuthenticated() });
+        res.render('survey/self_assessment', { data: { status: 200, scores: results, lastID: survey._id, date: survey.date, sector: sec }, loggedUser: req.isAuthenticated() });
+
+    } else if(surveys.length == 0){
+        res.render('survey/self_assessment', { data: { status: 201 }, loggedUser: req.isAuthenticated() });  
 
     } else {
         console.log(error);
@@ -128,6 +131,7 @@ router.post('/self-assessment-result', async function(req, res) {
     let data = { status: 401, message: "You need to login to access this service" }
     res.render('common/error', { data: data, loggedUser: req.isAuthenticated() });
 })
+
 
 function parseResults(json, categories){
     var parseArr = [], count = [], sum = []
@@ -165,6 +169,52 @@ function parseResults(json, categories){
     }
 
     return parseArr;
+}
+
+function computeRisk(json, configuration){
+    let sectorMultiplier = 1;
+
+    for (const key in json) {
+        let info = getFieldInfo(key)
+
+        if(info['page'] == 0 && info['field'] == 0)
+            sectorMultiplier = json[key]
+        else {
+            let category = "category" + (info['page'] + 1)
+            let id = json[key]
+            let question = info['page'] == 0 ? info['field'].toString() : (info['field'] + 1).toString()
+            
+            if(configuration[category][question]['probability'] != undefined)
+                if(Array.isArray(json[key]))
+                    for (var i = 0; i < json[key].length; i++){
+                        id = json[key][i]
+                        json[key][i] = sectorMultiplier * configuration[category][question]['probability'][id]
+                    }
+                else{
+                    if(category == "category8") //for malwares probabilities
+                        json[key] = json[key] * sectorMultiplier * configuration[category][question]['probability']
+                    else
+                        json[key] = sectorMultiplier * configuration[category][question]['probability'][id]
+                }
+
+            if(configuration[category][question]['impact'] != undefined)
+                if(Array.isArray(json[key]))
+                    for (var i = 0; i < json[key].length; i++){
+                        id = configuration[category][question]['impact'].length == 1 ? 0 : json[key][i]
+                        json[key][i] = json[key][i] * configuration[category][question]['impact'][id]
+                    }
+                else{
+                    if(category == "category8") //for malwares impacts
+                        json[key] = json[key] * sectorMultiplier * configuration[category][question]['probability']
+                    else{
+                        id = configuration[category][question]['impact'].length == 1 ? 0 : json[key]
+                        json[key] = json[key] * configuration[category][question]['impact'][id]
+                    }
+                }
+        }
+    }
+
+    return json
 }
 
 function getFieldInfo(field){

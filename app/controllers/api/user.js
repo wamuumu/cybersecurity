@@ -210,18 +210,24 @@ router.get("/:id/surveys", auth, async function(req, res) {
         else if(!user)
             res.status(404).json({status: 404, message: "Error: User not found"})
         else {
-            Survey.find({user: user._id}, async function(err, surveys) {
+
+            var filters = {}
+            if(req.query.stype != undefined)
+                filters = {user: user._id, type: req.query.stype}
+            else
+                filters = {user: user._id}
+
+            Survey.find(filters, async function(err, surveys) {
                 if(err)
                     res.status(500).json({status: 500, message: err.name + ": " + err.message})
                 else{
                     for (var i = 0; i < surveys.length; i++) {
                         if("__v" in surveys[i]) surveys[i].__v = undefined
                         if("user" in surveys[i]) surveys[i].user = undefined
-                        if("data" in surveys[i]) surveys[i].data = undefined
                     }
                     res.status(200).json({ surveys: surveys })
                 }
-            })
+            }).sort({ date: -1 })
         }
     })
 });

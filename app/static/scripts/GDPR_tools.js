@@ -267,7 +267,7 @@ const categories = survey.pages.length - 1;
 
 async function surveyComplete(sender){
     console.log("survey Complete")
-    await saveSurveyResults(sender.data, type)
+    await saveSurveyResults(sender.data, type, "none")
     displayResults(sender.data)
 }
 

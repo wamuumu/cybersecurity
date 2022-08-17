@@ -65,13 +65,19 @@ router.post('/', auth, async function(req, res){
 
 			var surveyID = -1;
 			let date = new Date();
+			let hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours()
+			let minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
+			let seconds = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds()
+
+			let time = hours + ":" + minutes + ":" + seconds
 
             try{
 		        var new_survey = new Survey({
 		            type: fields.type,
+		            configuration: JSON.stringify(fields.configuration),
 		            data: JSON.stringify(fields.data),
 		            user: req.user.id,
-		            date: date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear()
+		            date: date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear() + " | " + time
 		        });
 
 		        let survey = await new_survey.save()
