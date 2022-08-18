@@ -20,7 +20,7 @@
 					<tr>
 						<th>Dominio</th>
 						<th>DGA</th>
-						<th>Rilevato (volte)</th>
+						<th>Rilevato (volte/numero algoritmi)</th>
 					</tr>
 					<% for(var i=0; i < data.data.length; i++) { %>
 						<tr>
@@ -29,7 +29,11 @@
 							<% if(data.data[i].is_dga) { %>
 								<td class="detected">Si</td>
 							<% } else { %>
-								<td>Probabilmente no</td>
+								<% if(data.data[i].detected_by_engine == 0) { %>
+									<td>No</td>
+								<% } else { %>
+									<td>Probabilmente no</td>
+								<% } %>
 							<% } %>
 							<td><%= data.data[i].detected_by_engine %></b>/<%= data.engines_count %></td>
 						<% } %>

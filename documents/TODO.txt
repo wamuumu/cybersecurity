@@ -37,7 +37,7 @@ X Trovare altri algoritmi per rilevamento DGA e implementarli
 X Gestione profilo
 X Algoritmo calcolo rischio cibernetico per self assessment (online -> nulla, circa implementato con percentuali mie)
 X MongoDB Atlas cloud
-- sistemare surveys ui se non ci sono ultime surveys da mostrare
+X sistemare surveys ui se non ci sono ultime surveys da mostrare
 
 IN FUTURO:
 - Controllo generale applicazione
@@ -45,18 +45,4 @@ IN FUTURO:
 - CI / CD (GitHub workflow)
 
 DA CHIEDERE:
-- SELF ASSESSMENT - trova algoritmo sensato
 - QUANDO AVRO' IL DOMINIO PER CARICARE IL SITO ONLINE? - in attesa
-- MODULO FINE TIROCINIO - da mandare
-
-SELF ASSESSMENT: NON SI SANNO COME SI CALCOLANO I VALORI DEL RISCHIO
-- Modello questionario self assessment (frontend) [Veloce - 7TlvQtmMEMfvz5s DfWmmMtqssbcvSZ]
-- Strumenti self assessment (backend) (migliorare quello che c’è)
-- Ripristino questionario self assessment tramite ID
-
-
-aziende impreparate, statistiche attacchi con particolare attenzione aziende medio piccole
-sert, se aziende hanno problemi a chi si rivolgono
-
-prima sommario, introduzione con argomenti sopra
-rinomina sommario in "il mio progetto"
