@@ -47,11 +47,8 @@ def create_dataset():
 	dga_domains['domain'] = [regex.sub('[^A-Za-z0-9]+', '', tlde.extract(d).domain) for d in dga_domains['raw_domain']]
 
 	# assign label to each domain
-	#cisco_domains['label'] = 0
-	#dga_domains['label'] = 1
-
-	cisco_domains['label'] = 'legit'
-	dga_domains['label'] = 'dga'
+	cisco_domains['label'] = 0
+	dga_domains['label'] = 1
 
 	# remove unwanted columns and duplicates
 	cisco_domains = cisco_domains.drop(columns=['raw_domain'])
@@ -66,35 +63,7 @@ def create_dataset():
 	domains = concat([cisco_domains, dga_domains], ignore_index=True).sample(frac=1).reset_index(drop=True)
 	domains = domains.drop_duplicates(subset=['domain'])
 
-	#add more common features
-	domains['length'] = [len(x) for x in domains['domain']]
-	domains = domains[domains['length'] > 6]
-	domains['entropy'] = [entropy(x) for x in domains['domain']]
-
-	X = domains.as_matrix(['length', 'entropy'])
-	y = np.array(domains['label'].tolist())
-
-	cisco_vc = sklearn.feature_extraction.text.CountVectorizer(analyzer='char', ngram_range=(3,5), min_df=1e-4, max_df=1.0)
-	counts_matrix = cisco_vc.fit_transform(cisco_domains['domain'])
-	cisco_counts = np.log10(counts_matrix.sum(axis=0).getA1())
-	ngrams_list = cisco_vc.get_feature_names()
-
-	words = read_csv('words.csv', names=['word'])
-
-	words = words[words['word'].map(lambda x: str(x).isalpha())]
-	words = words.applymap(lambda x: str(x).strip().lower())
-	words = words.dropna()
-	words = words.drop_duplicates()
-
-	dict_vc = sklearn.feature_extraction.text.CountVectorizer(analyzer='char', ngram_range=(3,5), min_df=1e-5, max_df=1.0)
-	counts_matrix = dict_vc.fit_transform(words['word'])
-	dict_counts = np.log10(counts_matrix.sum(axis=0).getA1())
-	ngrams_list = dict_vc.get_feature_names()
-
-	domains['cisco_grams']= cisco_counts * cisco_vc.transform(domains['domain']).T 
-	domains['word_grams']= dict_counts * dict_vc.transform(domains['domain']).T 
-
-	domains.to_csv('./domains1.csv', index=False)
+	domains.to_csv('./domains.csv', index=False)
 	print("Dataset created!")
 
 	print(domains)
