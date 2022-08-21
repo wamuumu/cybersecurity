@@ -32,16 +32,23 @@ router.post('/', auth, async function(req, res){
 			
 			var score = 0, bound = 80, results = []	
 
-			const PERSONAL = 0.4
-			const EXPOSE = 0.2
-			const DETECTIVE = 0.4
+			const EXP = parseFloat(fields.coeff1) || 0.2
+			const DET = parseFloat(fields.coeff2) || 0.4
+			const PER = parseFloat(fields.coeff3) || 0.4
 
-			var fileName = ""
-			if(!isEmpty(files) && files.filetoupload && choice == "file")
+			if((EXP + DET + PER).toFixed(2) != 1){
+				console.error("Bad coefficients - the sum of those must be 1. Get [" + EXP + ", " + DET + ", " + PER + "]");
+				return res.status(400).json({status: 400, message: "Bad coefficients - the sum of those must be 1. Get [" + EXP + ", " + DET + ", " + PER + "]"});
+			}
+
+			var fileName = "", mimetype = ""
+			if(!isEmpty(files) && files.filetoupload && choice == "file"){
+				mimetype = files.filetoupload.mimetype;
 				fileName = files.filetoupload.originalFilename;
+			}
 
 
-			if(choice == "file" && fileName != ""){
+			if(choice == "file" && fileName != "" && mimetype == "text/plain"){
 
 				let exp0seAlg = exp_parse(choice, files, domain)
 
@@ -61,28 +68,30 @@ router.post('/', auth, async function(req, res){
 
 				for (var i = 0; i < urls.length; i++) {
 
-					let personalAlg = await detect(tfjsURL, urls[i]) == true ? 1 : 0
-					let exp0seVal = exp0seAlg[i]['is_dga'] == true ? 1 : 0
+					if(urls[i] != ""){
+						let personalAlg = await detect(tfjsURL, urls[i]) == true ? 1 : 0
+						let exp0seVal = exp0seAlg[i]['is_dga'] == true ? 1 : 0
 
-					await dgadetective.checkDGA(urls[i])
-					.then(function(result){ 
-						score = result;
-					}, function(err) {
-						console.error(err);
-					});
+						await dgadetective.checkDGA(urls[i])
+						.then(function(result){ 
+							score = result;
+						}, function(err) {
+							console.error(err);
+						});
 
-					let dga_det = score >= bound ? 1 : 0;
+						let dga_det = score >= bound ? 1 : 0;
 
-					console.log(urls[i], personalAlg, exp0seVal, dga_det)
+						console.log(urls[i], personalAlg, exp0seVal, dga_det)
 
-					var count = 0
-					if(personalAlg == 1) count++;
-					if(exp0seAlg == 1) count++;
-					if(dga_det == 1) count++;
+						var count = 0
+						if(personalAlg == 1) count++;
+						if(exp0seVal == 1) count++;
+						if(dga_det == 1) count++;
 
-					let dga = (PERSONAL * personalAlg) + (EXPOSE * exp0seVal) + (DETECTIVE * dga_det) >= 0.5 ? true : false
-			    	
-			    	results.push({'domain': urls[i], 'is_dga': dga, 'detected_by_engine': count})
+						let dga = (PER * personalAlg) + (EXP * exp0seVal) + (DET * dga_det) >= 0.5
+				    	
+				    	results.push({'domain': urls[i], 'is_dga': dga, 'detected_by_engine': count})
+				    }
 				}
 
 				return res.status(200).json({status: 200, engines_count: 3, data: results})
@@ -101,14 +110,12 @@ router.post('/', auth, async function(req, res){
 
 				let dga_det = score >= bound ? 1 : 0;
 
-				console.log(domain, personalAlg, exp0seAlg, dga_det)
-
 				var count = 0
 				if(personalAlg == 1) count++;
 				if(exp0seAlg == 1) count++;
 				if(dga_det == 1) count++;
 
-				let dga = (PERSONAL * personalAlg) + (EXPOSE * exp0seAlg) + (DETECTIVE * dga_det) >= 0.5 ? true : false
+				let dga = (PER * personalAlg) + (EXP * exp0seAlg) + (DET * dga_det) >= 0.5
 
 				results.push({ 'domain': domain, 'is_dga': dga, 'detected_by_engine': count})
 

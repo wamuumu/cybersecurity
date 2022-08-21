@@ -186,6 +186,15 @@ table td {
     margin-top: 30px;
 }
 
+.entries_picker{
+    display: inline-block;
+}
+
+.regex_search{
+    float: right;
+    display: inline-block;
+}
+
 #toggleFilters{
    margin: 10px 0px;
 }
@@ -225,5 +234,21 @@ table td {
     border: 1px solid grey;
     cursor: pointer;
     border-radius: 5px;
+}
+
+.search{
+    width: 250px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-top: 25px;
+    resize: vertical;
+}
+
+.searchBtn{
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 

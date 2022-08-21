@@ -17,11 +17,19 @@
 			<br><br>
 			<form id="resultsForm" enctype="multipart/form-data" action="/dga-detection/result" method="POST">
 
-				<p>Scegli il tipo di analisi da effettuare</p>
+				<p>Scegli il tipo di analisi da effettuare:</p>
 				<input type="radio" id="url" name="choice" onchange="showOption(this)" value="domain">
 				<label for="url">Dominio</label><br>
 				<input type="radio" id="file" name="choice" onchange="showOption(this)" value="file">
-				<label for="file">File (.cef, .txt)</label><br>
+				<label for="file">File (.txt)</label><br>
+
+				<p>Scegli i coefficenti da applicare (la somma deve fare 1):</p>
+				<label for="coeff1">Primo algoritmo</label>
+				<input type="number" name="coeff1" id="coeff1" min="0" max="1" step="0.050" value="0.2" /><br>
+				<label for="coeff2">Secondo algoritmo</label>
+				<input type="number" name="coeff2" id="coeff2" min="0" max="1" step="0.050" value="0.4" /><br>
+				<label for="coeff3">Terzo algoritmo</label>
+				<input type="number" name="coeff3" id="coeff3" min="0" max="1" step="0.050" value="0.4" /><br>
 
 				<br>
 				<div id="domain-container">
@@ -30,7 +38,7 @@
 				</div>
 				<div id="file-container">
 					<label for="filetoupload">File: </label>
-					<input type="file" name="filetoupload" accept=".cef,.txt" onchange="readFile(this)" />
+					<input type="file" name="filetoupload" accept=".txt" onchange="readFile(this)" />
 				</div>
 				<br>
 				<button type="submit" id="send_dga" onclick="resetDomain(event)" disabled>Invia</button>

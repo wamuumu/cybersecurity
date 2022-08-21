@@ -28,50 +28,199 @@ router.post('/cve', auth, async function(req, res){
 			const CVE_CVSS_SELECT = fields.cvsstype || "";
 			const CVE_CVSS_SCORE = fields.score || "";
 			const CVE_REJECTED = fields.rejected || "";
+			var CVE_SEARCH = fields.search || "";
 
-			var data;
-
-			const options = {
-			  	method: 'GET',
-			  	url: 'https://cvepremium.circl.lu/api/query',
-			  	headers: {
-			  		Accept: 'application/json',
-			  		limit: CVE_LIMIT,
-			  		skip: CVE_SKIP,
-			  		timeTypeSelect: CVE_TIMETYPE,
-			  		timeSelect: CVE_TIME,
-			  		startDate: CVE_START_DATE,
-			  		endDate: CVE_END_DATE,
-			  		cvssVersion: CVE_CVSS_VERSION,
-			  		cvssSelect: CVE_CVSS_SELECT,
-			  		cvss: CVE_CVSS_SCORE,
-			  		rejected: CVE_REJECTED
-			  	}
-			};
+			var data, options;
 
 			var status = 200, text = "";
 
+			if(!CVE_SEARCH){
+				options = {
+				  	method: 'GET',
+				  	url: 'https://cvepremium.circl.lu/api/query',
+				  	headers: {
+				  		Accept: 'application/json',
+				  		limit: CVE_LIMIT,
+				  		skip: CVE_SKIP,
+				  		timeTypeSelect: CVE_TIMETYPE,
+				  		timeSelect: CVE_TIME,
+				  		startDate: CVE_START_DATE,
+				  		endDate: CVE_END_DATE,
+				  		cvssVersion: CVE_CVSS_VERSION,
+				  		cvssSelect: CVE_CVSS_SELECT,
+				  		cvss: CVE_CVSS_SCORE,
+				  		rejected: CVE_REJECTED
+				  	}
+				};
+
+			} else {
+				var payload;
+
+				if(!isNaN(CVE_SEARCH)){
+					CVE_SEARCH = parseFloat(CVE_SEARCH);
+					if(CVE_SEARCH > 0.0 && CVE_SEARCH <= 10.0)
+						payload = [
+								{
+									"retrieve": "cves",
+									"dict_filter": {
+										"cvss": CVE_SEARCH
+									},
+									"query_filter": {
+										"id": 1,
+										"cvss": 1,
+										"cvss3": 1,
+										"summary": 1,
+										"Modified": 1,
+										"Published": 1
+									}
+								},
+								{
+									"retrieve": "cves",
+									"dict_filter": {
+										"cvss3": CVE_SEARCH
+									},
+									"query_filter": {
+										"id": 1,
+										"cvss": 1,
+										"cvss3": 1,
+										"summary": 1,
+										"Modified": 1,
+										"Published": 1
+									}
+								}
+							]
+				} else {
+					payload = [
+							{
+								"retrieve": "cves",
+								"dict_filter": {
+									"id": {"$regex": ".*" + CVE_SEARCH + ".*"}
+								},
+								"query_filter": {
+									"id": 1,
+									"cvss": 1,
+									"cvss3": 1,
+									"summary": 1,
+									"Modified": 1,
+									"Published": 1
+								}
+							},
+							{
+								"retrieve": "cves",
+								"dict_filter": {
+									"$or": [
+										{ "summary": { "$regex": ".*" + CVE_SEARCH + ".*"}},
+										{ "summary": { "$regex": ".*" + CVE_SEARCH.toLowerCase() + ".*"}},
+										{ "summary": { "$regex": ".*" + CVE_SEARCH.toUpperCase() + ".*"}},
+										{ "summary": { "$regex": ".*" + (CVE_SEARCH.charAt(0).toUpperCase() + CVE_SEARCH.slice(1)) + ".*"}}
+									]
+								},
+								"query_filter": {
+									"id": 1,
+									"cvss": 1,
+									"cvss3": 1,
+									"summary": 1,
+									"Modified": 1,
+									"Published": 1
+								}
+							},
+							{
+								"retrieve": "cves",
+								"dict_filter": {
+									"Modified": { "$gte": unformatDate(CVE_SEARCH) + "T00:00:00", "$lte": unformatDate(CVE_SEARCH) + "T23:59:59"}
+								},
+								"query_filter": {
+									"id": 1,
+									"cvss": 1,
+									"cvss3": 1,
+									"summary": 1,
+									"Modified": 1,
+									"Published": 1
+								}
+							},
+							{
+								"retrieve": "cves",
+								"dict_filter": {
+									"Published": { "$gte": unformatDate(CVE_SEARCH) + "T00:00:00", "$lte": unformatDate(CVE_SEARCH) + "T23:59:59"}
+								},
+								"query_filter": {
+									"id": 1,
+									"cvss": 1,
+									"cvss3": 1,
+									"summary": 1,
+									"Modified": 1,
+									"Published": 1
+								}
+							}
+						]
+				}
+
+				options = {
+					method: 'POST',
+					url: 'https://cvepremium.circl.lu/api/query',
+					params: {'format': 'json'},
+					data: payload
+				}
+			}
+
 			await axios.request(options)
 			.then(res => data = res.data)
-			.catch(err => { status = err.response.status; text = err.response.statusText });
+			.catch(err => { status = err.response.status; text = err.response.statusText;});
+
+			if(CVE_SEARCH){
+				var tmp = []
+
+				if(data != undefined){
+					for (var i = 0; i < data.length; i++) {
+						if(data[i].data != undefined){ 
+							for (var j = 0; j < data[i].data.length; j++) {
+								
+								var exist = false
+								
+								for (var k = 0; k < tmp.length; k++) {
+									if(tmp[k].id == data[i].data[j].id){
+										exist = true;
+										break;
+									}
+								}
+
+								if(!exist){
+									data[i].data[j].updated = formatDate(data[i].data[j].Modified != undefined ? data[i].data[j].Modified : "")
+									data[i].data[j].Modified = undefined
+									data[i].data[j].published = formatDate(data[i].data[j].Published != undefined ? data[i].data[j].Published : "")
+									data[i].data[j].Published = undefined
+									data[i].data[j]._id = undefined
+									tmp.push(data[i].data[j])	
+								}
+							}
+						}
+					}
+				}
+
+				data = {}
+				data.results = tmp.slice(CVE_SKIP, CVE_SKIP + CVE_LIMIT)
+				data.total = tmp.length
+			}
 
 			var results = []
 
 			if(status == 200){
 
-				for (var i = 0; i < data.results.length; i++) {
-					let item = {}
-					item['id'] = data.results[i].id != undefined ? data.results[i].id : "-"
-					item['cvss'] = data.results[i].cvss != undefined ? data.results[i].cvss : "-"
-					item['cvss3'] = data.results[i].cvss3 != undefined ? data.results[i].cvss3 : "-"
-					item['summary'] = data.results[i].summary != undefined ? data.results[i].summary : "-"
-					item['updated'] = formatDate(data.results[i].Modified != undefined ? data.results[i].Modified : "")
-					item['published'] = formatDate(data.results[i].Published != undefined ? data.results[i].Published : "")
+				if(!CVE_SEARCH){
+					for (var i = 0; i < data.results.length; i++) {
+						let item = {}
+						item['id'] = data.results[i].id != undefined ? data.results[i].id : "-"
+						item['cvss'] = data.results[i].cvss != undefined ? data.results[i].cvss : "-"
+						item['cvss3'] = data.results[i].cvss3 != undefined ? data.results[i].cvss3 : "-"
+						item['summary'] = data.results[i].summary != undefined ? data.results[i].summary : "-"
+						item['updated'] = formatDate(data.results[i].Modified != undefined ? data.results[i].Modified : "")
+						item['published'] = formatDate(data.results[i].Published != undefined ? data.results[i].Published : "")
 
-					results.push(item);
+						results.push(item);
+				 	}
+
+				 	data.results = results;
 			 	}
-
-			 	data.results = results;
 
 				res.status(status).json({status: status, data: data});
 			} else
@@ -302,6 +451,19 @@ function formatDate(date){
 		return day+"-"+month+"-"+d.getFullYear()
 	}
 	return "-"
+}
+
+function unformatDate(date){
+	var splitted = date.split("-")
+
+	if(splitted.length != 3) return ""
+
+	for (var i = 0; i < splitted.length; i++) {
+		if(isNaN(splitted[i]))
+			return ""
+	}
+
+	return splitted[2] + "-" + splitted[1] + "-" + splitted[0]
 }
 
 module.exports = router

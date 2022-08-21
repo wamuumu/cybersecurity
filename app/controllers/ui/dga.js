@@ -58,6 +58,10 @@ router.post('/result', async function(req, res) {
             else
                 formdata.append('domain', fields.domain);
 
+            formdata.append('coeff1', fields.coeff1)
+            formdata.append('coeff2', fields.coeff2)
+            formdata.append('coeff3', fields.coeff3)
+
             await axios.post(url, formdata, {
                 maxContentLength: Infinity,
                 maxBodyLength: Infinity,

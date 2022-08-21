@@ -71,6 +71,13 @@ function showOption(e){
 	}
 }
 
+function pressCVE(e){
+    if(e.key == "Enter"){
+        e.preventDefault();
+        getCVE(0);
+    }
+}
+
 async function getCVE(skipValue){
     let skip = skipValue || 0;
     let limit = parseInt(document.getElementById('entries').value) || 50;
@@ -89,8 +96,10 @@ async function getCVE(skipValue){
 
 		document.getElementById('entries').disabled = true;
 		document.getElementById('filterSearch').disabled = true;
+		document.getElementById('search').disabled = true;
+		document.getElementById('searchBtn').disabled = true;
 
-	    var result = {}, filters = {};
+	    var result = {}, last = {}, filters = {};
 	    var url = '/api/cve-search/cve';
 
 		if(filter.checked)
@@ -104,12 +113,14 @@ async function getCVE(skipValue){
 		    	version: document.getElementById('cvss_selector').value,
 		    	cvsstype: document.getElementById('timeC_selector').value == "AC" ? "" : document.getElementById('timeC_selector').value,
 		    	score: document.getElementById('timeC_selector').value == "AC" ? "" : document.getElementById('score').value,
-		    	rejected: document.getElementById('rejected_selector').value
+		    	rejected: document.getElementById('rejected_selector').value,
+		    	search: document.getElementById('search').value || ""
 		    }
 		else
 			filters = {
 				limit: limit,
-		    	skip: skip
+		    	skip: skip,
+		    	search: document.getElementById('search').value || ""
 			}
 
 	    document.getElementById('loading').style.display='block'
@@ -129,7 +140,7 @@ async function getCVE(skipValue){
 	    })
 	    .catch( error => console.error(error) );
 
-		if(!isEmpty(result)){
+		if(!isEmpty(result) && result.data.results.length != 0){
 			var tableBody = document.getElementById('cve-table').getElementsByTagName('tbody')[0];
 
 			removeRows(tableBody)
@@ -146,7 +157,6 @@ async function getCVE(skipValue){
 			for (var i = 0; i < entries.length; i++){
 				addRows(tableBody, entries[i], i+1, skip);
 			}
-			document.getElementById('loading').style.display='none'
 
 			Array.from(allControls).forEach(button => {
 		    	button.disabled = false;
@@ -154,11 +164,15 @@ async function getCVE(skipValue){
 
 			document.getElementById('entries').disabled = false;
 			document.getElementById('filterSearch').disabled = false;
+			document.getElementById('search').disabled = false;
+			document.getElementById('searchBtn').disabled = false;
 
 		} else {
-			console.log('Errore: CVE al momento non disponibili')
-    		location.href="/";
+			alert('Caricamento fallito: CVE mancanti o inesistenti')
+			location.reload()
 		}
+
+		document.getElementById('loading').style.display='none'
 	} else {
 		console.error("Index out of bound")
 		alert('Limite raggiunto')
