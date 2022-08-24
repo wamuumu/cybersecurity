@@ -35,7 +35,7 @@ function readFile(e){
             console.log(fileConf)
             var lastCat = "", lastQuest = "", lastType = ""
             for (const key in fileConf) {
-                if(key != "type"){
+                if(key != "name"){
 
                     let index;
                     var isValid = true
@@ -141,7 +141,7 @@ function showOption(radio){
 
 function retrieveDefault(){
 
-    fetch("/static/models/self_default.json")
+    fetch("/static/models/self-assessment/default_conf.json")
     .then(res => res.json())
     .then(out => { defaultConf = out; fileConf = defaultConf; configuration = defaultConf; })
     .catch(err => console.log(err));
@@ -653,7 +653,7 @@ function setUpSurvey(){
         }]
     }],
     "firstPageIsStarted": true,
-    "startSurveyText": "Avvia il quesitonario - " + configuration['type'],
+    "startSurveyText": "Avvia il quesitonario - " + configuration['name'],
     "showQuestionNumbers": "off",
     "pageNextText": "Avanti",
     "pagePrevText": "Indietro",
@@ -863,10 +863,11 @@ $(function() {
     var check = function(){
 
         if(!isEmpty(configuration)) {
+            console.log("Configuration found!");
             setUpSurvey()
             return;
         }
-        else console.log("No configuration found!");
+        else console.log("Waiting for configuration...");
         setTimeout(check, 1000);
     }
 

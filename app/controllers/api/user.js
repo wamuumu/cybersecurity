@@ -57,7 +57,7 @@ router.post('/', async function(req, res) {
             if(!captchaSuccess)
                 return res.status(400).json({status: 400, message: "Invalid captcha"})
 
-            if(!fields.name || !fields.surname || !fields.email || !fields.password || !fields.province)
+            if(!fields.name || !fields.surname || !fields.email || !fields.password || !fields.province || !fields.terms)
                 return res.status(400).json({status: 400, message: "Empty Fields Error: missing or invalid fields"});
 
             var new_user = new User({

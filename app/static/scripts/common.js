@@ -77,6 +77,12 @@ function signin(){
     var password = document.getElementById("password").value;
     var organization = document.getElementById("organization").value;
     var province = document.getElementById("province").value;
+    var terms = document.getElementById("terms").checked;
+
+    if(!terms){
+        alert("Devi accettare i termini")
+        return;
+    }
 
     if(!captchaToken){
         alert("Captcha invalido")
@@ -86,7 +92,7 @@ function signin(){
     fetch('/api/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name, surname: surname, email: email, password: password, organization: organization, province: province, captchaToken: captchaToken })
+        body: JSON.stringify({ name: name, surname: surname, email: email, password: password, organization: organization, province: province, terms: terms, captchaToken: captchaToken })
     })
     .then((resp) => {
         status = resp.status; 
