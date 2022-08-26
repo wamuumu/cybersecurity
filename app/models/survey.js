@@ -6,7 +6,7 @@ module.exports = mongoose.model('Survey', new Schema({
   type: String,
   configuration: {
     type: String,
-    default: ""
+    default: "none"
   },
   data: String,
   user: String,

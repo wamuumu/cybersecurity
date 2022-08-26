@@ -30,7 +30,7 @@
 <% } else { %>
 
 	<% if(data.status == 200) { %>
-		<body onload="setChart([<%= data.scores %>])">
+		<body onload="setChart(<%= JSON.stringify(data.last) %>)">
 	<% } else { %>
 		<body onload="document.getElementById('chart').style.display='none'">
 	<% } %>
@@ -78,9 +78,8 @@
 						<br><br>
 						<center>
 							<h2 class="chart-title">Rischio(%) Ultimo Questionario</h2>
-							<p><b>ID: </b><%= data.lastID %> &nbsp; <b>Data: </b><%= data.date %></p> &nbsp; <b>Settore: </b><%= data.sector %></p>
-							<p>Il grafico sotto riportato mostra i valori del rischio cibernetico dell'ultimo grafico da te compilato.<br> Più i valori sono alti, più il rischio è elevato.</p>
-							<p><b>N.B.</b> Valori bassi non indicano che sei totalmente al sicuro in quanto il calcolo viene fatto considerando il settore lavorativo di appartenenza.</p>
+							<p><b>ID: </b><span id="lastID"><%= data.lastID %></span> &nbsp; <b>Data: </b><span id="lastDate"><%= data.date %></span></p> &nbsp; <b>Settore: </b><span id="lastSector"><%= data.sector %></span></p>
+							<p>Il grafico sotto riportato mostra i valori del rischio cibernetico dell'ultimo grafico da te compilato adattati al settore di appartenenza.<br> Più i valori sono alti, più il rischio è elevato.</p>
 							<canvas id="gdpr-chart"></canvas>
 						</center>
 					</div>

@@ -263,11 +263,11 @@ const surveyModel = {
 };
 
 const survey = new Survey.Model(surveyModel);
-const categories = survey.pages.length - 1;
+const categories = 6;
 
 async function surveyComplete(sender){
     console.log("survey Complete")
-    await saveSurveyResults(sender.data, type, "none")
+    await saveSurveyResults(sender.data, type)
     displayResults(sender.data)
 }
 
@@ -298,7 +298,12 @@ async function displayResults(json){
     setGauge(mean);
 }
 
-function setChart(scores){
+function setChart(last){
+
+    var scores = parseResults(JSON.parse(last.data), categories);
+
+    document.getElementById('lastID').innerHTML = last._id
+    document.getElementById('lastDate').innerHTML = last.date
 
     const data = {
         labels: [

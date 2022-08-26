@@ -17,7 +17,7 @@
 <% } else { %>
 
 	<% if(data.status == 200) { %>
-		<body onload="setChart([<%= data.scores %>])">
+		<body onload="setChart(<%= JSON.stringify(data.last) %>)">
 	<% } else { %>
 		<body onload="document.getElementById('chart').style.display='none'">
 	<% } %>
@@ -53,7 +53,7 @@
 						<br><br>
 						<center>
 							<h2 class="chart-title">Valori(%) Ultimo Questionario</h2>
-							<p><b>ID: </b><%= data.lastID %> &nbsp; <b>Data: </b><%= data.date %></p>
+							<p><b>ID: </b><span id="lastID"></span> &nbsp; <b>Data: </b><span id="lastDate"></span></p>
 							<p>Il grafico sotto riportato mostra i valori della conformità al GDPR del tuo ultimo questionario.<br> Più i valori sono alti, più sei conforme al GDPR.</p>
 							<canvas id="gdpr-chart"></canvas>
 						</center>

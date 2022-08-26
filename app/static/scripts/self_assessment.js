@@ -3,7 +3,7 @@ var configuration = {}
 var fileConf = {}
 var surveyModel = {}
 var survey = null
-var categories = -1
+const categories = 8
 
 function getFile() {
   document.getElementById("configuration").click();
@@ -19,84 +19,19 @@ function readFile(e){
     else if(file.type == "application/json"){
         var reader = new FileReader();
         reader.onload = function(evt) { 
-            fileConf = JSON.parse(evt.target.result);
 
-            //controllo configurazione corretta
-            const max = [
-                { "1": 5, "2": 5 },
-                { "1": 3, "2": 6, "3": 4, "4": 4, "5": 5},
-                { "1": 3, "2": 4, "3": 6},
-                { "1": 4, "2": 3, "3": 6},
-                { "1": 3, "2": 5, "3": 4, "4": 4},
-                { "1": 2, "2": 5, "3": 3},
-                { "1": 4, "2": 7, "3": 6, "4": 3, "5": 2}
-            ]
-
-            console.log(fileConf)
-            var lastCat = "", lastQuest = "", lastType = ""
-            for (const key in fileConf) {
-                if(key != "name"){
-
-                    let index;
-                    var isValid = true
-                    if(!key.includes("category")){
-                        isValid = false
-                        break
-                    }else
-                        index = parseInt(key[key.length-1]) - 1; 
-
-                    if(key != "category8")
-                        for(const question in fileConf[key]){
-                            let probArr = fileConf[key][question]['probability']
-                            if(!Array.isArray(probArr) || probArr.length != max[index][question] || !onlyNumbers(probArr)){
-                                lastQuest = question
-                                lastType = "probabilità"
-                                isValid = false
-                                break
-                            }
-
-                            let impArr = fileConf[key][question]['impact']
-                            if(!Array.isArray(impArr) || (impArr.length != max[index][question] && impArr.length != 1) || !onlyNumbers(impArr)){
-                                lastQuest = question
-                                lastType = "impatto"
-                                isValid = false
-                                break
-                            }
-                        }
-                    else
-                        for(const question in fileConf[key]){
-                            if(!checkNumber(fileConf[key][question]['probability'])){
-                                lastQuest = question
-                                lastType = "probabilità"
-                                isValid = false
-                                break
-                            }
-
-                            if(!checkNumber(fileConf[key][question]['impact'])){
-                                lastQuest = question
-                                lastType = "impatto"
-                                isValid = false
-                                break
-                            }
-                        }
-
-                    console.log(key + " " + isValid)
-
-                    if(!isValid){
-                        lastCat = key
-                        break
-                    }
-                }
+            var isValid = false
+            
+            try {
+                fileConf = JSON.parse(evt.target.result);
+                isValid = checkConfiguration(fileConf)
+            } catch(e) {
+                alert("Configurazione invalida - JSON malformato")
             }
 
-            if(isValid){
-                alert("Configurazione valida")
+            if(isValid)
                 configuration = fileConf;
-            } else {
-                if(lastCat != "")
-                    alert('Configurazione invalida su ' + lastCat + ", domanda " + lastQuest + " (" + lastType + ")")
-                else
-                    alert("Configurazione invalida")
+            else {
                 document.getElementById("configuration").value = "" //reset del file
                 configuration = defaultConf;
             }
@@ -111,16 +46,154 @@ function readFile(e){
 
 function onlyNumbers(array) {
     for (var i = 0; i < array.length; i++) {
-        if(!(typeof array[i] === 'number' && array[i] >= 0 && array[i] <= 1))
+        if(!(typeof array[i] === 'number' && array[i] >= 0 && array[i] <= 4))
             return false
     }
     return true
 }
 
 function checkNumber(x) {
-    if(typeof x == 'number' && !isNaN(x))
+    if(typeof x == 'number' && !isNaN(x) && x >= 0 && x <= 1)
         return true
     return false
+}
+
+function checkConfiguration(conf){
+    //controllo configurazione corretta
+    const max = [
+        { "1": 5, "2": 5 },
+        { "1": 3, "2": 6, "3": 4, "4": 4, "5": 5},
+        { "1": 3, "2": 4, "3": 6},
+        { "1": 4, "2": 3, "3": 6},
+        { "1": 4, "2": 6, "3": 4, "4": 5},
+        { "1": 2, "2": 5, "3": 3},
+        { "1": 4, "2": 7, "3": 6, "4": 3, "5": 2},
+        { "1": -1, "2": -1, "3": -1, "4": -1, "5": -1, "6": -1, "7": -1}
+    ]
+
+    const validCategories = ["category1", "category2", "category3", "category4", "category5", "category6", "category7", "category8"]
+    var isCategoryDone = [false, false, false, false, false, false, false, false]
+    var isQuestionDone = [
+        [false, false],
+        [false, false, false, false, false],
+        [false, false, false],
+        [false, false, false],
+        [false, false, false, false],
+        [false, false, false],
+        [false, false, false, false, false],
+        [false, false, false, false, false, false, false]
+    ]
+
+    var isValid = true
+    var lastCat = "", lastQuest = "", lastType = ""
+
+    for (const key in conf) {
+        if(key != "name"){
+
+            let index;
+
+            if(!validCategories.includes(key)){
+                isValid = false
+                break
+            }else
+                index = parseInt(key[key.length-1]) - 1; 
+
+            if(key != "category8")
+                for(const question in conf[key]){
+
+                    if(isNaN(question) || max[index][question] == undefined){
+                        lastQuest = question
+                        lastType = "domanda non valida"
+                        isValid = false
+                        break
+                    } else
+                        isQuestionDone[index][parseInt(question)-1] = true
+
+                    let probArr = conf[key][question]['probability']
+                    if(!Array.isArray(probArr) || (probArr.length != max[index][question] && probArr.length != 1) || !onlyNumbers(probArr)){
+                        lastQuest = question
+                        lastType = "probabilità errate"
+                        isValid = false
+                        break
+                    }
+
+                    let impArr = conf[key][question]['impact']
+                    if(!Array.isArray(impArr) || (impArr.length != max[index][question] && impArr.length != 1) || !onlyNumbers(impArr)){
+                        lastQuest = question
+                        lastType = "impatti errati"
+                        isValid = false
+                        break
+                    }
+                }
+            else
+                for(const question in conf[key]){
+
+                    if(isNaN(question) || max[index][question] == undefined){
+                        lastQuest = question
+                        lastType = "domanda non valida"
+                        isValid = false
+                        break
+                    } else 
+                        isQuestionDone[index][parseInt(question)-1] = true
+
+                    if(!checkNumber(conf[key][question]['probability'])){
+                        lastQuest = question
+                        lastType = "probabilità errata"
+                        isValid = false
+                        break
+                    }
+
+                    if(!checkNumber(conf[key][question]['impact'])){
+                        lastQuest = question
+                        lastType = "impatto errato"
+                        isValid = false
+                        break
+                    }
+                }
+
+            //console.log(key + " " + isValid)
+
+            if(!isValid){
+                lastCat = "categoria " + (index + 1)
+                break
+            } else {
+                isCategoryDone[index] = true
+            }
+        }
+    }
+
+    if(isValid)
+        for (var i = 0; i < isCategoryDone.length; i++)
+            if(!isCategoryDone){
+                isValid = false
+                break
+            }
+
+    if(isValid)
+        for (var i = 0; i < isQuestionDone.length; i++){
+            for (var j = 0; j < isQuestionDone[i].length; j++) {
+                if(!isQuestionDone[i][j]){
+                    isValid = false
+                    break
+                }
+            }
+
+            if(!isValid)
+                break
+        }
+
+    if(isValid && conf['name'] == "Default")
+        console.log("Configurazione di default valida")
+    else if(isValid && conf['name'] != "Default")
+        alert("Configurazione caricata valida")
+    else{
+        if(lastCat != "")
+            alert('Configurazione invalida su ' + lastCat + ", domanda " + lastQuest + " (" + lastType + ")")
+        else
+            alert("Configurazione invalida")
+    }
+
+    return isValid
 }
 
 function showOption(radio){
@@ -157,13 +230,6 @@ var myCss = {
         edit: "sv-btn sv-footer__edit-btn custom",
     },
 };
-
-// R = P * G (prob * grav * settore)
-// prob = [molto bassa, bassa, medio, alta, molto alta] = [0.2, 0.4, 0.6, 0.8, 1]
-// grav = [trascurabile, modesta, notevole, ingente] = [0.25, 0.5, 0.75, 1]
-// settore = [...]
-
-// file di configurazione con valori
 
 function setUpSurvey(){
 
@@ -370,7 +436,7 @@ function setUpSurvey(){
             "isRequired": true
         }]
     }, {
-        "title": "Categoria: Protezione Informatica - Domande non techniche",
+        "title": "Categoria: Protezione Informatica - Domande non tecniche",
         "elements": [{
             "type": "html",
             "name": "p4first",
@@ -475,7 +541,7 @@ function setUpSurvey(){
             "enableIf": "{p5f0}=0"
         }]
     }, {
-        "title": "Categoria: Protezione Informatica - Domande techniche",
+        "title": "Categoria: Protezione Informatica - Domande tecniche",
         "elements": [{
             "type": "html",
             "name": "p6first",
@@ -665,7 +731,6 @@ function setUpSurvey(){
 
     survey = new Survey.Model(surveyModel);
     survey.css = myCss;
-    categories = survey.pages.length - 1;
 
     survey.onStarted.add(uiManager);
     survey.onComplete.add(surveyComplete);
@@ -690,26 +755,47 @@ async function surveyComplete(sender){
     }
 
     if(json.p4f0.includes("none"))
-        json.p4f0[0] = 1
+        json.p4f0[0] = 3
 
     if(json.p4f1.includes("none"))
-        json.p4f1[0] = 1
+        json.p4f1[0] = 5
 
     if(json.p4f3.includes("none"))
-        json.p4f3[0] = 1
+        json.p4f3[0] = 4
 
     await saveSurveyResults(json, type, configuration)
 
     json = computeRisk(json, configuration)
     
-    console.log(configuration)
-    console.log(json)
+    //console.log(configuration)
+    //console.log(json)
 
     displayResults(json)
 }
 
 function computeRisk(json, configuration){
     let sectorMultiplier = 1;
+ 
+    // LOW [0,0.33]
+    // MEDIUM [0.34, 0.66]
+    // HIGH [0.67, 1]
+
+    /*riskMatrix = [
+        [LOW, LOW, LOW, MEDIUM, MEDIUM],
+        [LOW, LOW, MEDIUM, MEDIUM, MEDIUM],
+        [LOW, MEDIUM, MEDIUM, MEDIUM, HIGH],
+        [MEDIUM, MEDIUM, MEDIUM, HIGH, HIGH],
+        [MEDIUM, MEDIUM, HIGH, HIGH, HIGH]
+    ]*/
+
+    // probability * impact
+    let riskMatrix = [
+        [0.08, 0.17, 0.33, 0.42, 0.51],
+        [0.17, 0.33, 0.42, 0.51, 0.66],
+        [0.33, 0.42, 0.51, 0.66, 0.75],
+        [0.42, 0.51, 0.66, 0.75, 0.88],
+        [0.51, 0.66, 0.75, 0.88, 0.99]
+    ]
 
     for (const key in json) {
         let info = getFieldInfo(key)
@@ -718,39 +804,36 @@ function computeRisk(json, configuration){
             sectorMultiplier = json[key]
         else {
             let category = "category" + (info['page'] + 1)
-            let id = json[key]
             let question = info['page'] == 0 ? info['field'].toString() : (info['field'] + 1).toString()
-            
-            if(configuration[category][question]['probability'] != undefined)
-                if(Array.isArray(json[key]))
-                    for (var i = 0; i < json[key].length; i++){
-                        id = json[key][i]
-                        json[key][i] = sectorMultiplier * configuration[category][question]['probability'][id]
-                    }
-                else{
-                    if(category == "category8") //for malwares probabilities
-                        json[key] = json[key] * sectorMultiplier * configuration[category][question]['probability']
-                    else
-                        json[key] = sectorMultiplier * configuration[category][question]['probability'][id]
-                }
 
-            if(configuration[category][question]['impact'] != undefined)
-                if(Array.isArray(json[key]))
+            if(configuration[category][question]['probability'] != undefined && configuration[category][question]['impact'] != undefined){
+                if(Array.isArray(json[key])){ //checkbox
                     for (var i = 0; i < json[key].length; i++){
+                        id = configuration[category][question]['probability'].length == 1 ? 0 : json[key][i]
+                        let prob = configuration[category][question]['probability'][id]
+
                         id = configuration[category][question]['impact'].length == 1 ? 0 : json[key][i]
-                        json[key][i] = json[key][i] * configuration[category][question]['impact'][id]
+                        let imp = configuration[category][question]['impact'][id]
+
+                        json[key][i] = sectorMultiplier * riskMatrix[prob][imp] 
                     }
-                else{
-                    if(category == "category8") //for malwares impacts
-                        json[key] = json[key] * sectorMultiplier * configuration[category][question]['probability']
+                } else{
+                    if(category == "category8") //for malwares probabilities
+                        json[key] = Math.pow(sectorMultiplier * configuration[category][question]['probability'] * configuration[category][question]['impact'], 1 / json[key])
                     else{
+
+                        id = configuration[category][question]['probability'].length == 1 ? 0 : json[key]
+                        let prob = configuration[category][question]['probability'][id]
+
                         id = configuration[category][question]['impact'].length == 1 ? 0 : json[key]
-                        json[key] = json[key] * configuration[category][question]['impact'][id]
+                        let imp = configuration[category][question]['impact'][id]
+                        
+                        json[key] = sectorMultiplier * riskMatrix[prob][imp] 
                     }
                 }
-            
+            }
 
-            console.log(key + ": " + category + " - " + question + " --> " + json[key])
+            //console.log(key + ": " + category + " - " + question + " --> " + json[key])
         }
     }
 
@@ -761,6 +844,7 @@ async function displayResults(json){
     var results = document.getElementById('surveyResults');
 
     var resultTable;
+    let sec = json.p0f0;
     let parse = parseResults(json, categories);
     var mean = 0;
 
@@ -772,6 +856,11 @@ async function displayResults(json){
     .then(function(html_results) {
         html_results = html_results.replace("{surveyID}", surveyID);
         for (var i = 0; i < parse.length; i++){
+            
+            parse[i] = (parse[i] / sec).toFixed(2)
+            if(parse[i] > 100)
+                parse[i] = 100
+            
             mean += parseFloat(parse[i]);
             html_results = html_results.replace("{result_"+ (i+1) +"}", parse[i]);
         }
@@ -784,7 +873,46 @@ async function displayResults(json){
     setGauge(mean);
 }
 
-function setChart(scores){
+function setChart(last){
+
+    const sectors = [
+        { "value": 0.15, "text": "Governo / Militare / Logistica" },
+        { "value": 0.14, "text": "Informazione e Comunicazione" },
+        { "value": 0.130, "text": "Target multipli" },
+        { "value": 0.131, "text": "Assistenza medica" },
+        { "value": 0.09, "text": "Educazione" },
+        { "value": 0.07, "text": "Servizi finanziari" },
+        { "value": 0.039, "text": "Professionale / Scientifico / Tecnico" },
+        { "value": 0.04, "text": "Vendita al dettaglio / all'ingrosso" },
+        { "value": 0.041, "text": "Trasporto e Deposito" },
+        { "value": 0.042, "text": "Produzione" },
+        { "value": 0.029, "text": "News / Multimedia" },
+        { "value": 0.030, "text": "Organizzazione" },
+        { "value": 0.020, "text": "Energia e Gas" },
+        { "value": 0.021, "text": "Arte / Intrattenimento" },
+        { "value": 0.031, "text": "Altro" }
+    ]
+
+    let risk = computeRisk(JSON.parse(last.data), JSON.parse(last.configuration))
+    let sec = JSON.parse(last.data).p0f0
+
+    let scores = parseResults(risk, categories);
+
+    for (var i = 0; i < scores.length; i++){
+        scores[i] = (scores[i] / sec).toFixed(2)
+        if(scores[i] > 100)
+            scores[i] = 100
+    }
+
+    for (var i = 0; i < sectors.length; i++)
+        if(sectors[i].value == sec){
+            sec = sectors[i].text + " (rischio del " + (sectors[i].value * 100) + "%)"
+            break;
+        }
+
+    document.getElementById('lastID').innerHTML = last._id
+    document.getElementById('lastDate').innerHTML = last.date
+    document.getElementById('lastSector').innerHTML = sec
 
     const data = {
         labels: [
@@ -792,9 +920,9 @@ function setChart(scores){
             'Informazioni sulla rete',
             'Informazioni sulle risorse dati',
             ['Protezione informatica', '[Management]'],
-            ['Protezione Informatica', '[Domande non techniche]'],
+            ['Protezione Informatica', '[Domande non tecniche]'],
             ['Protezione Informatica', '[Access control]'],
-            ['Protezione Informatica', '[Domande techniche]'],
+            ['Protezione Informatica', '[Domande tecniche]'],
             'Attacchi'
         ],
         datasets: [{
@@ -863,9 +991,12 @@ $(function() {
     var check = function(){
 
         if(!isEmpty(configuration)) {
-            console.log("Configuration found!");
-            setUpSurvey()
-            return;
+            let isValid = checkConfiguration(configuration)
+
+            if(isValid){
+                setUpSurvey()
+                return
+            }
         }
         else console.log("Waiting for configuration...");
         setTimeout(check, 1000);

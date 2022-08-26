@@ -10,13 +10,13 @@ const fs = require('fs');
 router.get('/', async function(req, res) {
     
     if(!req.isAuthenticated()){
-        let data = { status: 401, message: "You need to login to access this service" }
+        let data = { status: 401, message: "Devi autenticarti prima di usare il servizio" }
         res.render('common/error', { data: data, loggedUser: req.isAuthenticated() });
         return;
     }
 
     let status = parseInt(req.query.status) || 200;
-    var error = status == 400 ? "Pick a mode before making request" : "Missing files or fields";
+    var error = status == 400 ? "Scegli una modalità prima di fare la richiesta" : "File o campi mancanti";
 
     var data = status == 200 ? { status: status, error: "" } : { status: status, error: error }
     res.render('dga-detection/dga_input', { data: data, loggedUser: req.isAuthenticated() });
@@ -25,7 +25,7 @@ router.get('/', async function(req, res) {
 router.post('/result', async function(req, res) {
 
     if(!req.isAuthenticated()){
-        let data = { status: 401, message: "You need to login to access this service" }
+        let data = { status: 401, message: "Devi autenticarti prima di usare il servizio" }
         res.render('common/error', { data: data, loggedUser: req.isAuthenticated() });
         return;
     }

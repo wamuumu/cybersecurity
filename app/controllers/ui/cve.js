@@ -7,7 +7,7 @@ const axios = require('axios');
 router.get('/cve', async function(req, res) {
 
     if(!req.isAuthenticated()){
-        let data = { status: 401, message: "You need to login to access this service" }
+        let data = { status: 401, message: "Devi autenticarti prima di usare il servizio" }
         res.render('common/error', { data: data, loggedUser: req.isAuthenticated() });
         return;
     }
@@ -38,7 +38,7 @@ router.get('/cve', async function(req, res) {
 router.get('/cve/:id', async function(req, res) {
 
     if(!req.isAuthenticated()){
-        let data = { status: 401, message: "You need to login to access this service" }
+        let data = { status: 401, message: "Devi autenticarti prima di usare il servizio" }
         res.render('common/error', { data: data, loggedUser: req.isAuthenticated() });
         return;
     }

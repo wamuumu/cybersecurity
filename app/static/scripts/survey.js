@@ -7,11 +7,19 @@ Survey.defaultBootstrapCss.navigation.start = "start-survey";
 
 async function saveSurveyResults(json, type, configuration) {
 
-    var data = {
-        "type": type,
-        "configuration": configuration,
-        "data": json
-    }
+    var data;
+
+    if(configuration != undefined)
+        data = {
+            "type": type,
+            "configuration": configuration,
+            "data": json
+        }
+    else
+        data = {
+            "type": type,
+            "data": json
+        }
 
 	await fetch("/api/survey", {
         method: 'POST',
@@ -75,22 +83,16 @@ function parseResults(json, categories){
 
     for (const field in json) {
         var info = getFieldInfo(field);
-        if(Array.isArray(json[field])){
-            count[info['page']] += json[field].length
-            for (var i = 0; i < json[field].length; i++){
-                if(json[field][i] == "none" && info['page'] == 4 && (info['field'] == 0 || info['field'] == 3)) 
-                    json[field][i] = 1;
-                else if(json[field][i] == "none" && info['page'] == 4 && info['field'] == 0)
-                    json[field][i] = 0;
-                sum[info['page']] += parseFloat(json[field][i])
+        if(!(info['page'] == 0 && info['field'] == 0 && type == "SELF_ASSESSMENT")){
+            if(Array.isArray(json[field])){
+                count[info['page']] += json[field].length
+                for (var i = 0; i < json[field].length; i++)
+                    sum[info['page']] += parseFloat(json[field][i])
             }
-
-            if((info['page'] == 4 && (info['field'] == 0 || info['field'] == 2 || info['field'] == 3)) || (info['page'] == 6 && info['field'] == 1))
-                sum[info['page']] = Math.abs(sum[info['page']] - 1);
-        }
-        else if(json[field] != -1){
-            count[info['page']] += 1
-            sum[info['page']] += json[field]
+            else if(json[field] != -1){
+                count[info['page']] += 1
+                sum[info['page']] += json[field]
+            }
         }
     }
 
