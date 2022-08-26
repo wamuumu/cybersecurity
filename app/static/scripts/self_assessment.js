@@ -844,7 +844,6 @@ async function displayResults(json){
     var results = document.getElementById('surveyResults');
 
     var resultTable;
-    let sec = json.p0f0;
     let parse = parseResults(json, categories);
     var mean = 0;
 
@@ -855,12 +854,7 @@ async function displayResults(json){
     .then(function(response) { return response.text() })
     .then(function(html_results) {
         html_results = html_results.replace("{surveyID}", surveyID);
-        for (var i = 0; i < parse.length; i++){
-            
-            parse[i] = (parse[i] / sec).toFixed(2)
-            if(parse[i] > 100)
-                parse[i] = 100
-            
+        for (var i = 0; i < parse.length; i++){            
             mean += parseFloat(parse[i]);
             html_results = html_results.replace("{result_"+ (i+1) +"}", parse[i]);
         }
@@ -897,12 +891,6 @@ function setChart(last){
     let sec = JSON.parse(last.data).p0f0
 
     let scores = parseResults(risk, categories);
-
-    for (var i = 0; i < scores.length; i++){
-        scores[i] = (scores[i] / sec).toFixed(2)
-        if(scores[i] > 100)
-            scores[i] = 100
-    }
 
     for (var i = 0; i < sectors.length; i++)
         if(sectors[i].value == sec){
