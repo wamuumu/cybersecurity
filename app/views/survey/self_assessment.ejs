@@ -78,8 +78,10 @@
 						<br><br>
 						<center>
 							<h2 class="chart-title">Rischio(%) Ultimo Questionario</h2>
-							<p><b>ID: </b><span id="lastID"><%= data.lastID %></span> &nbsp; <b>Data: </b><span id="lastDate"><%= data.date %></span></p> &nbsp; <b>Settore: </b><span id="lastSector"><%= data.sector %></span></p>
-							<p>Il grafico sotto riportato mostra i valori del rischio cibernetico dell'ultimo grafico da te compilato adattati al settore di appartenenza.<br> Più i valori sono alti, più il rischio è elevato.</p>
+							<p><b>ID: </b><span id="lastID"></span> &nbsp; <b>Data: </b><span id="lastDate"></span></p> 
+							<b>Settore: </b><span id="lastSector"></span></p>
+							<b>Rischio massimo: </b><span id="maxRisk"></span></p>
+							<p>Il grafico sotto riportato mostra i valori del rischio cibernetico dell'ultimo grafico da te compilato adattati al settore di appartenenza.<br> Più i valori tendono ad avvicinarsi al rischio massimo, più il rischio è elevato.</p>
 							<canvas id="gdpr-chart"></canvas>
 						</center>
 					</div>

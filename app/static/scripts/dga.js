@@ -9,6 +9,7 @@ function resetRadio(radioName){
 function readFile(file){
 	if(checkCoefficients())
 		if(file.url != ""){
+			document.body.classList.toggle('loading');
 			document.getElementById('resultsForm').submit();
 			file.disabled = true;
 			file.value = "";
@@ -20,6 +21,7 @@ function resetDomain(e){
 	var domain = document.getElementById('domain');
 	if(checkCoefficients())
 		if(domain.value != ""){
+			document.body.classList.toggle('loading');
 			document.getElementById('resultsForm').submit();
 			domain.value = "";
 		} else

@@ -123,7 +123,7 @@ async function getCVE(skipValue){
 		    	search: document.getElementById('search').value || ""
 			}
 
-	    document.getElementById('loading').style.display='block'
+	    document.body.classList.toggle('loading');
 
 	    await fetch(url, {
 	        method: 'POST',
@@ -172,7 +172,7 @@ async function getCVE(skipValue){
 			location.reload()
 		}
 
-		document.getElementById('loading').style.display='none'
+		document.body.classList.toggle('loading');
 	} else {
 		console.error("Index out of bound")
 		alert('Limite raggiunto')

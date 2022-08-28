@@ -889,6 +889,7 @@ function setChart(last){
 
     let risk = computeRisk(JSON.parse(last.data), JSON.parse(last.configuration))
     let sec = JSON.parse(last.data).p0f0
+    let maxVal = sec * 100
 
     let scores = parseResults(risk, categories);
 
@@ -901,6 +902,7 @@ function setChart(last){
     document.getElementById('lastID').innerHTML = last._id
     document.getElementById('lastDate').innerHTML = last.date
     document.getElementById('lastSector').innerHTML = sec
+    document.getElementById('maxRisk').innerHTML = maxVal + "%"
 
     const data = {
         labels: [
@@ -949,7 +951,7 @@ function setChart(last){
                     },
 
                     beginAtZero: true,
-                    max: 100,
+                    max: maxVal,
                     min: 0
                 }
             },

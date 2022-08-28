@@ -127,3 +127,25 @@ html, body{
   font-weight: bold;
   color: #ff4d4d;
 }
+
+
+/* ------------------ MODAL ------------------ */
+
+.modal {
+    display:    none;
+    position:   fixed;
+    top: 49;
+    left: 0;
+    z-index:    1000;
+    height:     100%;
+    width:      100%;
+    background: rgba( 255, 255, 255, .8 ) url('/static/images/loading.gif') 50% 50% no-repeat;
+}
+
+body.loading {
+    overflow: hidden;
+}
+
+body.loading .modal {
+    display: block;
+}
