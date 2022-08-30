@@ -28,7 +28,7 @@ router.post('/cve', auth, async function(req, res){
 			const CVE_CVSS_SELECT = fields.cvsstype || "";
 			const CVE_CVSS_SCORE = fields.score || "";
 			const CVE_REJECTED = fields.rejected || "";
-			var CVE_SEARCH = fields.search || "";
+			var CVE_SEARCH = fields.search != undefined ? fields.search.trim() : "";
 
 			var data, options;
 
@@ -235,7 +235,7 @@ router.get('/cve/:id', auth, async function(req, res){
 
 	var data;
 
-	const options = {
+	var options = {
 	  	method: 'GET',
 	  	url: 'https://cvepremium.circl.lu/api/cve/' + req.params.id,
 	  	headers: {Accept: 'application/json'}
@@ -257,7 +257,33 @@ router.get('/cve/:id', auth, async function(req, res){
 		result['references'] = data.references != undefined ? data.references : "-"
 		result['vulnerable_configuration'] = []
 		result['capec'] = []
-		result['cwe'] = data.cwe != undefined ? data.cwe : "-"
+
+		let cweID = data.cwe.split("-")[1]
+		let cwe = {}
+
+		if(!isNaN(cweID)){
+			options = {
+			  	method: 'GET',
+			  	url: 'https://cvepremium.circl.lu/api/cwe/' + cweID,
+			  	headers: {Accept: 'application/json'}
+			};
+
+			await axios.request(options)
+			.then(res => cwe = res.data)
+			.catch(err => { console.error("Failed to get cwe " + cweID) });
+
+
+			result['cwe'] = {
+				"id": "CWE-" + cweID,
+				"name": cwe.name,
+				"status": cwe.status,
+				"category": cwe.weaknessabs,
+				"description": cwe.Description
+			}
+
+		} else
+			result['cwe'] = "Unknown"
+
 		result['cvss'] = data.cvss != undefined ? data.cvss : "NONE"
 		result['impactScore'] = data.impactScore != undefined ? data.impactScore : "-"
 		result['exploitabilityScore'] = data.exploitabilityScore != undefined ? data.exploitabilityScore : "-"
@@ -293,155 +319,128 @@ router.get('/cve/:id', auth, async function(req, res){
 		res.status(status).json({status: status, message: text});
 });
 
-//GET all CWE
-/*router.get('/cwe', async function(req, res){
-
-	var data;
-
-	const options = {
-	  	method: 'GET',
-	  	url: 'https://cvepremium.circl.lu/api/cwe',
-	  	headers: {Accept: 'application/json'}
-	};
-
-	var status = 200, text = "";
-
-	await axios.request(options)
-	.then(res => data = res.data)
-	.catch(err => { status = err.response.status; text = err.response.statusText });
-
-	var results = []
-
-	for (var i = 0; i < data.length; i++) {
-		if(data[i].status == "Stable"){
-			var result = {}
-			result['id'] = data[i].id != undefined ? 'CWE-'+data[i].id : "-"
-			result['name'] = data[i].name != undefined ? data[i].name : "-"
-			result['description'] = data[i].Description != undefined ? data[i].Description : "-"
-			results.push(result)
-		}
- 	}
-
-	if(status == 200)
-		res.status(status).json({status: status, data: results});
-	else
-		res.status(status).json({status: status, message: text});
-});
-
 //GET all vendors
-router.get('/vendors', async function(req, res){
+router.post('/vendors', async function(req, res){
 
-	var data;
+	let form = new formidable.IncomingForm();
 
-	const options = {
-	  	method: 'GET',
-	  	url: 'https://cvepremium.circl.lu/api/browse',
-	  	headers: {Accept: 'application/json'}
-	};
+	form.parse(req, async function (error, fields, files) {
 
-	var status = 200, text = "";
+		if(error){
+			console.error(error.name + ": " + error.message);
+			res.status(400).json({status: 400, message: error.name + ": " + error.message}) 
+		} else {
 
-	await axios.request(options)
-	.then(res => data = res.data.vendor)
-	.catch(err => { status = err.response.status; text = err.response.statusText });
+			const VENDORS_LIMIT = fields.limit || 50;
+			const VENDORS_SKIP = fields.skip * VENDORS_LIMIT || 0;
+			var VENDORS_SEARCH = fields.search.toLowerCase().trim() || "";
+			
+			var data;
 
-	data.shift() //removes first vendor who's not a real vendor
+			const options = {
+			  	method: 'GET',
+			  	url: 'https://cvepremium.circl.lu/api/browse',
+			  	headers: {Accept: 'application/json'}
+			};
 
-	if(status == 200)
-		res.status(status).json({status: status, data: data});
-	else
-		res.status(status).json({status: status, message: text});
+			var status = 200, text = "";
+
+			await axios.request(options)
+			.then(res => data = res.data.vendor)
+			.catch(err => { status = err.response.status; text = err.response.statusText });
+
+			data.shift() //removes first vendor who's not a real vendor
+
+			if(VENDORS_SEARCH)
+				data = data.filter(vendor => vendor.toLowerCase().includes(VENDORS_SEARCH));
+
+			let total = data.length
+
+			let results = {
+				"vendors": data.slice(VENDORS_SKIP, VENDORS_SKIP + VENDORS_LIMIT),
+				"total": total
+			}
+
+			if(status == 200)
+				res.status(status).json({status: status, data: results});
+			else
+				res.status(status).json({status: status, message: text});
+		}
+	})
 });
 
 //GET all product from a specific vendor
-router.get('/vendors/:name', async function(req, res){
+router.post('/vendors/:name', async function(req, res){
 
-	var data;
+	let form = new formidable.IncomingForm();
 
-	const options = {
-	  	method: 'GET',
-	  	url: 'https://cvepremium.circl.lu/api/browse/' + req.params.name,
-	  	headers: {Accept: 'application/json'}
-	};
+	form.parse(req, async function (error, fields, files) {
 
-	var status = 200, text = "";
+		if(error){
+			console.error(error.name + ": " + error.message);
+			res.status(400).json({status: 400, message: error.name + ": " + error.message}) 
+		} else {
 
-	await axios.request(options)
-	.then(res => data = res.data.product)
-	.catch(err => { status = err.response.status; text = err.response.statusText });
+			const PRODUCTS_LIMIT = fields.limit || 50;
+			const PRODUCTS_SKIP = fields.skip * PRODUCTS_LIMIT || 0;
+			var PRODUCTS_SEARCH = fields.search.toLowerCase().trim() || "";
+			
+			var data;
 
-	var results = {}
-	results['vendor'] = req.params.name;
-	results['products'] = data;
+			var options = {
+			  	method: 'GET',
+			  	url: 'https://cvepremium.circl.lu/api/browse/' + req.params.name,
+			  	headers: {Accept: 'application/json'}
+			};
 
-	if(data == undefined){
-		status = 400;
-		text = "Bad vendor name";
-	}
+			var status = 200, text = "";
 
-	if(status == 200)
-		res.status(status).json({status: status, data: results});
-	else
-		res.status(status).json({status: status, message: text});
+			await axios.request(options)
+			.then(res => data = res.data.product)
+			.catch(err => { status = err.response.status; text = err.response.statusText });
+
+			if(PRODUCTS_SEARCH)
+				data = data.filter(product => product.toLowerCase().includes(PRODUCTS_SEARCH));
+
+			let total = data.length
+
+			data = data.slice(PRODUCTS_SKIP, PRODUCTS_SKIP + PRODUCTS_LIMIT)
+
+			var results = {}, cves;
+			results['vendor'] = req.params.name;
+			results['products'] = {};
+			results['total'] = total
+
+			for (var i = 0; i < data.length; i++) {
+				results['products'][data[i]] = []
+
+				options = {
+				  	method: 'GET',
+				  	url: 'https://cvepremium.circl.lu/api/search/' + req.params.name + '/' + data[i],
+				  	headers: {Accept: 'application/json'}
+				};
+
+				await axios.request(options)
+				.then(res => cves = res.data.results)
+				.catch(err => { console.error("Failed to fetch cves for product " + data[i]) });
+
+				for (var j = 0; j < cves.length; j++)
+					if(cves[j]['id'] != undefined)
+						results['products'][data[i]].push(cves[j]['id'])
+			}
+
+			if(data == undefined){
+				status = 400;
+				text = "Bad vendor name";
+			}
+
+			if(status == 200)
+				res.status(status).json({status: status, data: results});
+			else
+				res.status(status).json({status: status, message: text});
+		}
+	})
 });
-
-//GET all CVE of a product
-router.get('/vendors/:name/:product', async function(req, res){
-
-	var data;
-
-	const options = {
-	  	method: 'GET',
-	  	url: 'https://cvepremium.circl.lu/api/search/' + req.params.name + '/' + req.params.product,
-	  	headers: {Accept: 'application/json'}
-	};
-
-	var status = 200, text = "";
-
-	await axios.request(options)
-	.then(res => data = res.data.results)
-	.catch(err => { status = err.response.status; text = err.response.statusText });
-
-	var results = []
-
-	for (var i = 0; i < data.length; i++) {
-		results[i] = {}
-		results[i]['id'] = data[i].id != undefined ? data[i].id : "-"
-		results[i]['cvss'] = data[i].cvss != undefined ? data[i].cvss : "-"
-		results[i]['summary'] = data[i].summary != undefined ? data[i].summary : "-"
-		results[i]['updated'] = formatDate(data[i].Modified != undefined ? data[i].Modified : "")
-		results[i]['published'] = formatDate(data[i].Published != undefined ? data[i].Published : "")
- 	}
-
-	if(status == 200)
-		res.status(status).json({status: status, data: results});
-	else
-		res.status(status).json({status: status, message: text});
-});
-
-router.get('/info', async function(req, res){
-
-	var data;
-
-	const options = {
-	  	method: 'GET',
-	  	url: 'https://cvepremium.circl.lu/api/dbinfo',
-	  	headers: { Accept: 'application/json' }
-	};
-
-	var status = 200, text = "";
-
-	await axios.request(options)
-	.then(res => data = res.data)
-	.catch(err => { status = err.response.status; text = err.response.statusText });
-
-	if(status == 200)
-		res.status(status).json({status: status, data: data});
-	else
-		res.status(status).json({status: status, message: text});
-});
-*/
-
 
 function formatDate(date){
 	if(date != ""){

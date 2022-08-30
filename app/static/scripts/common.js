@@ -1,13 +1,5 @@
 var captchaToken;
 
-window.addEventListener('resize', function(event) {
-    var headerHeight = document.getElementById('header').offsetHeight;
-    var loadingModal = document.getElementById('loadingModal')
-
-    if(loadingModal != undefined)
-        loadingModal.style.top = headerHeight
-}, true);
-
 function setError(status, text){
 	document.getElementById('errorStatus').innerHTML = status;
 	document.getElementById('errorText').innerHTML = "<strong>Errore: </strong>" + text;

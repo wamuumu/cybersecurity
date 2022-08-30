@@ -151,12 +151,7 @@ table td {
     display: inline-block;
 }
 
-.regex_search{
-    float: right;
-    display: inline-block;
-}
-
-#toggleFilters{
+.option{
    margin: 10px 0px;
 }
 
@@ -169,11 +164,11 @@ table td {
     padding: 50px 10px;
 }
 
-.time, .cvss, .rejected, .enable {
+.time, .cvss, .rejected, .enable, .regex_search {
     display: table-row;
 }
 
-.time *, .cvss *, .rejected * {
+.time *, .cvss *, .rejected * , .regex_search * {
     display: table-cell;
     width: 250px;
     padding: 10px;
@@ -186,7 +181,7 @@ table td {
     margin: 10 30;
 }
 
-.filterSearch, #toggleFilters {
+.filterSearch, .option {
     padding: 10px;
     margin: 10;
     background: #303F7D;
@@ -195,6 +190,10 @@ table td {
     border: 1px solid grey;
     cursor: pointer;
     border-radius: 5px;
+}
+
+#searchType {
+    margin: 10;
 }
 
 .search{
@@ -211,5 +210,6 @@ table td {
     padding: 12px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    cursor: pointer;
 }
 

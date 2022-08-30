@@ -37,12 +37,12 @@ app.use('/api', require('./controllers/api/index'))
 // ERROR HANDLING
 
 app.get('/api/*', function(req, res, next){
-    let data = { status: 404, message: "Service not found" }
+    let data = { status: 404, message: "Servizio non trovato" }
     res.status(404).render('common/error', { data: data, loggedUser: req.isAuthenticated()})
 });
 
 app.get('/*', function(req, res, next){
-    let data = { status: 404, message: "Page not found" }
+    let data = { status: 404, message: "Pagina non trovata" }
     res.status(404).render('common/error', { data: data, loggedUser: req.isAuthenticated()})
 });
 

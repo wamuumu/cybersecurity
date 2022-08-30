@@ -134,7 +134,7 @@ html, body{
 .modal {
     display:    none;
     position:   fixed;
-    top: 49;
+    top: 0;
     left: 0;
     z-index:    1000;
     height:     100%;
@@ -148,4 +148,11 @@ body.loading {
 
 body.loading .modal {
     display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modalBack {
+  margin-top: 70px;
 }
