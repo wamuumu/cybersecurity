@@ -135,7 +135,7 @@ async function getCVE(skipValue){
 	    var cves = {}, last = {}, filters = {};
 	    var url = '/api/cve-search/cve';
 
-		if(filter.checked)
+		if(filter.checked){
 		    filters = {
 		    	limit: limit,
 		    	skip: skip,
@@ -149,6 +149,9 @@ async function getCVE(skipValue){
 		    	rejected: document.getElementById('rejected_selector').value,
 		    	search: document.getElementById('search').value || ""
 		    }
+		    
+			document.getElementById('search').value = ""
+		}
 		else
 			filters = {
 				limit: limit,
@@ -253,6 +256,9 @@ async function getVendors(skipValue){
 	    	search: filter.checked ? document.getElementById('search').value : ""
 	    }
 
+	    if(filter.checked)
+	    	document.getElementById('search').value = ""
+
 	    currentSearch = filters.search;
 	    var total = 0
 
@@ -348,6 +354,9 @@ async function getProducts(skipValue){
 	    	skip: skip,
 	    	search: filter.checked ? document.getElementById('search').value : ""
 	    }
+
+	    if(filter.checked)
+	    	document.getElementById('search').value = ""
 
 	    currentSearch = filters.search;
 	    var total = 0

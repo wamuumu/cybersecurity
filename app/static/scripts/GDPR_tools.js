@@ -295,7 +295,7 @@ async function displayResults(json){
     })
     .catch(function(err) {  console.log('Failed to fetch page: ', err); });
 
-    setGauge(mean);
+    setGauge(mean, 100);
 }
 
 function setChart(last){

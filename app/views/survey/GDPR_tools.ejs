@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
 	<%- include('../common/imports.ejs') %>
@@ -23,42 +24,44 @@
 	<% } %>
 			<%- include('../common/header.ejs') %>
 			<div class="body-container">
-				<div class="questionnaire-container">
-					<div id="description">
-						<h3>Compila un nuovo questionario di GDPR</h3>
-						<p>
-							Il servizio offre un sondaggio per la verifica della conformità di un’organizzazione al GDPR (General Data Protection Regulation) che ne disciplina il trattamento dei dati personali. Il GDPR si applica a tutte le attività di trattamento dei dati condotte da organizzazioni operanti all’interno della UE ma anche a quelle organizzazioni che risiedono al di fuori della UE e che forniscono prodotti e servizi a individui nella UE.
+				<center>
+					<div class="questionnaire-container">
+						<div id="description">
+							<h3>Compila un nuovo questionario di GDPR</h3>
+							<p>
+								Il servizio offre un sondaggio per la verifica della conformità di un’organizzazione al GDPR (General Data Protection Regulation) che ne disciplina il trattamento dei dati personali. Il GDPR si applica a tutte le attività di trattamento dei dati condotte da organizzazioni operanti all’interno della UE ma anche a quelle organizzazioni che risiedono al di fuori della UE e che forniscono prodotti e servizi a individui nella UE.
+								<br><br>
+								<b>N.B.</b> Una volta compilato un questionario, non è più possibile modificarlo. Pertanto presta attenzione alle risposte date!
+							</p>
+						</div>
+
+						<div id="surveyContainer"></div>
+						<div id="surveyResults"></div>
+
+						<div class="separator">Oppure</div>
+
+						<div id="restore">
+							<h3>Ripristina un questionario già compilato</h3>
+							<p>Una volta compilato un questionario, il suo identificativo univoco (ID) viene mostrato nella pagina dei risultati e salvato nel profilo dell'utente. Tramite tale ID è possibile recuperare il questionario per visionare le risposte date. Tuttavia, non è modificabile.
+							</p>
+							<label for="restoreID">ID questionario (GDPR): </label>
+							<input type="text" id="restoreID" name="restoreID" />
+							<button type="button" onclick="restoreSurvey()">Ripristina</button>
+						</div>
+
+						<div id="chart">
 							<br><br>
-							<b>N.B.</b> Una volta compilato un questionario, non è più possibile modificarlo. Pertanto presta attenzione alle risposte date!
-						</p>
+							<div class="separator"></div>
+							<br><br>
+							<center>
+								<h2 class="chart-title">Valori(%) Ultimo Questionario</h2>
+								<p><b>ID: </b><span id="lastID"></span> &nbsp; <b>Data: </b><span id="lastDate"></span></p>
+								<p>Il grafico sotto riportato mostra i valori della conformità al GDPR del tuo ultimo questionario.<br> Più i valori sono alti, più sei conforme al GDPR.</p>
+								<canvas id="gdpr-chart"></canvas>
+							</center>
+						</div>
 					</div>
-
-					<div id="surveyContainer"></div>
-					<div id="surveyResults"></div>
-
-					<div class="separator">Oppure</div>
-
-					<div id="restore">
-						<h3>Ripristina un questionario già compilato</h3>
-						<p>Una volta compilato un questionario, il suo identificativo univoco (ID) viene mostrato nella pagina dei risultati e salvato nel profilo dell'utente. Tramite tale ID è possibile recuperare il questionario per visionare le risposte date. Tuttavia, non è modificabile.
-						</p>
-						<label for="restoreID">ID questionario (GDPR): </label>
-						<input type="text" id="restoreID" name="restoreID" />
-						<button type="button" onclick="restoreSurvey()">Ripristina</button>
-					</div>
-
-					<div id="chart">
-						<br><br>
-						<div class="separator"></div>
-						<br><br>
-						<center>
-							<h2 class="chart-title">Valori(%) Ultimo Questionario</h2>
-							<p><b>ID: </b><span id="lastID"></span> &nbsp; <b>Data: </b><span id="lastDate"></span></p>
-							<p>Il grafico sotto riportato mostra i valori della conformità al GDPR del tuo ultimo questionario.<br> Più i valori sono alti, più sei conforme al GDPR.</p>
-							<canvas id="gdpr-chart"></canvas>
-						</center>
-					</div>
-				</div>
+				</center>
 			</div>
 		</body>
 	<% } %>

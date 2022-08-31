@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
 	<%- include('../common/imports.ejs') %>
@@ -13,36 +14,38 @@
 	<body>
 		<%- include('../common/header.ejs') %>
 		<div class="body-container">
-			<br>
-			<% if(data.status == 200) { %>
-				<table class="results sortable">
-					<tr>
-						<th>Dominio</th>
-						<th>DGA</th>
-						<th>Rilevato (volte/numero algoritmi)</th>
-					</tr>
-					<% for(var i=0; i < data.data.length; i++) { %>
+			<center>
+				<br>
+				<% if(data.status == 200) { %>
+					<table class="results sortable">
 						<tr>
-						<% if(data.data[i].domain) { %>
-							<td><%= data.data[i].domain %></td>
-							<% if(data.data[i].is_dga) { %>
-								<td class="detected">Si</td>
-							<% } else { %>
-								<% if(data.data[i].detected_by_engine == 0) { %>
-									<td>No</td>
-								<% } else { %>
-									<td>Probabilmente no</td>
-								<% } %>
-							<% } %>
-							<td><%= data.data[i].detected_by_engine %></b>/<%= data.engines_count %></td>
-						<% } %>
+							<th>Dominio</th>
+							<th>DGA</th>
+							<th>Rilevato (volte/numero algoritmi)</th>
 						</tr>
-					<% } %>
-				</table>
-			<% } else { %>
-				Errore <%= data.status %>: <%= data.text %>
-			<% } %>
-		</div>
+						<% for(var i=0; i < data.data.length; i++) { %>
+							<tr>
+							<% if(data.data[i].domain) { %>
+								<td><%= data.data[i].domain %></td>
+								<% if(data.data[i].is_dga) { %>
+									<td class="detected">Si</td>
+								<% } else { %>
+									<% if(data.data[i].detected_by_engine == 0) { %>
+										<td>No</td>
+									<% } else { %>
+										<td>Probabilmente no</td>
+									<% } %>
+								<% } %>
+								<td><%= data.data[i].detected_by_engine %></b>/<%= data.engines_count %></td>
+							<% } %>
+							</tr>
+						<% } %>
+					</table>
+				<% } else { %>
+					Errore <%= data.status %>: <%= data.text %>
+				<% } %>
+			</div>
+		</center>
 	</body>
 <% } %>
 </html>

@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
 	<%- include('../common/imports.ejs') %>
@@ -36,56 +37,58 @@
 	<% } %>
 			<%- include('../common/header.ejs') %>
 			<div class="body-container">
-				<div class="questionnaire-container">
-					<div id="description">
-						<h3>Compila un nuovo questionario di SELF ASSESSMENT</h3>
-						
-						Default: <input type="radio" name="configuration" value="default" onchange="showOption(this)" checked="checked">
-						File: <input type="radio" name="configuration" value="file" onchange="showOption(this)">
+				<center>
+					<div class="questionnaire-container">
+						<div id="description">
+							<h3>Compila un nuovo questionario di SELF ASSESSMENT</h3>
+							
+							Default: <input type="radio" name="configuration" value="default" onchange="showOption(this)" checked="checked">
+							File: <input type="radio" name="configuration" value="file" onchange="showOption(this)">
 
-						<div id="file-container">
-							<div id="uploadFile" class="uploadFile" onclick="getFile()">Scegli file di configurazione (.json)</div>
-						  	<div style='height: 0px; width: 0px; overflow:hidden;'>
-								<input type="file" name="configuration" id="configuration" accept=".json" onchange="readFile(event)" />
+							<div id="file-container">
+								<div id="uploadFile" class="uploadFile" onclick="getFile()">Scegli file di configurazione (.json)</div>
+							  	<div style='height: 0px; width: 0px; overflow:hidden;'>
+									<input type="file" name="configuration" id="configuration" accept=".json" onchange="readFile(event)" />
+								</div>
 							</div>
+
+							<p>Se non viene selezionato nessun file, automaticamente si applica la configurazione di default</p>
+							<p>
+								Il servizio offre uno strumento semplice e rapido per l'autovalutazione per il calcolo del rischio cibernetico. Il servizio richiede due tipi di input: quelli relativi alle misure di sicurezza e quelli sulle risorse dell'azienda. A questionario completo, il servizio stima il rischio cibernetico derivante da ogni categoria. Più il valore è alto, più la probabilità di rischio è alta.
+								<br><br>
+								<b>N.B.</b> Una volta compilato un questionario, non è più possibile modificarlo. Pertanto presta attenzione alle risposte date!
+							</p>
 						</div>
 
-						<p>Se non viene selezionato nessun file, automaticamente si applica la configurazione di default</p>
-						<p>
-							Il servizio offre uno strumento semplice e rapido per l'autovalutazione per il calcolo del rischio cibernetico. Il servizio richiede due tipi di input: quelli relativi alle misure di sicurezza e quelli sulle risorse dell'azienda. A questionario completo, il servizio stima il rischio cibernetico derivante da ogni categoria. Più il valore è alto, più la probabilità di rischio è alta.
+						<div id="surveyContainer"></div>
+						<div id="surveyResults"></div>
+
+						<div class="separator">Oppure</div>
+
+						<div id="restore">
+							<h3>Ripristina un questionario già compilato</h3>
+							<p>Una volta compilato un questionario, il suo identificativo univoco (ID) viene mostrato nella pagina dei risultati e salvato nel profilo dell'utente. Tramite tale ID è possibile recuperare il questionario per visionare le risposte date. Tuttavia, non è modificabile.
+							</p>
+							<label for="restoreID">ID questionario (SELF ASSESSMENT): </label>
+							<input type="text" id="restoreID" name="restoreID" />
+							<button type="button" onclick="restoreSurvey()">Ripristina</button>
+						</div>
+
+						<div id="chart">
 							<br><br>
-							<b>N.B.</b> Una volta compilato un questionario, non è più possibile modificarlo. Pertanto presta attenzione alle risposte date!
-						</p>
+							<div class="separator"></div>
+							<br><br>
+							<center>
+								<h2 class="chart-title">Rischio(%) Ultimo Questionario</h2>
+								<p><b>ID: </b><span id="lastID"></span> &nbsp; <b>Data: </b><span id="lastDate"></span></p> 
+								<b>Settore: </b><span id="lastSector"></span></p>
+								<b>Rischio massimo: </b><span id="maxRisk"></span></p>
+								<p>Il grafico sotto riportato mostra i valori del rischio cibernetico dell'ultimo grafico da te compilato adattati al settore di appartenenza.<br> Più i valori tendono ad avvicinarsi al rischio massimo, più il rischio è elevato.</p>
+								<canvas id="gdpr-chart"></canvas>
+							</center>
+						</div>
 					</div>
-
-					<div id="surveyContainer"></div>
-					<div id="surveyResults"></div>
-
-					<div class="separator">Oppure</div>
-
-					<div id="restore">
-						<h3>Ripristina un questionario già compilato</h3>
-						<p>Una volta compilato un questionario, il suo identificativo univoco (ID) viene mostrato nella pagina dei risultati e salvato nel profilo dell'utente. Tramite tale ID è possibile recuperare il questionario per visionare le risposte date. Tuttavia, non è modificabile.
-						</p>
-						<label for="restoreID">ID questionario (SELF ASSESSMENT): </label>
-						<input type="text" id="restoreID" name="restoreID" />
-						<button type="button" onclick="restoreSurvey()">Ripristina</button>
-					</div>
-
-					<div id="chart">
-						<br><br>
-						<div class="separator"></div>
-						<br><br>
-						<center>
-							<h2 class="chart-title">Rischio(%) Ultimo Questionario</h2>
-							<p><b>ID: </b><span id="lastID"></span> &nbsp; <b>Data: </b><span id="lastDate"></span></p> 
-							<b>Settore: </b><span id="lastSector"></span></p>
-							<b>Rischio massimo: </b><span id="maxRisk"></span></p>
-							<p>Il grafico sotto riportato mostra i valori del rischio cibernetico dell'ultimo grafico da te compilato adattati al settore di appartenenza.<br> Più i valori tendono ad avvicinarsi al rischio massimo, più il rischio è elevato.</p>
-							<canvas id="gdpr-chart"></canvas>
-						</center>
-					</div>
-				</div>
+				</center>
 			</div>
 		</body>
 	<% } %>

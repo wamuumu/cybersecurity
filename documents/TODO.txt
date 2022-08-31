@@ -38,9 +38,9 @@ X Gestione profilo
 X Algoritmo calcolo rischio cibernetico per self assessment (online -> nulla, circa implementato con percentuali mie)
 X MongoDB Atlas cloud
 X sistemare surveys ui se non ci sono ultime surveys da mostrare
-- rimuovi nome applicazione
+X rimuovi nome applicazione
 - conclusioni no a liste
-- controllare responsive 
+X controllare responsive 
 - rimuovere diagramma di flusso CVE e aggiungere la nuova parte
 X visualizzazione di tutti i prodotti e fornitori
 X produttore software e versione -> ricerca cve

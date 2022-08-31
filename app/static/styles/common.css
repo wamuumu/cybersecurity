@@ -7,37 +7,109 @@ html, body{
 }
 
 .body-container{
+    height: 80%;
     padding: 15px 15px 100px 15px;
-}
-
-.header {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #333;
-}
-
-.header > li, .header > div > li {
-  float: left;
 }
 
 .right {
   float: right !important;
 }
 
-.header > li a, .header > div > li a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-    cursor: pointer;
+.topnav {
+  overflow: hidden;
+  background-color: #333;
 }
 
-.header > li a:hover, .header > div > li a:hover {
-    background-color: #111;
+.topnav > a {
+  float: left;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  cursor: pointer;
 }
+
+.topnav > a:hover {
+  background-color: #111;
+}
+
+.topnav .logo {
+  float: left;
+  display: block;
+  color: black;
+  text-align: center;
+  padding: 9px;
+  margin-top: 2px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.topnav .logo > img {
+  width: 25px;
+  height: auto;
+}
+
+.topnav .logo > img:hover {
+  background: transparent;
+}
+
+.topnav > button{
+  display: none;
+}
+
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+
+  .topnav a:not(:first-child) {
+    display: none;
+  }
+
+  .topnav button.icon {
+    background: #d8d8d8;
+    float: right;
+    display: block;
+    padding: 18px 19px;
+    border: 0;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .topnav button.icon:focus,
+  .topnav button.icon:hover {
+    border: 0;
+    outline: none;
+    background: #b3b3b3;
+  }
+
+  .topnav.responsive {
+    position: relative;
+  }
+
+  .topnav.responsive  > a {
+    float: none;
+    display: block;
+    text-align: left;
+  }
+
+  .topnav > a > span {
+    display: none;  
+  }
+
+  .topnav.responsive .icon {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
+  .right{
+    float: none !important;
+  }
+}
+
 
 .inputField {
   width: 250px;

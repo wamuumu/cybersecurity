@@ -1,16 +1,19 @@
-<ul class="header" id="header">
-  <li><a href="/">Home</a></li>
-  <li><a href="/antimalware">Antimalware</a></li>
-  <li><a href="/dga-detection">DGA Detection</a></li>
-  <li><a href="/cve-search/cve">Monitoraggio del CVE</a></li>
-  <li><a href="/survey/GDPR-tools">Strumento GDPR</a></li>
-  <li><a href="/survey/self-assessment">Strumento Self Assessment</a></li>
-  <li><a href="/thesaurus">Thesaurus</a></li>
-  <li><a href="/ontology">Ontologia</a></li>
+<nav class="topnav" id="topnav">
+  <a href="/" class="logo">
+    <img src="/static/images/logo.png" alt="Logo">
+  </a>
+  <a href="/antimalware">Antimalware</a>
+  <a href="/dga-detection">DGA Detection</a>
+  <a href="/cve-search/cve">Monitoraggio del CVE</a>
+  <a href="/survey/GDPR-tools">Strumento GDPR</a>
+  <a href="/survey/self-assessment">Strumento Self Assessment</a>
+  <a href="/thesaurus">Thesaurus</a>
+  <a href="/ontology">Ontologia</a>
   <% if(!loggedUser) { %>
-    <li class="right"><a href="/login">Login</a></li>
+    <a class="right" href="/login">Login</a>
   <% } else { %>
-    <li class="right"><a onclick="logout()">Logout</a></li>
-    <li class="right"><a href="/profile">Profilo</a></li>
+    <a class="right" onclick="logout()">Logout</a>
+    <a class="right" href="/profile">Profilo</a>
   <% } %>
-</ul>
+  <button class="icon" onclick="toggleResponsiveMenu()"><i class="fa fa-bars"></i></button>
+</nav>

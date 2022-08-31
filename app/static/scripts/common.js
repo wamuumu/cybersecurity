@@ -1,5 +1,10 @@
 var captchaToken;
 
+const toggleResponsiveMenu = () => {
+    const nav = document.getElementById("topnav");
+    nav.className === "topnav" ? nav.className += " responsive" : nav.className = "topnav";
+};
+
 function setError(status, text){
 	document.getElementById('errorStatus').innerHTML = status;
 	document.getElementById('errorText').innerHTML = "<strong>Errore: </strong>" + text;

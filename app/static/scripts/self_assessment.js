@@ -843,6 +843,8 @@ function computeRisk(json, configuration){
 async function displayResults(json){
     var results = document.getElementById('surveyResults');
 
+    maxVal = json.p0f0 * 100
+
     var resultTable;
     let parse = parseResults(json, categories);
     var mean = 0;
@@ -864,7 +866,7 @@ async function displayResults(json){
     })
     .catch(function(err) {  console.log('Failed to fetch page: ', err); });
 
-    setGauge(mean);
+    setGauge(mean, maxVal);
 }
 
 function setChart(last){
@@ -892,6 +894,9 @@ function setChart(last){
     let maxVal = sec * 100
 
     let scores = parseResults(risk, categories);
+    for (var i = 0; i < scores.length; i++)
+        if(scores[i] > maxVal)
+            scores[i] = maxVal
 
     for (var i = 0; i < sectors.length; i++)
         if(sectors[i].value == sec){

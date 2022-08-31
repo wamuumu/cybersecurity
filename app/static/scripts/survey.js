@@ -114,7 +114,10 @@ function getFieldInfo(field){
     return { "page" : parseInt(values[0]), "field": parseInt(values[1]) };
 }
 
-function setGauge(mean){
+function setGauge(mean, maxValue){
+
+    maxValue = maxValue.toFixed(2)
+
     var opts = {
         angle: 0.35, // The span of the gauge arc
         lineWidth: 0.1, // The line thickness
@@ -135,9 +138,9 @@ function setGauge(mean){
     
     var target = document.getElementById('gauge'); // your canvas element
     var text = document.getElementById('gauge-value'); // your text element
-    text.innerHTML = mean;
+    text.innerHTML = mean + "<br>/" + maxValue;
     var gauge = new Donut(target).setOptions(opts); // create sexy gauge!
-    gauge.maxValue = 100; // set max gauge value
+    gauge.maxValue = maxValue; // set max gauge value
     gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
     gauge.animationSpeed = 32; // set animation speed (32 is default value)
     gauge.text = mean;

@@ -1,6 +1,15 @@
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+    .questionnaire-container {
+        width: 90% !important;
+    }
+}
+
 .questionnaire-container {
 	width: 80%;
 	margin: 50 auto;
+    text-align: left;
 }
 
 .gauge-container {
@@ -74,4 +83,14 @@
 
 #file-container {
     display: none;
+}
+
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+
+    #chart{
+        display: none;
+    }
+
 }
