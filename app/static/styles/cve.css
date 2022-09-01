@@ -189,13 +189,13 @@ only screen and (max-width: 760px),
     display: table-cell;
     width: 250px;
     padding: 10px;
-    margin: 10 30;
+    margin: 10px;
 }
 
 .enable * {
     display: table-cell;
     padding: 10px;
-    margin: 10 30;
+    margin: 10px;
 }
 
 .filterSearch, .option {
@@ -210,7 +210,7 @@ only screen and (max-width: 760px),
 }
 
 #searchType {
-    margin: 10;
+    margin: 10px;
 }
 
 .search{

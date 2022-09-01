@@ -1,26 +1,28 @@
 <head>
-  <%- include('./imports.ejs') %>
-  <link rel="stylesheet" href="/static/styles/common.css">
+    <%- include('../common/imports.ejs') %>
+    <title>Errore</title>
 </head>
-<%- include('./header.ejs') %>
-<div class="error-container">
-  <div class="error">
-    <% if (typeof data.status != 'undefined') { %>
-      <p id="errorStatus"><%= data.status %></p>
-    <% } else { %>
-      <p id="errorStatus"></p>
-    <% } %>
+<body onload="setError(<%= data.status %>, '<%= data.message %>')">
+  <%- include('./header.ejs') %>
+  <div class="error-container">
+    <div class="error">
+      <% if (typeof data.status != 'undefined') { %>
+        <p id="errorStatus"><%= data.status %></p>
+      <% } else { %>
+        <p id="errorStatus"></p>
+      <% } %>
 
-    <% if (typeof data.message != 'undefined') { %>
-      <p id="errorText"><%= data.message %></p>
-    <% } else { %>
-      <p id="errorText"></p>
-    <% } %>
+      <% if (typeof data.message != 'undefined') { %>
+        <p id="errorText"><%= data.message %></p>
+      <% } else { %>
+        <p id="errorText"></p>
+      <% } %>
 
-    <% if(data.status == 401) { %>
-      <a href="/login">Login</a>
-    <% } else { %>
-      <a href="#" onclick="history.back()">Indietro</a>
-    <% } %>
+      <% if(data.status == 401) { %>
+        <a href="/login">Login</a>
+      <% } else { %>
+        <a href="#" onclick="history.back()">Indietro</a>
+      <% } %>
+    </div>
   </div>
-</div>
+</body>

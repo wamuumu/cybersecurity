@@ -32,8 +32,6 @@ router.post('/', auth, async function(req, res){
 			
 			var score = 0, bound = 80, results = []	
 
-			console.log(fields)
-
 			const EXP = parseFloat(fields.coeff1) == 0 ? 0 : (parseFloat(fields.coeff1) || 0.2)
 			const DET = parseFloat(fields.coeff2) == 0 ? 0 : (parseFloat(fields.coeff2) || 0.5)
 			const PER = parseFloat(fields.coeff3) == 0 ? 0 : (parseFloat(fields.coeff3) || 0.3)

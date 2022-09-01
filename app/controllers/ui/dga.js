@@ -18,7 +18,7 @@ router.get('/', async function(req, res) {
     let status = parseInt(req.query.status) || 200;
     var error = status == 400 ? "Scegli una modalità prima di fare la richiesta" : "File o campi mancanti";
 
-    var data = status == 200 ? { status: status, error: "" } : { status: status, error: error }
+    var data = status == 200 ? { status: status, message: "" } : { status: status, message: error }
     res.render('dga-detection/dga_input', { data: data, loggedUser: req.isAuthenticated() });
 })
 

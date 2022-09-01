@@ -1,21 +1,19 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<%- include('../common/imports.ejs') %>
-	<link href="https://unpkg.com/survey-jquery/modern.min.css" type="text/css" rel="stylesheet">
-	<link type="text/css" rel="stylesheet" href="/static/styles/survey.css">
-	<script type="text/javascript" src="https://unpkg.com/survey-jquery"></script>
-	<script type="text/javascript" src="/static/scripts/survey.js"></script>
-	<script type="text/javascript" src="/static/scripts/GDPR_tools.js"></script>
-	<script type="text/javascript" src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-	<title>Strumenti GDPR</title>
-</head>
 <% if(data.status != 200 && data.status != 201) { %>
-	<body onload="setError(<%= data.status %>, '<%= data.error %>')">
-		<%- include('../common/error.ejs') %>
-	</body>
+	<%- include('../common/error.ejs', {data: data}) %>
 <% } else { %>
+	<head>
+		<%- include('../common/imports.ejs') %>
+		<link href="https://unpkg.com/survey-jquery/modern.min.css" type="text/css" rel="stylesheet">
+		<link type="text/css" rel="stylesheet" href="/static/styles/survey.css">
+		<script type="text/javascript" src="https://unpkg.com/survey-jquery"></script>
+		<script type="text/javascript" src="/static/scripts/survey.js"></script>
+		<script type="text/javascript" src="/static/scripts/GDPR_tools.js"></script>
+		<script type="text/javascript" src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+		<title>Strumenti GDPR</title>
+	</head>
 
 	<% if(data.status == 200) { %>
 		<body onload="setChart(<%= JSON.stringify(data.last) %>)">
