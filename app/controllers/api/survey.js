@@ -71,13 +71,18 @@ router.post('/', auth, async function(req, res){
 
 			let time = hours + ":" + minutes + ":" + seconds
 
+			let month = (date.getMonth() + 1) <= 9 ? "0" + (date.getMonth() + 1) : (date.getMonth() + 1)
+			let day = date.getDate() <= 9 ? "0" + date.getDate() : date.getDate()
+
+			let dateTime = date.getFullYear() + "-" + month + "-" + day + " | " + time
+
             try{
 		        var new_survey = new Survey({
 		            type: fields.type,
 		            configuration: JSON.stringify(fields.configuration),
 		            data: JSON.stringify(fields.data),
 		            user: req.user.id,
-		            date: date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear() + " | " + time
+		            date: dateTime
 		        });
 
 		        let survey = await new_survey.save()

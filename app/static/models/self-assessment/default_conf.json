@@ -81,14 +81,14 @@
     "category6": {
         "1": {
             "probability": [3],
-            "impact": [2, 3]
+            "impact": [2, 4]
         },
         "2": {
-            "probability": [2],
+            "probability": [1],
             "impact": [0, 0, 2, 3, 4]
         },
         "3": {
-            "probability": [2],
+            "probability": [1],
             "impact": [2, 3, 4]
         }
     },

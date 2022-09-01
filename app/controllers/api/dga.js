@@ -32,9 +32,11 @@ router.post('/', auth, async function(req, res){
 			
 			var score = 0, bound = 80, results = []	
 
-			const EXP = parseFloat(fields.coeff1) || 0.2
-			const DET = parseFloat(fields.coeff2) || 0.4
-			const PER = parseFloat(fields.coeff3) || 0.4
+			console.log(fields)
+
+			const EXP = parseFloat(fields.coeff1) == 0 ? 0 : (parseFloat(fields.coeff1) || 0.2)
+			const DET = parseFloat(fields.coeff2) == 0 ? 0 : (parseFloat(fields.coeff2) || 0.5)
+			const PER = parseFloat(fields.coeff3) == 0 ? 0 : (parseFloat(fields.coeff3) || 0.3)
 
 			if((EXP + DET + PER).toFixed(2) != 1){
 				console.error("Bad coefficients - the sum of those must be 1. Get [" + EXP + ", " + DET + ", " + PER + "]");
@@ -50,7 +52,7 @@ router.post('/', auth, async function(req, res){
 
 			if(choice == "file" && fileName != "" && mimetype == "text/plain"){
 
-				let exp0seAlg = exp_parse(choice, files, domain)
+				let exp0seAlg = EXP != 0 ? exp_parse(choice, files, domain) : []
 
 				let filePath = files.filetoupload.filepath;
 
@@ -69,28 +71,38 @@ router.post('/', auth, async function(req, res){
 				for (var i = 0; i < urls.length; i++) {
 
 					if(urls[i] != ""){
-						let personalAlg = await detect(tfjsURL, urls[i]) == true ? 1 : 0
-						let exp0seVal = exp0seAlg[i]['is_dga'] == true ? 1 : 0
+						let personalAlg = PER != 0 ? (await detect(tfjsURL, urls[i]) == true ? 1 : 0) : 0
 
-						await dgadetective.checkDGA(urls[i])
-						.then(function(result){ 
-							score = result;
-						}, function(err) {
-							console.error(err);
-						});
+						var exp0seVal;
 
-						let dga_det = score >= bound ? 1 : 0;
+						if(exp0seAlg[i] == undefined)
+							exp0seVal = 0
+						else
+							exp0seVal = exp0seAlg[i]['is_dga'] == true ? 1 : 0
 
-						console.log(urls[i], personalAlg, exp0seVal, dga_det)
+						var dga_det = 0;
+
+						if(DET != 0){
+							await dgadetective.checkDGA(urls[i])
+							.then(function(result){ 
+								score = result;
+							}, function(err) {
+								console.error(err);
+							});
+
+							dga_det = score >= bound ? 1 : 0;
+						}
+
+						console.log(urls[i], exp0seVal, dga_det, personalAlg)
 
 						var count = 0
 						if(personalAlg == 1) count++;
 						if(exp0seVal == 1) count++;
 						if(dga_det == 1) count++;
 
-						let dga = (PER * personalAlg) + (EXP * exp0seVal) + (DET * dga_det) >= 0.5
+						let dga = (EXP * exp0seVal) + (DET * dga_det) + (PER * personalAlg) >= 0.5
 				    	
-				    	results.push({'domain': urls[i], 'is_dga': dga, 'detected_by_engine': count})
+				    	results.push({'domain': urls[i], 'is_dga': dga, 'detected_by_engine': count, 'partial_scores': [exp0seVal, dga_det, personalAlg] })
 				    }
 				}
 
@@ -98,26 +110,36 @@ router.post('/', auth, async function(req, res){
 
 			}else if(choice == "domain" && domain != "" && domain != undefined){
 
-				let personalAlg = await detect(tfjsURL, domain) == true ? 1 : 0
-				let exp0seAlg = exp_parse(choice, files, domain)[0]['is_dga'] == true ? 1 : 0
+				let personalAlg = PER != 0 ? (await detect(tfjsURL, domain) == true ? 1 : 0) : 0
 
-				await dgadetective.checkDGA(domain)
+				let exp0seAlg = EXP != 0 ? (exp_parse(choice, files, domain)[0]) : undefined
+
+				if(exp0seAlg == undefined)
+					exp0seAlg = 0
+				else
+					exp0seAlg = exp0seAlg['is_dga'] == true ? 1 : 0
+
+				var dga_det = 0;
+
+				if(DET != 0){
+					await dgadetective.checkDGA(domain)
 					.then(function(result){ 
 						score = result
 					}, function(err) {
 						console.error(err);
 					});
 
-				let dga_det = score >= bound ? 1 : 0;
+					dga_det = score >= bound ? 1 : 0;
+				}
 
 				var count = 0
 				if(personalAlg == 1) count++;
 				if(exp0seAlg == 1) count++;
 				if(dga_det == 1) count++;
+					
+				let dga = (EXP * exp0seAlg) + (DET * dga_det) + (PER * personalAlg) >= 0.5
 
-				let dga = (PER * personalAlg) + (EXP * exp0seAlg) + (DET * dga_det) >= 0.5
-
-				results.push({ 'domain': domain, 'is_dga': dga, 'detected_by_engine': count})
+				results.push({ 'domain': domain, 'is_dga': dga, 'detected_by_engine': count, 'partial_scores': [exp0seAlg, dga_det, personalAlg]})
 
 				return res.status(200).json({status: 200, engines_count: 3, data: results})
 

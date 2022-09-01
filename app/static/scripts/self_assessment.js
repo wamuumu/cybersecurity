@@ -819,7 +819,7 @@ function computeRisk(json, configuration){
                     }
                 } else{
                     if(category == "category8") //for malwares probabilities
-                        json[key] = Math.pow(sectorMultiplier * configuration[category][question]['probability'] * configuration[category][question]['impact'], 1 / json[key])
+                        json[key] = Math.pow(sectorMultiplier * configuration[category][question]['probability'] * configuration[category][question]['impact'], 1 / (json[key] + 0.5))
                     else{
 
                         id = configuration[category][question]['probability'].length == 1 ? 0 : json[key]
@@ -838,6 +838,18 @@ function computeRisk(json, configuration){
     }
 
     return json
+}
+
+function computeQualitativeRisk(mean, maxVal){
+
+    let val = (mean / maxVal) * 100
+
+    if(val <= 33)
+        return "BASSO"
+    else if(val > 33 && val <= 66)
+        return "MEDIO"
+    else
+        return "ALTO"
 }
 
 async function displayResults(json){
@@ -862,6 +874,7 @@ async function displayResults(json){
         }
         mean = (mean / categories).toFixed(2);
         html_results = html_results.replace("{mean}", mean);
+        html_results = html_results.replace("{qualitative}", computeQualitativeRisk(mean, maxVal));
         results.innerHTML += html_results; 
     })
     .catch(function(err) {  console.log('Failed to fetch page: ', err); });
@@ -894,9 +907,16 @@ function setChart(last){
     let maxVal = sec * 100
 
     let scores = parseResults(risk, categories);
-    for (var i = 0; i < scores.length; i++)
+    var mean = 0
+
+    for (var i = 0; i < scores.length; i++){
+        mean += parseFloat(scores[i])
         if(scores[i] > maxVal)
             scores[i] = maxVal
+    }
+
+    mean = (mean / categories).toFixed(2);
+    console.log(mean)
 
     for (var i = 0; i < sectors.length; i++)
         if(sectors[i].value == sec){
@@ -905,9 +925,10 @@ function setChart(last){
         }
 
     document.getElementById('lastID').innerHTML = last._id
-    document.getElementById('lastDate').innerHTML = last.date
+    document.getElementById('lastDate').innerHTML = unformatDate(last.date)
     document.getElementById('lastSector').innerHTML = sec
     document.getElementById('maxRisk').innerHTML = maxVal + "%"
+    document.getElementById('qualitative').innerHTML = "RISCHIO " + computeQualitativeRisk(mean, maxVal) + " (" + mean + "%)"
 
     const data = {
         labels: [

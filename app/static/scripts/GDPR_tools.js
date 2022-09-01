@@ -291,6 +291,7 @@ async function displayResults(json){
         }
         mean = (mean / categories).toFixed(2);
         html_results = html_results.replace("{mean}", mean);
+        html_results = html_results.replace("{qualitative}", computeQualitativeCompliance(mean));
         results.innerHTML += html_results; 
     })
     .catch(function(err) {  console.log('Failed to fetch page: ', err); });
@@ -298,12 +299,30 @@ async function displayResults(json){
     setGauge(mean, 100);
 }
 
+function computeQualitativeCompliance(mean){
+    if(mean <= 25)
+        return "NON CONFORME"
+    else if(mean > 25 && mean <= 50)
+        return "LIMITATAMENTE CONFORME"
+    else if(mean > 50 && mean <= 75)
+        return "QUASI CONFORME"
+    else
+        return "CONFORME"
+}
+
 function setChart(last){
 
     var scores = parseResults(JSON.parse(last.data), categories);
+    console.log(scores)
+    var mean = 0;
+    
+    for (var i = 0; i < scores.length; i++)
+        mean += parseFloat(scores[i])
+    mean = (mean / categories).toFixed(2);
 
     document.getElementById('lastID').innerHTML = last._id
-    document.getElementById('lastDate').innerHTML = last.date
+    document.getElementById('lastDate').innerHTML = unformatDate(last.date)
+    document.getElementById('qualitative').innerHTML = computeQualitativeCompliance(mean) + " (" + mean + "%)"
 
     const data = {
         labels: [

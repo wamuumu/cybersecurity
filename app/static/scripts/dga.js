@@ -29,9 +29,9 @@ function resetDomain(e){
 }
 
 function checkCoefficients(){
-	var coeff1 = document.getElementById('coeff1').value;
-	var coeff2 = document.getElementById('coeff2').value;
-	var coeff3 = document.getElementById('coeff3').value;
+	var coeff1 = document.getElementById('coeff1').value || 0;
+	var coeff2 = document.getElementById('coeff2').value || 0;
+	var coeff3 = document.getElementById('coeff3').value || 0;
 	console.log((parseFloat(coeff1) + parseFloat(coeff2) + parseFloat(coeff3)).toFixed(2))
 
 	if((parseFloat(coeff1) + parseFloat(coeff2) + parseFloat(coeff3)).toFixed(2) == 1)

@@ -114,6 +114,20 @@ function getFieldInfo(field){
     return { "page" : parseInt(values[0]), "field": parseInt(values[1]) };
 }
 
+function unformatDate(date){
+    var dateTime = date.split("|")
+    var splitted = dateTime[0].trim().split("-")
+
+    if(splitted.length != 3) return ""
+
+    for (var i = 0; i < splitted.length; i++) {
+        if(isNaN(splitted[i]))
+            return ""
+    }
+
+    return splitted[2] + "-" + splitted[1] + "-" + splitted[0] + " | " + dateTime[1].trim()
+}
+
 function setGauge(mean, maxValue){
 
     maxValue = maxValue.toFixed(2)

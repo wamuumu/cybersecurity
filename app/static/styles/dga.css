@@ -8,6 +8,18 @@
     color: #ff1f4a;
 }
 
+.probably_yes {
+    color: #ff9900;
+}
+
+.safe {
+    color: #009933;
+}
+
+.probably_no {
+    color: #ffcc66;
+}
+
 .results {
     clear: both;
     margin-top: 6px;
