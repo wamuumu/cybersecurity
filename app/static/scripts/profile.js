@@ -1,20 +1,8 @@
+// ------------ PROFILE SCRIPTS ------------ 
+
 var user = {};
 
-function setProfile(){
-	var cookie = getCookie('userCookie');
-
-	if(cookie != null){
-		user.id = cookie.id;
-		user.name = cookie.name;
-		user.surname = cookie.surname;
-		user.email = cookie.email;
-		user.role = cookie.role;
-		user.organization = cookie.organization;
-		user.province = cookie.province;
-	}
-	
-	document.getElementById('province').value = user.province;
-}
+// ------------ UI SCRIPTS ------------ 
 
 function reset(sectionName){
 	if(sectionName != 'account'){
@@ -57,6 +45,24 @@ function changeSection(section){
 
 	reset(sectionName);
 }
+
+function setProfile(){
+	var cookie = getCookie('userCookie');
+
+	if(cookie != null){
+		user.id = cookie.id;
+		user.name = cookie.name;
+		user.surname = cookie.surname;
+		user.email = cookie.email;
+		user.role = cookie.role;
+		user.organization = cookie.organization;
+		user.province = cookie.province;
+	}
+	
+	document.getElementById('province').value = user.province;
+}
+
+// ------------ PROFILE MANAGER SCRIPTS ------------ 
 
 function modifyAccount(){
 

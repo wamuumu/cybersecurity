@@ -26,7 +26,7 @@ router.get('/GDPR-tools', async function(req, res) {
         } 
     })
     .then(res => { surveys = res.data.surveys })
-    .catch(err => { error["status"] = err.response.status; error['error'] = err.response.statusText })
+    .catch(err => { error["status"] = err.response.status; error['message'] = err.response.statusText })
 
 
     if(surveys.length > 0)
@@ -69,7 +69,7 @@ router.get('/self-assessment', async function(req, res) {
         } 
     })
     .then(res => { surveys = res.data.surveys })
-    .catch(err => { error["status"] = err.response.status; error['error'] = err.response.statusText })
+    .catch(err => { error["status"] = err.response.status; error['message'] = err.response.statusText })
 
     if(surveys.length > 0)
         res.render('survey/self_assessment', { data: { status: 200, last: surveys[0] }, loggedUser: req.isAuthenticated() });

@@ -1,9 +1,23 @@
+// ------------ SURVEY SCRIPTS ------------ 
+
 var surveyID = -1;
 var type = "";
 
 Survey.StylesManager.applyTheme("modern");
 Survey.surveyLocalization.locales[Survey.surveyLocalization.defaultLocale].requiredError = "Campo obbligatorio";
 Survey.defaultBootstrapCss.navigation.start = "start-survey";
+
+async function retrieveModel(modelName){
+
+    var model = {}
+
+    await fetch("/static/models" + modelName)
+    .then(res => res.json())
+    .then(out => model = out)
+    .catch(err => console.log(err));
+
+    return model
+}
 
 async function saveSurveyResults(json, type, configuration) {
 
@@ -104,15 +118,13 @@ function parseResults(json, categories){
     return parseArr;
 }
 
-function isEmpty(obj) {
-    return Object.keys(obj).length === 0 || obj == undefined;
-}
-
 function getFieldInfo(field){
     let values = field.split("f");
     values[0] = values[0].substring(1);
     return { "page" : parseInt(values[0]), "field": parseInt(values[1]) };
 }
+
+// ------------ UI SCRIPTS ------------ 
 
 function unformatDate(date){
     var dateTime = date.split("|")

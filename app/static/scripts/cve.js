@@ -1,3 +1,5 @@
+// ------------ CVE SCRIPTS ------------ 
+
 var totalEntries = 0;
 var upperBound = 0;
 var allControls;
@@ -5,10 +7,13 @@ var type = "cve";
 var currentVendor = "";
 var currentSearch = "";
 
-function setCVE(entries) { 
+// ------------ UI AND SETUP SCRIPTS ------------ 
+
+function setCVE(entries, def) { 
 	totalEntries = entries;
 	lastEntries = entries; 
 	allControls = document.getElementById('controls').children;
+	document.getElementById('entries').value = def;
 
 	$("#toggleFilters").click(function() {
 		$("#filters").slideToggle(250);
@@ -26,8 +31,7 @@ function toggle(item) {
     	item.css('overflow-y', 'scroll')
         item.css('height', 200);
     }
-    else{
-    	item.css('height', 'auto')
+    else{    	item.css('height', 'auto')
     	item.css('overflow-y', 'hidden')
     }
 }
@@ -109,6 +113,8 @@ function setMethod(){
 		document.getElementById('filterSearch').onclick = function(){getProducts(0);}
 	}
 }
+
+// ------------ CORE SCRIPTS ------------ 
 
 async function getCVE(skipValue){
     let skip = skipValue || 0;
@@ -428,9 +434,7 @@ async function getProducts(skipValue){
 	}
 }
 
-function isEmpty(obj) {
-	return Object.keys(obj).length === 0 || obj == undefined;
-}
+// ------------ TABLE MANAGER SCRIPTS ------------ 
 
 function setControls(page){
 	//console.log("Current skip: " + page);
@@ -798,8 +802,6 @@ function addRows(body, data, index, page){
 	 	cell.appendChild(button);
 
 	} else if(type == "products"){
-
-		console.log(data)
 
 		cell = row.insertCell(0);
 	    paragraph = document.createElement("p");

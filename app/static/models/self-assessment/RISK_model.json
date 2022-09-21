@@ -1,0 +1,495 @@
+{
+    "pages": [{
+
+    }, {
+        "title": "Categoria: Informazioni sull'organizzazione",
+        "elements": [{
+            "name": "p0f0",
+            "title": "Settore:",
+            "type": "radiogroup",
+            "choices": [
+                { "value": 0.15, "text": "Governo / Militare / Logistica" },
+                { "value": 0.14, "text": "Informazione e Comunicazione" },
+                { "value": 0.130, "text": "Target multipli" },
+                { "value": 0.131, "text": "Assistenza medica" },
+                { "value": 0.09, "text": "Educazione" },
+                { "value": 0.07, "text": "Servizi finanziari" },
+                { "value": 0.039, "text": "Professionale / Scientifico / Tecnico" },
+                { "value": 0.04, "text": "Vendita al dettaglio / all'ingrosso" },
+                { "value": 0.041, "text": "Trasporto e Deposito" },
+                { "value": 0.042, "text": "Produzione" },
+                { "value": 0.029, "text": "News / Multimedia" },
+                { "value": 0.030, "text": "Organizzazione" },
+                { "value": 0.020, "text": "Energia e Gas" },
+                { "value": 0.021, "text": "Arte / Intrattenimento" },
+                { "value": 0.031, "text": "Altro" }
+            ],
+            "isRequired": true
+        },{
+            "name": "p0f1",
+            "title": "Turnover:",
+            "type": "radiogroup",
+            "choices": [
+                { "value": 0, "text": "<1 milione per anno" },
+                { "value": 1, "text": "1-2 milioni per anno" },
+                { "value": 2, "text": "2-10 milioni per anno" },
+                { "value": 3, "text": "10-20 milioni per anno" },
+                { "value": 4, "text": ">20 milioni per anno" }
+            ],
+            "isRequired": true
+        }, {
+            "name": "p0f2",
+            "title": "Numero dipendenti:",
+            "type": "radiogroup",
+            "choices": [
+                { "value": 0, "text": "<5" },
+                { "value": 1, "text": "5-10" },
+                { "value": 2, "text": "10-20" },
+                { "value": 3, "text": "20-50" },
+                { "value": 4, "text": "50-250" }
+            ],
+            "isRequired": true
+        }]
+    }, {
+        "title": "Categoria: Informazioni sulla rete",
+        "elements": [{
+            "name": "p1f0",
+            "title": "La tua organizzazione possiede una rete IT?",
+            "type": "radiogroup",
+            "choices": [
+                { "value": 0, "text": "No" },
+                { "value": 1, "text": "Sì" },
+                { "value": 2, "text": "Sì, ma la rete è condivisa con altre entità" }
+            ],
+            "isRequired": true
+        }, {
+            "name": "p1f1",
+            "title": "Computer tradizionali:",
+            "type": "radiogroup",
+            "choices": [
+                { "value": 0, "text": "<5" },
+                { "value": 1, "text": "5-10" },
+                { "value": 2, "text": "10-20" },
+                { "value": 3, "text": "20-50" },
+                { "value": 4, "text": "50-250" },
+                { "value": 5, "text": ">250" }
+            ],
+            "isRequired": true,
+            "enableIf": "{p1f0}>0"
+        }, {
+            "name": "p1f2",
+            "title": "Server:",
+            "type": "radiogroup",
+            "choices": [
+                { "value": 0, "text": "0" },
+                { "value": 1, "text": "1" },
+                { "value": 2, "text": "2-5" },
+                { "value": 3, "text": ">5" }
+            ],
+            "isRequired": true,
+            "enableIf": "{p1f0}>0"
+        }, {
+            "name": "p1f3",
+            "title": "Servizi Cloud:",
+            "type": "radiogroup",
+            "choices": [
+                { "value": 0, "text": "0" },
+                { "value": 1, "text": "1" },
+                { "value": 2, "text": "2-5" },
+                { "value": 3, "text": ">5" }
+            ],
+            "isRequired": true,
+            "enableIf": "{p1f0}>0"
+        }, {
+            "name": "p1f4",
+            "title": "Altri dispositivi elettronici connessi alla rete (Stampanti, Fax, Telefoni VoIP, etc.):",
+            "type": "radiogroup",
+            "choices": [
+                { "value": 0, "text": "<5" },
+                { "value": 1, "text": "5-10" },
+                { "value": 2, "text": "10-20" },
+                { "value": 3, "text": "20-50" },
+                { "value": 4, "text": ">50" }
+            ],
+            "isRequired": true,
+            "enableIf": "{p1f0}>0"
+        }]
+    }, {
+        "title": "Categoria: Informazioni sulle risorse dati",
+        "elements": [{
+            "type": "html",
+            "name": "p2info",
+            "html": "<p>Quali dei seguenti dati sono memorizzati dalla vostra azienda (sono consentite risposte multiple):</p>"
+        }, {
+            "name": "p2f0",
+            "title": "Informazioni del cliente:",
+            "type": "checkbox",
+            "choices": [
+                { "value": 0, "text": "Informazioni finanziarie" },
+                { "value": 1, "text": "Informazioni personali identificabili" },
+                { "value": 2, "text": "Informazioni sanitarie personali" }
+            ],
+            "isRequired": true
+        }, {
+            "name": "p2f1",
+            "title": "Informazioni di altre aziende partner:",
+            "type": "checkbox",
+            "choices": [
+                { "value": 0, "text": "Informazioni sui clienti del partner" },
+                { "value": 1, "text": "Informazioni sulle transazioni" },
+                { "value": 2, "text": "Know-how" },
+                { "value": 3, "text": "Record finanziari" }
+            ],
+            "isRequired": true
+        }, {
+            "name": "p2f2",
+            "title": "Informazioni dell’azienda:",
+            "type": "checkbox",
+            "choices": [
+                { "value": 0, "text": "Media" },
+                { "value": 1, "text": "Audit e Log" },
+                { "value": 2, "text": "Informazioni su transazioni" },
+                { "value": 3, "text": "Know-how" },
+                { "value": 4, "text": "Dati operativi" },
+                { "value": 5, "text": "Informazioni finanziarie" }
+            ],
+            "isRequired": true
+        }]
+    }, {
+        "title": "Categoria: Protezione informatica - Management",
+        "elements": [{
+            "type": "html",
+            "name": "p3first",
+            "html": "<h1>Politiche</h1>"
+        }, {
+            "name": "p3f0",
+            "title": " La sua azienda ha formalmente definito delle politiche di sicurezza:",
+            "type": "radiogroup",
+            "choices": [
+                { "value": 0, "text": "Sì, tutti i dipendenti hanno familiarità con esse e lo staff responsabile assicura che vengano seguiti" },
+                { "value": 1, "text": "Sì, tutti i dipendenti ne sono a conoscenza (almeno all'inizio del loro impiego)" },
+                { "value": 2, "text": "Sì, le politiche sono definite e il personale responsabile è a conoscenza di esse" },
+                { "value": 3, "text": "No" }
+            ],
+            "isRequired": true
+        }, {
+            "name": "p3f1",
+            "title": "Politiche sui dispositivi mobili:",
+            "type": "radiogroup",
+            "choices": [
+                { "value": 0, "text": "Solo i dispositivi mobili dell’azienda (configurati e gestiti dal personale IT interno) possono connettersi alla rete aziendale" },
+                { "value": 1, "text": "Tutti i dispositivi mobili sono obbligati a soddisfare le politiche dell'azienda" },
+                { "value": 2, "text": "I dispositivi mobili possono connettersi liberamente alla rete, presupponendo che vengano fornite le credenziali corrette" }
+            ],
+            "isRequired": true
+        }, {
+            "type": "html",
+            "name": "p3second",
+            "html": "<h1>Azienda</h1>"
+        }, {
+            "name": "p3f2",
+            "title": "La sua azienda ha una persona ufficialmente responsabile della sicurezza informatica (colui/colei che distribuisce il budget per la sicurezza informatica, stabilisce gli obiettivi strategici e definisce le politiche di sicurezza, ecc.):",
+            "type": "radiogroup",
+            "choices": [
+                { "value": 0, "text": "Un’organizzazione per la gestione IT" },
+                { "value": 1, "text": "Il nostro amministratore IT" },
+                { "value": 2, "text": "Un responsabile dedicato alla sicurezza informatica" },
+                { "value": 3, "text": "Un amministratore condiviso nell’area IT" },
+                { "value": 4, "text": "Uno o più dipendenti che si occupano anche dell’aspetto di sicurezza informatica" },
+                { "value": 5, "text": "No" }
+            ],
+            "isRequired": true
+        }]
+    }, {
+        "title": "Categoria: Protezione Informatica - Domande non tecniche",
+        "elements": [{
+            "type": "html",
+            "name": "p4first",
+            "html": "<h1>Risorse Umane</h1>"
+        }, {
+            "name": "p4f0",
+            "title": "Qual è il livello di consapevolezza da parte dei suoi dipendenti della sicurezza informatica nella sua azienda:",
+            "type": "checkbox",
+            "choices": [
+                { "value": 0, "text": "Vengono effettuate corsi di formazione sulla sicurezza informatica da una ditta esterna" },
+                { "value": 1, "text": "Vengono effettuate attività speciali di formazione sulla sicurezza informatica organizzate dall'azienda" },
+                { "value": 2, "text": "I dipendenti leggono (e firmano un documento speciale) sulle politiche di sicurezza informatica" }
+            ],
+            "isRequired": true,
+            "hasNone": true,
+            "noneText": "Nessuna delle precedenti"
+        }, {
+            "type": "html",
+            "name": "p4second",
+            "html": "<h1>Gestione Delle Risorse</h1>"
+        }, {
+            "name": "p4f1",
+            "title": "Quali beni sono inclusi in un inventario mantenuto dalla sua azienda:",
+            "type": "checkbox",
+            "choices": [
+                { "value": 0, "text": "Dati" },
+                { "value": 1, "text": "Servizi (ad es. Cloud, social network, siti Web, email, ecc.)" },
+                { "value": 2, "text": "Software" },
+                { "value": 3, "text": "Dispositivi mobili" },
+                { "value": 4, "text": "Dispositivi fisici (workstation, server, router, ecc.)" }
+            ],
+            "isRequired": true,
+            "hasNone": true,
+            "noneText": "Nessuna delle precedenti"
+        }, {
+            "type": "html",
+            "name": "p4third",
+            "html": "<h1>Protezione Fisica</h1>"
+        }, {
+            "name": "p4f2",
+            "title": "In che modo l'accesso fisico ai locali dell’azienda è protetto e controllato:",
+            "type": "checkbox",
+            "choices": [
+                { "value": 0, "text": "La stanza del server è bloccata e solo il personale responsabile ha accesso ad essa" },
+                { "value": 1, "text": "Uffici. L'accesso agli uffici principali è severamente vietato ai visitatori esterni se nessuno dei presenti è all'interno" },
+                { "value": 2, "text": "Perimetro. L'accesso all'area è sorvegliato dall'addetto alla reception" },
+                { "value": 3, "text": "L'accesso di visitatori esterni non è monitorato" }
+            ],
+            "isRequired": true
+        }, {
+            "type": "html",
+            "name": "p4fourth",
+            "html": "<h1>Conformità</h1>"
+        }, {
+            "name": "p4f3",
+            "title": "L'organizzazione ha un certificato di sicurezza informatica:",
+            "type": "checkbox",
+            "choices": [
+                { "value": 0, "text": "(N)CSF" },
+                { "value": 1, "text": "ISO 2700X" },
+                { "value": 2, "text": "Cobit" },
+                { "value": 3, "text": "Altro" }
+            ],
+            "isRequired": true,
+            "hasNone": true,
+            "noneText": "Nessuna delle precedenti"
+        }]
+    }, {
+        "title": "Categoria: Protezione Informatica - Access control",
+        "elements": [{
+            "name": "p5f0",
+            "title": "Gestione delle password:",
+            "type": "radiogroup",
+            "choices": [
+                { "value": 0, "text": "Sì" },
+                { "value": 1, "text": "No" }
+            ],
+            "isRequired": true
+        }, {
+            "name": "p5f1",
+            "title": "Politiche di gestione della password e dell'identità:",
+            "type": "radiogroup",
+            "choices": [
+                { "value": 0, "text": "Altri metodi di autenticazione, oltre al semplice login-password, sono in uso (come le smart card, la biometria, ecc.)" },
+                { "value": 1, "text": "L'autorizzazione a multi-fattori viene applicata" },
+                { "value": 2, "text": "Le password vengono emesse esclusivamente dal software personale di gestione delle password" },
+                { "value": 3, "text": "Le password possono essere selezionate dai dipendenti, ma controllate e devono soddisfare i requisiti interni" },
+                { "value": 4, "text": "Le password possono essere selezionate dai dipendenti, senza ulteriori controlli sulla sicurezza della password" }
+            ],
+            "isRequired": true,
+            "enableIf": "{p5f0}=0"
+        }, {
+            "name": "p5f2",
+            "title": "Qual è la procedura per garantire l'accesso alle risorse informative:",
+            "type": "radiogroup",
+            "choices": [
+                { "value": 0, "text": "Esiste una procedura formale per garantire l'accesso e la revoca al dipendente" },
+                { "value": 1, "text": "L'accesso è concesso per quanto riguarda il lavoro svolto dal dipendente e solo per quello" },
+                { "value": 2, "text": "Non esiste una procedura particolare. L'accesso è concesso quando è necessario" }
+            ],
+            "isRequired": true,
+            "enableIf": "{p5f0}=0"
+        }]
+    }, {
+        "title": "Categoria: Protezione Informatica - Domande tecniche",
+        "elements": [{
+            "type": "html",
+            "name": "p6first",
+            "html": "<h1>Sicurezza Delle Comunicazioni</h1>"
+        }, {
+            "name": "p6f0",
+            "title": "Come viene protetto l'accesso remoto alle risorse informative:",
+            "type": "radiogroup",
+            "choices": [
+                { "value": 0, "text": "Non è consentito l'accesso remoto" },
+                { "value": 1, "text": "Questo è gestito direttamente dall'amministratore IT" },
+                { "value": 2, "text": "I dati vengono crittografati con un protocollo di sicurezza (HTTPS, TLS, SSL, ecc.) o inviati tramite una VPN" },
+                { "value": 3, "text": "I dati inviati non vengono criptati" }
+            ],
+            "isRequired": true
+        }, {
+            "type": "html",
+            "name": "p6second",
+            "html": "<h1>Protezione Del Sistema</h1>"
+        }, {
+            "name": "p6f1",
+            "title": "Quali meccanismi di protezione sono installati:",
+            "type": "checkbox",
+            "choices": [
+                { "value": 0, "text": "Protezione da malware (ad es. antivirus)" },
+                { "value": 1, "text": "Protezione della rete (ad es. firewall)" },
+                { "value": 2, "text": "Backup regolare" },
+                { "value": 3, "text": "Registrazione degli eventi" },
+                { "value": 4, "text": "Crittografia dei dati (per le principali risorse informative)" },
+                { "value": 5, "text": "Scansione periodica delle vulnerabilità" },
+                { "value": 6, "text": "Analisi degli eventi informatici (anche esternalizzati)" }
+            ],
+            "isRequired": true
+        }, {
+            "name": "p6f2",
+            "title": "Con quale frequenza aggiorni i tuoi sistemi (inclusi sistemi operativi, servizi Web, browser, database, ecc.):",
+            "type": "radiogroup",
+            "choices": [
+                { "value": 0, "text": "Gli aggiornamenti vengono eseguiti automaticamente utilizzando le regole predefinite del software" },
+                { "value": 1, "text": "Gli aggiornamenti vengono applicati in base alle politiche di sicurezza informatica, ma non meno di ogni settimana" },
+                { "value": 2, "text": "Gli aggiornamenti vengono applicati in base alle politiche di sicurezza informatica, ma non meno di ogni un mese" },
+                { "value": 3, "text": "Gli aggiornamenti vengono applicati in base alle politiche di sicurezza informatica, ma non meno di ogni 3 mesi" },
+                { "value": 4, "text": "Gli aggiornamenti vengono applicati in base alle politiche di sicurezza informatica, ma non meno di ogni 6 mesi" },
+                { "value": 5, "text": "Non c'è controllo sugli aggiornamenti. Gli aggiornamenti automatici potrebbero essere disabilitati" }
+            ],
+            "isRequired": true
+        }, {
+            "name": "p6f3",
+            "title": "Hai mai superato un controllo di sicurezza informatica:",
+            "type": "radiogroup",
+            "choices": [
+                { "value": 0, "text": "Si" },
+                { "value": 1, "text": "Si, come parte di altri audit" },
+                { "value": 2, "text": "No" }
+            ],
+            "isRequired": true
+        }, {
+            "type": "html",
+            "name": "p6third",
+            "html": "<h1>Risposta Agli Incidenti Informatici</h1>"
+        }, {
+            "name": "p6f4",
+            "title": "L'organizzazione ha una serie di azioni prescritte e un elenco di possibili punti di contatto (ad es. esperti di sicurezza informatica) nel caso si verificasse un incidente di sicurezza informatica?",
+            "type": "radiogroup",
+            "choices": [
+                { "value": 0, "text": "Si" },
+                { "value": 1, "text": "No" }
+            ],
+            "isRequired": true
+        }]
+    }, {
+        "title": "Categoria: Attacchi",
+        "elements": [{
+            "type": "html",
+            "name": "p7first",
+            "html": "<p>Quali e quanti incidenti informatici la sua azienda ha riscontrato nell'ultimo anno(numero):</p>"
+        }, {
+            "name": "p7f0",
+            "title": "Malware o Mobile malware:",
+            "type": "text",
+            "inputType": "number",
+            "min": 0,
+            "isRequired": true,
+            "validators": [
+                {
+                    "type": "regex",
+                    "text": "Inserisci un numero intero",
+                    "regex": "^[0-9]*$"
+                }
+            ]
+        }, {
+            "name": "p7f1",
+            "title": "Ransomware:",
+            "type": "text",
+            "inputType": "number",
+            "min": 0,
+            "isRequired": true,
+            "validators": [
+                {
+                    "type": "regex",
+                    "text": "Inserisci un numero intero",
+                    "regex": "^[0-9]*$"
+                }
+            ]
+        }, {
+            "name": "p7f2",
+            "title": "Phishing:",
+            "type": "text",
+            "inputType": "number",
+            "min": 0,
+            "isRequired": true,
+            "validators": [
+                {
+                    "type": "regex",
+                    "text": "Inserisci un numero intero",
+                    "regex": "^[0-9]*$"
+                }
+            ]
+        }, {
+            "name": "p7f3",
+            "title": "Cyber Fraud (denaro rubato):",
+            "type": "text",
+            "inputType": "number",
+            "min": 0,
+            "isRequired": true,
+            "validators": [
+                {
+                    "type": "regex",
+                    "text": "Inserisci un numero intero",
+                    "regex": "^[0-9]*$"
+                }
+            ]
+        }, {
+            "name": "p7f4",
+            "title": "DDoS",
+            "type": "text",
+            "inputType": "number",
+            "min": 0,
+            "isRequired": true,
+            "validators": [
+                {
+                    "type": "regex",
+                    "text": "Inserisci un numero intero",
+                    "regex": "^[0-9]*$"
+                }
+            ]
+        }, {
+            "name": "p7f5",
+            "title": "Spam o Botnet",
+            "type": "text",
+            "inputType": "number",
+            "min": 0,
+            "isRequired": true,
+            "validators": [
+                {
+                    "type": "regex",
+                    "text": "Inserisci un numero intero",
+                    "regex": "^[0-9]*$"
+                }
+            ]
+        }, {
+            "name": "p7f6",
+            "title": "Toolkit (Rootkit, Metaexploit)",
+            "type": "text",
+            "inputType": "number",
+            "min": 0,
+            "isRequired": true,
+            "validators": [
+                {
+                    "type": "regex",
+                    "text": "Inserisci un numero intero",
+                    "regex": "^[0-9]*$"
+                }
+            ]
+        }]
+    }],
+    "firstPageIsStarted": true,
+    "startSurveyText": "Avvia il quesitonario",
+    "showQuestionNumbers": "off",
+    "pageNextText": "Avanti",
+    "pagePrevText": "Indietro",
+    "completeText": "Invia",
+    "showCompletedPage": false,
+    "requiredText": "",
+    "showProgressBar": "bottom"
+}

@@ -20,8 +20,8 @@ router.get('/cve', async function(req, res) {
             "Cookie": "connect.sid=" + req.cookies["connect.sid"] +";" 
         } 
     })
-    .then(res => { info['status'] = 200; info['total'] = res.data.data.total })
-    .catch(err => { error['status'] = err.response.status; error['error'] = err.response.statusText })
+    .then(res => { info['status'] = 200; info['total'] = res.data.data.total; info['default'] = 25 })
+    .catch(err => { error['status'] = err.response.status; error['message'] = err.response.statusText })
 
     if(!isEmpty(info))
         res.render('cve-search/cve', { data: info, loggedUser: req.isAuthenticated() });
@@ -52,7 +52,7 @@ router.get('/cve/:id', async function(req, res) {
         } 
     })
     .then(res => { cve['status'] = 200; cve['cve'] = res.data.data })
-    .catch(err => { error['status'] = err.response.status; error['error'] = err.response.statusText })
+    .catch(err => { error['status'] = err.response.status; error['message'] = err.response.statusText })
 
     if(!isEmpty(cve))
         res.render('cve-search/cve_detail', { loggedUser: req.isAuthenticated(), data: cve } );

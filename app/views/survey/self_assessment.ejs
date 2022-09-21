@@ -25,7 +25,7 @@
 		<script type="text/javascript" src="/static/scripts/self_assessment.js"></script>
 		<script type="text/javascript" src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-		<title>Self Assessment</title>
+		<title>Questionario rischio</title>
 	</head>
 
 	<% if(data.status == 200) { %>
@@ -38,7 +38,7 @@
 				<center>
 					<div class="questionnaire-container">
 						<div id="description">
-							<h3>Compila un nuovo questionario di SELF ASSESSMENT</h3>
+							<h3>Compila un nuovo questionario SELF ASSESSMENT (Autovalutazione rischio)</h3>
 							
 							Default: <input type="radio" name="configuration" value="default" onchange="showOption(this)" checked="checked">
 							File: <input type="radio" name="configuration" value="file" onchange="showOption(this)">
@@ -64,7 +64,7 @@
 						<div class="separator">Oppure</div>
 
 						<div id="restore">
-							<h3>Ripristina un questionario già compilato</h3>
+							<h3>Ripristina un questionario SELF_ASSESSMENT già compilato</h3>
 							<p>Una volta compilato un questionario, il suo identificativo univoco (ID) viene mostrato nella pagina dei risultati e salvato nel profilo dell'utente. Tramite tale ID è possibile recuperare il questionario per visionare le risposte date. Tuttavia, non è modificabile.
 							</p>
 							<label for="restoreID">ID questionario (SELF ASSESSMENT): </label>

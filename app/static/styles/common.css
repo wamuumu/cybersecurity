@@ -185,7 +185,6 @@ only screen and (max-width: 760px),
 .error-container{
   width: 100% !important;
   height: 90% !important;
-  min-height: 800px;
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
@@ -228,4 +227,34 @@ body.loading .modal {
 
 .modalBack {
   margin-top: 70px;
+}
+
+/* ------------------ TOOLTIP ------------------ */
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 500px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
 }

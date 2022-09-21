@@ -1,17 +1,25 @@
 <head>
     <%- include('../common/imports.ejs') %>
+    <style>
+      html, body {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
     <title>Errore</title>
 </head>
 <body onload="setError(<%= data.status %>, '<%= data.message %>')">
   <%- include('./header.ejs') %>
   <div class="error-container">
     <div class="error">
+
       <% if (typeof data.status != 'undefined') { %>
         <p id="errorStatus"><%= data.status %></p>
       <% } else { %>
         <p id="errorStatus"></p>
       <% } %>
 
+      <p>Oops... Qualcosa è andato storto!</p>
       <% if (typeof data.message != 'undefined') { %>
         <p id="errorText"><%= data.message %></p>
       <% } else { %>

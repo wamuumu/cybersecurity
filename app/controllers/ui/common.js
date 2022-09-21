@@ -41,7 +41,7 @@ router.get('/profile', async function(req, res) {
             }
         })
         .then(res => data = res.data.surveys)
-        .catch(err => { data['status'] = err.response.status; data['error'] = err.response.statusText })
+        .catch(err => { data['status'] = err.response.status; data['message'] = err.response.statusText })
 
         res.render('profile', { loggedUser: req.isAuthenticated(), user: req.user, surveys: data });
     }
