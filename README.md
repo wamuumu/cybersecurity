@@ -1,2 +1,3 @@
 # cybersecurity
-Studio e implementazione di assessment per la cybersecurity
+
+A set of countermeasures for cyber attacks 
