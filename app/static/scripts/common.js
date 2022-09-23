@@ -1,11 +1,20 @@
 // ------------ COMMON SCRIPTS ------------ 
 
+var close = false;
+
 function isEmpty(obj) {
     return Object.keys(obj).length === 0 || obj == undefined;
 }
 
-const toggleResponsiveMenu = () => {
+const toggleResponsiveMenu = (element) => {
     const nav = document.getElementById("topnav");
+    if(!close){
+        close = true;
+        element.innerHTML = "&times;"
+    }else{
+        close = false;
+        element.innerHTML = '<i class="fa fa-bars"></i>'
+    }
     nav.className === "topnav" ? nav.className += " responsive" : nav.className = "topnav";
 };
 

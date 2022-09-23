@@ -752,6 +752,7 @@ function addRows(body, data, index, page){
 	 	a = document.createElement("a");
 	 	a.textContent = data['id'];
 	 	a.href = "/cve-search/cve/" + data['id'];
+	 	a.target = "_blank"
 	 	cell.appendChild(a);
 
 	 	cell = row.insertCell(2);  

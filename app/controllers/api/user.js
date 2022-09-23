@@ -201,7 +201,7 @@ router.delete("/:id", auth, async function(req, res) {
     })
 });
 
-//ottiene i questionari [id, tipo, data] di un utente
+//ottiene i questionari di un utente
 router.get("/:id/surveys", auth, async function(req, res) {
 
     User.findOne({_id: req.params.id}, async function(err, user){
@@ -224,6 +224,7 @@ router.get("/:id/surveys", auth, async function(req, res) {
                     for (var i = 0; i < surveys.length; i++) {
                         if("__v" in surveys[i]) surveys[i].__v = undefined
                         if("user" in surveys[i]) surveys[i].user = undefined
+                        surveys[i].date = unformatDate(surveys[i].date)
                     }
                     res.status(200).json({ surveys: surveys })
                 }
@@ -231,6 +232,20 @@ router.get("/:id/surveys", auth, async function(req, res) {
         }
     })
 });
+
+function unformatDate(date){
+    var dateTime = date.split("|")
+    var splitted = dateTime[0].trim().split("-")
+
+    if(splitted.length != 3) return ""
+
+    for (var i = 0; i < splitted.length; i++) {
+        if(isNaN(splitted[i]))
+            return ""
+    }
+
+    return splitted[2] + "-" + splitted[1] + "-" + splitted[0] + " | " + dateTime[1].trim()
+}
 
 
 module.exports = router

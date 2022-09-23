@@ -126,20 +126,6 @@ function getFieldInfo(field){
 
 // ------------ UI SCRIPTS ------------ 
 
-function unformatDate(date){
-    var dateTime = date.split("|")
-    var splitted = dateTime[0].trim().split("-")
-
-    if(splitted.length != 3) return ""
-
-    for (var i = 0; i < splitted.length; i++) {
-        if(isNaN(splitted[i]))
-            return ""
-    }
-
-    return splitted[2] + "-" + splitted[1] + "-" + splitted[0] + " | " + dateTime[1].trim()
-}
-
 function setGauge(mean, maxValue){
 
     maxValue = maxValue.toFixed(2)
@@ -175,6 +161,7 @@ function setGauge(mean, maxValue){
 
 function uiManager(){
     document.getElementById('description').style.display = 'none'; 
+    document.getElementById('cancel').style.display = 'block'; 
     var seps = document.getElementsByClassName('separator');
     for (var i = 0; i < seps.length; i++)
         seps[i].style.display = 'none'; 

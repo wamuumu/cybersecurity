@@ -57,7 +57,7 @@ only screen and (max-width: 760px),
 }
 
 #chart{
-	width: 70%;
+	width: 80%;
 	margin: 0 auto;
 }
 
@@ -87,6 +87,24 @@ only screen and (max-width: 760px),
     display: none;
 }
 
+.cancel {
+    display: none;
+    color: red;
+    text-decoration: none;
+    border: 2px solid red;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 27px;
+    position: relative;
+    margin: -45px auto 0 auto;
+    height: 35px;
+    width: 35px;
+}
+
+.cancel:hover {
+    background-color: #ff8080;
+}
+
 @media 
 only screen and (max-width: 760px),
 (min-device-width: 768px) and (max-device-width: 1024px)  {
@@ -95,4 +113,15 @@ only screen and (max-width: 760px),
         display: none;
     }
 
+    .sv-btn {
+        padding: 10px 20px;
+    }
+
+    .sv-btn--navigation {
+        margin: 0 auto;
+    }
+
+    .cancel {
+        margin-top: -51px;
+    }
 }

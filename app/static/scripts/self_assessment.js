@@ -377,6 +377,8 @@ async function showOption(radio){
 async function displayResults(json){
     var results = document.getElementById('surveyResults');
 
+    document.getElementById('cancel').style.display = 'none'; 
+
     maxVal = json.p0f0 * 100
 
     var resultTable;
@@ -448,7 +450,7 @@ function setChart(last){
         }
 
     document.getElementById('lastID').innerHTML = last._id
-    document.getElementById('lastDate').innerHTML = unformatDate(last.date)
+    document.getElementById('lastDate').innerHTML = last.date
     document.getElementById('lastSector').innerHTML = sec
     document.getElementById('maxRisk').innerHTML = maxVal + "%"
     document.getElementById('qualitative').innerHTML = "RISCHIO " + computeQualitativeRisk(mean, maxVal) + " (" + mean + "%)"

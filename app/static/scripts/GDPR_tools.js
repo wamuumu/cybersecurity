@@ -16,6 +16,8 @@ async function surveyComplete(sender){
 async function displayResults(json){
     var results = document.getElementById('surveyResults');
 
+    document.getElementById('cancel').style.display = 'none'; 
+
     var resultTable;
     let parse = parseResults(json, categories);
     var mean = 0;
@@ -65,7 +67,7 @@ function setChart(last){
     mean = (mean / categories).toFixed(2);
 
     document.getElementById('lastID').innerHTML = last._id
-    document.getElementById('lastDate').innerHTML = unformatDate(last.date)
+    document.getElementById('lastDate').innerHTML = last.date
     document.getElementById('qualitative').innerHTML = computeQualitativeCompliance(mean) + " (" + mean + "%)"
 
     const data = {

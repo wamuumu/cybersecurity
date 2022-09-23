@@ -32,7 +32,7 @@ router.get('/profile', async function(req, res) {
     }
     else{
 
-        var data = {};
+        var data = [];
         let url = req.protocol + '://' + req.get('host') + '/api/users/' + req.user._id + '/surveys';
 
         await axios.get(url, {

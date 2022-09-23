@@ -12,7 +12,11 @@ router.get('/', auth, async function(req, res){
 	let typeFilter = req.query.stype != undefined ? { type: req.query.stype } : {}
 
 	Survey.find(typeFilter)
-    .then(surveys => { res.status(200).json({status: 200, data: surveys}) })
+    .then(surveys => { 
+    	for (var i = 0; i < surveys.length; i++)
+    		surveys[i].date = unformatDate(surveys[i].date)
+    	res.status(200).json({status: 200, data: surveys}) 
+    })
     .catch(err => {
     	console.error(err.name + ": " + err.message);
         res.status(500).json({status: 500, message: err.name + ": " + err.message})
@@ -32,6 +36,7 @@ router.get('/:type/:id', auth, async function(req, res){
             if(survey.toObject)
                 survey = survey.toObject();
             if("__v" in survey) delete survey.__v;
+            survey.date = unformatDate(survey.date)
 
             if(req.user.id != survey.user){
             	res.status(401).json({status: 401, message: "Unauthorized"})
@@ -97,6 +102,20 @@ router.post('/', auth, async function(req, res){
 		}
 	});
 });
+
+function unformatDate(date){
+    var dateTime = date.split("|")
+    var splitted = dateTime[0].trim().split("-")
+
+    if(splitted.length != 3) return ""
+
+    for (var i = 0; i < splitted.length; i++) {
+        if(isNaN(splitted[i]))
+            return ""
+    }
+
+    return splitted[2] + "-" + splitted[1] + "-" + splitted[0] + " | " + dateTime[1].trim()
+}
 
 
 module.exports = router
